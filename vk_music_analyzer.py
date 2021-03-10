@@ -1,9 +1,9 @@
-import time
 import math
+import vk_api
 from vk_api.audio import VkAudio
 
 MEDIANA = 0.45
-WEIGHT = 0.15
+WEIGHT = 0.13
 USER_ID = #id юзера, которого чекаете
 LOGIN = #введите свой
 PASSWORD = #введите свой
@@ -24,6 +24,7 @@ def log():
 
 #возвращает список альбомов и плейлистов пользователя
 def get_albums():
+    vkaudio = log()
     return vkaudio.get_albums(USER_ID)
 
 
@@ -64,6 +65,7 @@ def step(m):
 #распределение очков между добавленными песнями
 def points_songs():
     dic = {}
+    k = ''
     n = get_list_songs()
     m = len(n)
     p = step(m)
@@ -76,6 +78,11 @@ def points_songs():
             dic[artist] = [s]
             
         s = s - (2 * p) / m
+        
+        if artist == k:
+            dic[artist].append(0.005)
+        else:
+            k = artist
             
     return dic
     
@@ -95,7 +102,7 @@ def points_playlists():
             else:
                 dic[artist] = [s]
             
-            s = s - p / (4 * m)
+            s = s - p / (5 * m)
             
         return dic
     
@@ -103,7 +110,7 @@ def points_playlists():
         pass
     
     
-#возвращает "любимых" исполнителей
+#возвращает наиболее "любимых" исполнителей
 def score():
     dic1 = points_songs()
     dic2 = points_playlists()
@@ -126,8 +133,8 @@ def score():
 
     for i in range(math.ceil((len(list_d)) ** 0.5)):
         print(list_d[i])
-    #print(result)
-        
+    
+    
 
 def main():
     return score()
