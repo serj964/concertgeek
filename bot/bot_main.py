@@ -29,7 +29,7 @@ def handle_message(message):
 @bot.callback_query_handler(func=lambda call: True)
 def callback_worker(call):
     if call.data == "yes_vk_analyze":
-        url = "localhost:8000/auth&tg_id="+str(call.from_user.id)
+        url = "http://localhost:8000/auth?tg_id="+str(call.from_user.id)
         bot.send_message(call.from_user.id, text = url)
         print("YES\n")
         

@@ -1,9 +1,9 @@
-from flask import Flask, session, request
+from flask import Flask, session, request, redirect
 
 app = Flask(__name__)
 
 client_id = "7562746"
-redirect_url = "http://localhost:8000"
+redirect_url = "http://localhost:8000/auth_complete"
 v = "5.130"
 basic_url = "https://oauth.vk.com/authorize"
 grant_type = "client_credentials"
@@ -18,6 +18,12 @@ def auth():
 def auth_complete():
     tg_id = session.get('key', 'not set')
     token = request.args.get('code')
+    print(tg_id, token)
     #add this pair to db
+    
+    return "good"
 
+
+app.secret_key = 'super secret key'
+app.config['SESSION_TYPE'] = 'filesystem'
 app.run(port = 8000)
