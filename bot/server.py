@@ -5,9 +5,10 @@ app = Flask(__name__)
 client_id = "7562746"
 redirect_url = "http://localhost:8000/auth_complete"
 v = "5.130"
-basic_url = "https://oauth.vk.com/authorize"
+basic_url = "https://oauth.vk.com/access_token"
 grant_type = "client_credentials"
-url = basic_url+"?client_id="+client_id+"&v="+v+"&redirect_uri="+redirect_url+"&grant_type="+grant_type
+client_secret = "rqozJXDcBPrygXS181xr"
+url = basic_url+"?client_id="+client_id+"&v="+v+"&redirect_uri="+redirect_url+"&grant_type="+grant_type+"&client_secret="+client_secret
 
 @app.route('/auth')
 def auth():
@@ -16,8 +17,8 @@ def auth():
     return redirect(url)
 @app.route('/auth_complete')
 def auth_complete():
-    tg_id = session.get('key', 'not set')
-    token = request.args.get('code')
+    tg_id = session.get('key', 'not set')#not set?
+    token = request.args.get('access_token')
     print(tg_id, token)
     #add this pair to db
     
