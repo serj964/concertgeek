@@ -1,20 +1,25 @@
+import re
 import math
 import vk_api
+from vk_api import vk_api
 from vk_api.audio import VkAudio
 
 MEDIANA = 0.45
-WEIGHT = 0.13
-USER_ID = #id юзера, которого чекаете
-LOGIN = #введите свой
-PASSWORD = #введите свой
+WEIGHT = 0.125
+USER_ID = 148057277
+cl = 'rqozJXDcBPrygXS181xr'
+url = 'http://localhost:8000/auth_complete'
+token = 
 
 
 #логинится
 def log(): 
-    vk_session = vk_api.VkApi(LOGIN, PASSWORD)
-
+    vk_session = vk_api.VkApi(client_secret = cl,
+                              app_id = 7562746
+                             )
+    #vk = vk_session.get_api()
     try:
-        vk_session.auth()
+        vk_session.code_auth(token, url)
     except vk_api.AuthError as error_msg:
         print(error_msg)
         return
@@ -25,7 +30,25 @@ def log():
 #возвращает список альбомов и плейлистов пользователя
 def get_albums():
     vkaudio = log()
-    return vkaudio.get_albums(USER_ID)
+    return vkaudio.get_albums()  #USER_ID
+
+
+#проверяет исполнителей на наличие feat.
+def feat_check(lst):
+    i = 0
+    for artist in lst:
+        try:
+            s = re.search(r' feat. | ft. ', artist)
+            p1, p2 = artist[0:s.start()], artist[s.end():]
+            lst.pop(i)
+            lst.insert(i, p1)
+            lst.append(p2)
+        except AttributeError:
+            pass
+    
+        i += 1
+        
+    return lst
 
 
 #возвращает список добавленных в аудиозаписи песен (по названию артистов) из аудио вк
@@ -33,10 +56,12 @@ def get_list_songs():
     vkaudio = log()
     lst = []
     
-    for track in vkaudio.get_iter(owner_id = USER_ID):
+    for track in vkaudio.get_iter(owner_id = None):
         lst.append(track['artist'].lower())
         
-    return lst
+    final_lst = feat_check(lst)    
+    
+    return final_lst
 
 
 #возвращает список добавленных в плейлисты песен (по названию артистов) из аудио вк
@@ -53,8 +78,10 @@ def get_list_playlists():
         
         for track in tracks:
             lst.append(track['artist'].lower())
+            
+    final_lst = feat_check(lst)
         
-    return lst
+    return final_lst
 
 
 #шаг
@@ -111,10 +138,11 @@ def points_playlists():
     
     
 #возвращает наиболее "любимых" исполнителей
-def score():
+def main():
     dic1 = points_songs()
     dic2 = points_playlists()
     result = {}
+    lst = []
     try:
         for key in (dic1.keys() | dic2.keys()):
             if key in dic1: result.setdefault(key, []).extend(dic1[key])
@@ -131,14 +159,12 @@ def score():
 
     list_d.sort(key = lambda i: i[1], reverse=True)
 
-    for i in range(math.ceil((len(list_d)) ** 0.5)):
-        print(list_d[i])
+    for i in range(math.ceil((len(list_d) ** 0.6))):
+        lst.append(list_d[i][0])
+        
+    return lst
+
+
     
-    
-
-def main():
-    return score()
-
-
 if __name__ == '__main__':
     main()
