@@ -15,4 +15,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             txt = decoded_data.split()[1]
             token = txt.split(sep='=')[1]
             print(token)
+            #token, hash->database
+            hash = str(random.getrandbits(128))
+            hashlink = "t.me/AlexanderMGOauthBot?start="+hash
             conn.close()

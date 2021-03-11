@@ -1,6 +1,8 @@
 import telebot
 from telebot import types
 import logging
+import random
+
 
 
 
@@ -24,17 +26,10 @@ def handle_message(message):
     keyboard.add(key_no)
     bot.send_message(message.from_user.id, text = txt, reply_markup = keyboard)
 
-
-grant_type = "client_credentials"
-client_id = "7562746"
-redirect_url = "http://localhost:8000"
-v = "5.130"
-basic_url = "https://oauth.vk.com/authorize"
-url = basic_url+"?client_id="+client_id+"&v="+v+"&redirect_uri="+redirect_url+"&grant_type="+grant_type
-
 @bot.callback_query_handler(func=lambda call: True)
 def callback_worker(call):
     if call.data == "yes_vk_analyze":
+        url = "localhost:8000/auth&tg_id="+str(call.from_user.id)
         bot.send_message(call.from_user.id, text = url)
         print("YES\n")
         
