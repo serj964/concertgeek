@@ -10,7 +10,7 @@ TOKEN = '1634504684:AAEk4wzUCsI_ZNdohfYZGy2jakWFFkfdeTs'
 
 bot = telebot.TeleBot(TOKEN)
 
-
+address = "127.0.0.1:8000/auth"
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
@@ -29,7 +29,7 @@ def handle_message(message):
 @bot.callback_query_handler(func=lambda call: True)
 def callback_worker(call):
     if call.data == "yes_vk_analyze":
-        url = "http://localhost:8000/auth?tg_id="+str(call.from_user.id)
+        url = address+"?tg_id="+str(call.from_user.id)
         bot.send_message(call.from_user.id, text = url)
         print("YES\n")
         
