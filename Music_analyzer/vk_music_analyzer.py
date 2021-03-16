@@ -12,7 +12,7 @@ class vk_music_analyzer:
 
 
     #проверяет исполнителей на наличие feat.
-    def __feat_check(lst):
+    def __feat_check(self, lst):
         i = 0
         for artist in lst:
             try:
@@ -30,19 +30,19 @@ class vk_music_analyzer:
 
 
     #возвращает список добавленных в аудиозаписи песен (по названию артистов) из аудио вк
-    def __get_list_songs(session):
+    def __get_list_songs(self, session):
         lst = []
         
         for track in session.get():
             lst.append(track['artist'].lower())
             
-        final_lst = __feat_check(lst)    
+        final_lst = self.__feat_check(lst)    
         
         return final_lst
 
 
     #возвращает список добавленных в плейлисты песен (по названию артистов) из аудио вк
-    def __get_list_playlists(session):
+    def __get_list_playlists(self, session):
         lst = []
         
         albums = session.get_albums()
@@ -55,13 +55,13 @@ class vk_music_analyzer:
             for track in tracks:
                 lst.append(track['artist'].lower())
                 
-        final_lst = __feat_check(lst)
+        final_lst = self.__feat_check(lst)
             
         return final_lst
 
 
     #шаг
-    def __step(m):
+    def __step(self, m):
         return math.log(m) / 25
 
 
@@ -69,7 +69,7 @@ class vk_music_analyzer:
     def __points_songs(self, session):
         dic = {}
         k = ''
-        n = __get_list_songs(session)
+        n = self.__get_list_songs(session)
         m = len(n)
         p = __step(m)
         s = self.MEDIANA + p
@@ -94,9 +94,9 @@ class vk_music_analyzer:
     def __points_playlists(self, session):
         try:
             dic = {}
-            n = __get_list_playlists(session)
+            n = self.__get_list_playlists(session)
             m = len(n)
-            p = __step(m)
+            p = self.__step(m)
             s = self.WEIGHT
             for artist in n:
             
@@ -118,8 +118,8 @@ class vk_music_analyzer:
 
         session = VkAudio(vk_session)
         
-        dic1 = __points_songs(session)
-        dic2 = __points_playlists(session)
+        dic1 = self.__points_songs(session)
+        dic2 = self.__points_playlists(session)
         result = {}
         lst = []
         try:
