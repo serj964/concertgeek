@@ -18,20 +18,19 @@ scope = "audio,email"
 
 NAME = 'tg_id'
 
-url = basic_url_for_code+"?client_id="+client_id+"&v="+v+"&redirect_uri="+redirect_url_base+redirect_url_end+"&grant_type="+grant_type+"&client_secret="+client_secret+"&scope="+scope+"&responce_type="+responce_type
+url = basic_url_for_code+"?client_id="+client_id+"&v="+v+"&redirect_uri="+redirect_url_base+redirect_url_end+"&grant_type="+grant_type+"&client_secret="+client_secret+"&scope="+scope+"&responce_type="+responce_type+"&state="
 url2 = basic_url_for_token+"?client_id="+client_id+"&redirect_uri="+redirect_url_base+redirect_url_end+"&client_secret="+client_secret+"&code="
+
+app = Flask(__name__)
 
 
 @app.route('/auth')
 def auth():
     tg_id = request.args.get('tg_id')
-    print(tg_id)
-    session[NAME] = tg_id
-    return redirect(url)
+    return redirect(url+tg_id)
 @app.route(redirect_url_end)
 def auth_complete():
-    tg_id = session.get(NAME, 'not set')
-    session.pop(NAME, default=None)
+    tg_id = request.args.get('state')
     code = request.args.get('code')
     vk_session = vk_api.VkApi(app_id=client_id, client_secret=client_secret, scope = '8')
 
@@ -65,7 +64,6 @@ def auth_complete():
     return "good"
 
 
-app = Flask(__name__)
 app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
