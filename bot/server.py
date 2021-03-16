@@ -1,6 +1,8 @@
 from flask import Flask, session, request, redirect
 import vk_api, datetime
 from flask_session import Session
+from Music_analyzer.vk_music_analyzer import vk_music_analyzer
+
 
 client_id = "7562746"
 
