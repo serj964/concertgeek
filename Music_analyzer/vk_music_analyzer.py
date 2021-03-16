@@ -71,7 +71,7 @@ class vk_music_analyzer:
         k = ''
         n = self.__get_list_songs(session)
         m = len(n)
-        p = __step(m)
+        p = self.__step(m)
         s = self.MEDIANA + p
         for artist in n:
             
