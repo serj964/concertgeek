@@ -114,7 +114,7 @@ class vk_music_analyzer:
         
         
     #возвращает наиболее "любимых" исполнителей
-    def get_favorite_artists(vk_session):
+    def get_favorite_artists(self, vk_session):
 
         session = VkAudio(vk_session)
         
