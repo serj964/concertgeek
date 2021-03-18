@@ -2,6 +2,7 @@ import re
 import math
 import vk_api
 from vk_api.audio import VkAudio
+from password import password
 
 
 class vk_music_analyzer:
@@ -30,10 +31,10 @@ class vk_music_analyzer:
 
 
     #возвращает список добавленных в аудиозаписи песен (по названию артистов) из аудио вк
-    def __get_list_songs(self, session):
+    def __get_list_songs(self, session, user_id):
         lst = []
         
-        for track in session.get():
+        for track in session.get(owner_id = user_id):
             lst.append(track['artist'].lower())
             
         final_lst = self.__feat_check(lst)    
@@ -42,15 +43,15 @@ class vk_music_analyzer:
 
 
     #возвращает список добавленных в плейлисты песен (по названию артистов) из аудио вк
-    def __get_list_playlists(self, session):
+    def __get_list_playlists(self, session, user_id):
         lst = []
         
-        albums = session.get_albums()
+        albums = session.get_albums(owner_id = user_id)
         
         for i in range(len(albums)):
             tracks = session.get_iter(owner_id = albums[i]['owner_id'],
-                                    album_id = albums[i]['id'],
-                                    access_hash = albums[i]['access_hash'])
+                                      album_id = albums[i]['id'],
+                                      access_hash = albums[i]['access_hash'])
             
             for track in tracks:
                 lst.append(track['artist'].lower())
@@ -66,10 +67,10 @@ class vk_music_analyzer:
 
 
     #распределение очков между добавленными песнями
-    def __points_songs(self, session):
+    def __points_songs(self, session, user_id):
         dic = {}
         k = ''
-        n = self.__get_list_songs(session)
+        n = self.__get_list_songs(session, user_id)
         m = len(n)
         p = self.__step(m)
         s = self.MEDIANA + p
@@ -91,10 +92,10 @@ class vk_music_analyzer:
         
         
     #распределение очков между песнями из плейлистов    
-    def __points_playlists(self, session):
+    def __points_playlists(self, session, user_id):
         try:
             dic = {}
-            n = self.__get_list_playlists(session)
+            n = self.__get_list_playlists(session, user_id)
             m = len(n)
             p = self.__step(m)
             s = self.WEIGHT
@@ -114,12 +115,20 @@ class vk_music_analyzer:
         
         
     #возвращает наиболее "любимых" исполнителей
-    def get_favourite_artists(self, vk_session):
-
+    def get_favourite_artists(self, user_id):
+        LOGIN = '+79060733528'
+        user_id = int(user_id)
+        #логинится 
+        vk_session = vk_api.VkApi(LOGIN, password)
+        try:
+            vk_session.auth()
+        except vk_api.AuthError as error_msg:
+            print(error_msg)
+            
         session = VkAudio(vk_session)
         
-        dic1 = self.__points_songs(session)
-        dic2 = self.__points_playlists(session)
+        dic1 = self.__points_songs(session, user_id)
+        dic2 = self.__points_playlists(session, user_id)
         result = {}
         lst = []
         try:
@@ -138,8 +147,7 @@ class vk_music_analyzer:
 
         list_d.sort(key = lambda i: i[1], reverse=True)
 
-        for i in range(math.ceil((len(list_d) ** 0.65))):
+        for i in range(math.ceil((len(list_d) ** 0.7))):
             lst.append(list_d[i][0])
             
         return lst
-
