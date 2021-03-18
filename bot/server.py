@@ -14,7 +14,7 @@ v = "5.130"
 basic_url_for_token = "https://oauth.vk.com/access_token" #for access_token
 basic_url_for_code = "https://oauth.vk.com/authorize" #for code
 grant_type = "client_credentials"
-client_secret = "rqozJXDcBPrygXS181xr"
+client_secret = "zS76Cc47jUR83n01CesN"
 responce_type = "code"
 scope = "audio,email"
 
