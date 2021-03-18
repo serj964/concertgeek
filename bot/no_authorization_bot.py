@@ -28,14 +28,14 @@ def handle_message(message):
 @bot.message_handler(content_types = ['text'])
 def callback_worker(message):
     if message.text == '/yes':
-        bot.send_message(message.from_user.id, text = "Введи, пожалуйста, Ваш id вк")
+        bot.send_message(message.from_user.id, text = "Введи, пожалуйста, свой id вк")
         bot.register_next_step_handler(message, get_vk_id)
         
         
 def get_vk_id(message):
     vk_id = message.text
     print(message.from_user.id, vk_id) #add this pair to db
-    bot.send_message(message.from_user.id, text = "Подожди, пока я подберу для тебя концерты)")
+    bot.send_message(message.from_user.id, text = "Подожди, я подберу для тебя концерты)")
     vk = vk_music_analyzer()
     artists = vk.get_favourite_artists(vk_id)
     #print(answer)
@@ -46,7 +46,11 @@ def get_vk_id(message):
     for i in range(len(artists)):
         concert = con.find_concerts(artists[i])
         if concert != []:
-            txt = "Концерт группы {title}\nОн пройдет {date}\nВот ссылка на мероприятие {url}".format(title = concert[0]['title'], date = concert[0]['date'], url = concert[0]['url'])
+            txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price}рублей\nВот ссылка на мероприятие {url}".format(price = concert[0]['price'],
+                                  place = concert[0]['place'],
+                                  title = concert[0]['title'],
+                                  date = concert[0]['date'],
+                                  url = concert[0]['url'])
             bot.send_message(message.from_user.id, text=txt)
             time.sleep(10)
             
