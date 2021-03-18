@@ -2,6 +2,7 @@ from flask import Flask, session, request, redirect
 import vk_api, datetime
 from flask_session import Session
 from Music_analyzer.vk_music_analyzer import vk_music_analyzer
+from vk_api.audio import VkAudio
 
 
 client_id = "7562746"
@@ -34,6 +35,7 @@ def auth():
 def auth_complete():
     tg_id = request.args.get('state')
     code = request.args.get('code')
+    print(code) 
     vk_session = vk_api.VkApi(app_id=client_id, client_secret=client_secret, scope = '8')
 
     try:
@@ -44,7 +46,7 @@ def auth_complete():
     
 
     email = vk_session.token['email']
-        
+    print(vk_session.token['access_token'])
     vk_session = vk_api.VkApi(login = vk_session.token['email'], token = vk_session.token['access_token'])
 
     try:
@@ -53,9 +55,11 @@ def auth_complete():
         print(error_msg)
         return
 
-
-
+    print("good")
+    session = VkAudio(vk_session)
+    #vk = vk_music_analyzer()
     print(tg_id, email)
+    #print(vk.get_favourite_artists(vk_session))
     #add this pair to db
     #if code:
     #    return redirect(url2+code)
