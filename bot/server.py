@@ -21,7 +21,7 @@ scope = "audio,email"
 
 NAME = 'tg_id'
 
-url = basic_url_for_code+"?client_id="+client_id+"&v="+v+"&redirect_uri="+redirect_url_base+redirect_url_end+"&grant_type="+grant_type+"&client_secret="+client_secret+"&scope="+scope+"&responce_type="+responce_type+"&state="
+url = basic_url_for_code+"?client_id="+client_id+"&v="+v+"&redirect_uri="+redirect_url_base+redirect_url_end+"&grant_type="+grant_type+"&client_secret="+client_secret+"&scope="+scope+"&responce_type="+responce_type
 url2 = basic_url_for_token+"?client_id="+client_id+"&redirect_uri="+redirect_url_base+redirect_url_end+"&client_secret="+client_secret+"&code="
 
 app = Flask(__name__)
@@ -30,12 +30,13 @@ app = Flask(__name__)
 @app.route('/auth')
 def auth():
     tg_id = request.args.get('tg_id')
-    return redirect(url+tg_id)
+    return redirect(url)
 @app.route(redirect_url_end)
 def auth_complete():
-    tg_id = request.args.get('state')
+    #tg_id = request.args.get('state')
     code = request.args.get('code')
     print(code) 
+    """
     vk_session = vk_api.VkApi(app_id=client_id, client_secret=client_secret, scope = '8')
 
     try:
@@ -46,8 +47,8 @@ def auth_complete():
     
 
     email = vk_session.token['email']
-    print(vk_session.token['access_token'])
-    vk_session = vk_api.VkApi(login = vk_session.token['email'], token = vk_session.token['access_token'])
+    access_token = vk_session.token['access_token']
+    vk_session = vk_api.VkApi(login = email, token = access_token)
 
     try:
         vk_session.auth(token_only = True)
@@ -55,11 +56,9 @@ def auth_complete():
         print(error_msg)
         return
 
-    print("good")
-    session = VkAudio(vk_session)
-    #vk = vk_music_analyzer()
-    print(tg_id, email)
-    #print(vk.get_favourite_artists(vk_session))
+    vk = vk_music_analyzer()
+    print(email)
+    print(vk.get_favourite_artists(vk_session))
     #add this pair to db
     #if code:
     #    return redirect(url2+code)
@@ -67,6 +66,7 @@ def auth_complete():
     #    email = request.args.get('email')
     #    access_token = request.args.get('access_token')
     #    print(email, access_token)
+    """
     return "good"
 
 
