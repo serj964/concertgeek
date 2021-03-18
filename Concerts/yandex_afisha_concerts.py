@@ -6,7 +6,7 @@ class Concerts:
     def __init__(self):
         self.concerts = []
 
-    def load_concerts(self, city='moscow', day=datetime.date.today(), number_of_days=100):
+    def load_concerts(self, city='moscow', day=datetime.date.today(), number_of_days=120):
         self.concerts = []
         limit = 20
         offset = 0

@@ -1,4 +1,5 @@
 import telebot
+import time
 from telebot import types
 import logging
 import random
@@ -20,13 +21,14 @@ def send_welcome(message):
 @bot.message_handler(content_types = ["text", "sticker", "pinned_message", "photo", "audio"])
 def handle_message(message):
     txt = "Желаешь ли ты, чтобы наш бот проанализировал твою медиатеку ВК?/yes, /no.\nНе забудь, что твои аудиозаписи ВК должны быть открыты)"
+    a = 5
     bot.send_message(message.from_user.id, text = txt)
     bot.register_next_step_handler(message, callback_worker)
     
 @bot.message_handler(content_types = ['text'])
 def callback_worker(message):
     if message.text == '/yes':
-        bot.send_message(message.from_user.id, text = "Введите, пожалуйста, Ваш id вк")
+        bot.send_message(message.from_user.id, text = "Введи, пожалуйста, Ваш id вк")
         bot.register_next_step_handler(message, get_vk_id)
         
         
@@ -44,8 +46,9 @@ def get_vk_id(message):
     for i in range(len(artists)):
         concert = con.find_concerts(artists[i])
         if concert != []:
-            #text = "Концерт группы {a} {b}".format(concert[0]['title'], concert[0]['date'])
-            bot.send_message(message.from_user.id, 'Концерт группы ' + f'{concert[0]['title']} + ' '+ f'{concert[0]['date']})
+            txt = "Концерт группы {title}\nОн пройдет {date}\nВот ссылка на мероприятие {url}".format(title = concert[0]['title'], date = concert[0]['date'], url = concert[0]['url'])
+            bot.send_message(message.from_user.id, text=txt)
+            time.sleep(10)
             
     bot.send_message(message.from_user.id, text = "Наслаждайся)")
         
