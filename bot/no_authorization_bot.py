@@ -38,10 +38,8 @@ def get_vk_id(message):
     bot.send_message(message.from_user.id, text = "Подожди, я подберу для тебя концерты)")
     vk = vk_music_analyzer()
     artists = vk.get_favourite_artists(vk_id)
-    #print(answer)
-    #bot.send_message(message.from_user.id, answer)
     con = Concerts()
-    con.load_concerts()
+    con.load_concerts(number_of_days=150)
     bot.send_message(message.from_user.id, text = "Вот, что мне удалось найти)")
     for i in range(len(artists)):
         concert = con.find_concerts(artists[i])
