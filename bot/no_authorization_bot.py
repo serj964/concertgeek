@@ -3,6 +3,7 @@ from telebot import types
 import logging
 import random
 from Music_analyzer.vk_music_analyzer import vk_music_analyzer
+from Concerts.yandex_afisha_concerts import Concerts
 
 
 
@@ -18,7 +19,7 @@ def send_welcome(message):
 
 @bot.message_handler(content_types = ["text", "sticker", "pinned_message", "photo", "audio"])
 def handle_message(message):
-    txt = "Желаешь ли ты, чтобы наш бот проанализировал твою медиатеку ВК?/yes, /no"
+    txt = "Желаешь ли ты, чтобы наш бот проанализировал твою медиатеку ВК?/yes, /no.\nНе забудь, что твои аудиозаписи ВК должны быть открыты)"
     bot.send_message(message.from_user.id, text = txt)
     bot.register_next_step_handler(message, callback_worker)
     
@@ -28,11 +29,27 @@ def callback_worker(message):
         bot.send_message(message.from_user.id, text = "Введите, пожалуйста, Ваш id вк")
         bot.register_next_step_handler(message, get_vk_id)
         
+        
 def get_vk_id(message):
     vk_id = message.text
     print(message.from_user.id, vk_id) #add this pair to db
+    bot.send_message(message.from_user.id, text = "Подожди, пока я подберу для тебя концерты)")
     vk = vk_music_analyzer()
-    answer = vk.get_favourite_artists(vk_id)
+    artists = vk.get_favourite_artists(vk_id)
+    #print(answer)
+    #bot.send_message(message.from_user.id, answer)
+    con = Concerts()
+    con.load_concerts()
+    bot.send_message(message.from_user.id, text = "Вот, что мне удалось найти)")
+    for i in range(len(artists)):
+        concert = con.find_concerts(artists[i])
+        if concert != []:
+            #text = "Концерт группы {a} {b}".format(concert[0]['title'], concert[0]['date'])
+            bot.send_message(message.from_user.id, 'Концерт группы ' + f'{concert[0]['title']} + ' '+ f'{concert[0]['date']})
+            
+    bot.send_message(message.from_user.id, text = "Наслаждайся)")
+        
+        
     
 
 
