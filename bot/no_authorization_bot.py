@@ -49,14 +49,13 @@ def get_vk_id(message):
                                       date = concert[0]['date'],
                                       url = concert[0]['url'])
                 bot.send_message(message.from_user.id, text=txt)
-                time.sleep(10)
             except KeyError:
                 txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие {url}".format(place = concert[0]['place'],
                                       title = concert[0]['title'],
                                       date = concert[0]['date'],
                                       url = concert[0]['url'])
                 bot.send_message(message.from_user.id, text=txt)
-                time.sleep(10)
+            time.sleep(10)
     bot.send_message(message.from_user.id, text = "Наслаждайся)")
         
         
