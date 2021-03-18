@@ -2,3 +2,5 @@
 venv
 flask_session
 Music_analyzer/password.py
+vk_config.v2.json
+
