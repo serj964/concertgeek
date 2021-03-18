@@ -44,7 +44,7 @@ def get_vk_id(message):
     for i in range(len(artists)):
         concert = con.find_concerts(artists[i])
         if concert != []:
-            txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price}рублей\nВот ссылка на мероприятие {url}".format(price = concert[0]['price'],
+            txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей\nВот ссылка на мероприятие {url}".format(price = concert[0]['price'],
                                   place = concert[0]['place'],
                                   title = concert[0]['title'],
                                   date = concert[0]['date'],
