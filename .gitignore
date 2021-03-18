@@ -1,3 +1,4 @@
 *.pyc
+venv
 flask_session
 Music_analyzer/password.py

@@ -2,7 +2,7 @@ import re
 import math
 import vk_api
 from vk_api.audio import VkAudio
-from password import password
+from Music_analyzer.password import password
 
 
 class vk_music_analyzer:
