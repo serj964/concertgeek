@@ -3,35 +3,75 @@ import vk_api, datetime
 from flask_session import Session
 #from Music_analyzer.vk_music_analyzer import vk_music_analyzer
 from vk_api.audio import VkAudio
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
 
 
-client_id = "7794879"
+vk_oauth_config = {
+    'client_id' : "7794879",
+    'redirect_url_end' : "/auth_complete",
+    'redirect_url_base' : "http://localhost:8000",
+    'v' : "5.130",
+    'basic_url_for_token' : "https://oauth.vk.com/access_token",
+    'basic_url_for_code' : "https://oauth.vk.com/authorize",
+    'grant_type' : "client_credentials",
+    'client_secret' : "SsVRgiVPrle4mhxR3aOd",
+    'responce_type' : "code",
+    'scope' : "audio,email",
+    'url' : "{basic_url_for_code}?client_id={client_id}&v={v}&redirect_uri={redirect_url_base}{redirect_url_end}&grant_type={grant_type}&client_secret={client_secret}&scope={scope}&responce_type={responce_type}"
+}
 
 
-redirect_url_end = "/auth_complete"
-redirect_url_base = "http://localhost:8000"
-v = "5.130"
-basic_url_for_token = "https://oauth.vk.com/access_token" #for access_token
-basic_url_for_code = "https://oauth.vk.com/authorize" #for code
-grant_type = "client_credentials"
-client_secret = "SsVRgiVPrle4mhxR3aOd"
-responce_type = "code"
-scope = "audio,email"
+spotify_oauth_config = {
+    'client_id' : "7e7a1e938e2640b6a029cf9ba3fa150b",
+    'client_secret' : "c0d618591a494b34b5eb5cbba13574f6",
+    'redirect_url_end' : "/spotify",
+    'redirect_url_base' : "http://localhost:8000",
+}
 
 
 NAME = 'tg_id'
 
-url = basic_url_for_code+"?client_id="+client_id+"&v="+v+"&redirect_uri="+redirect_url_base+redirect_url_end+"&grant_type="+grant_type+"&client_secret="+client_secret+"&scope="+scope+"&responce_type="+responce_type
-url2 = basic_url_for_token+"?client_id="+client_id+"&redirect_uri="+redirect_url_base+redirect_url_end+"&client_secret="+client_secret+"&code="
+url2 = "{basic_url_for_token}?client_id={client_id}&redirect_uri={redirect_url_base}{redirect_url_end}&client_secret={client_secret}&code="
 
 app = Flask(__name__)
 
 
+
+
+
+
+
+
+
+
 @app.route('/auth')
 def auth():
-    tg_id = request.args.get('tg_id')
-    return redirect(url)
-@app.route(redirect_url_end)
+    #tg_id = request.args.get('tg_id')
+    #auth_scope = request.args.get('scope')
+    if False: #vk
+        redirect_url = vk_oauth_config['url'].format(
+            basic_url_for_code = vk_oauth_config['basic_url_for_code'],
+            client_id = vk_oauth_config['client_id'],
+            v = vk_oauth_config['v'],
+            redirect_url_base = vk_oauth_config['redirect_url_base'],
+            redirect_url_end = vk_oauth_config['redirect_url_end'],
+            grant_type = vk_oauth_config['grant_type'],
+            client_secret = vk_oauth_config['client_secret'],
+            scope = vk_oauth_config['scope'],
+            responce_type = vk_oauth_config['responce_type']
+        )
+        #print(redirect_url)
+        return redirect(redirect_url)
+    elif True: #spotify
+        sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=spotify_oauth_config['client_id'],
+                                               client_secret=spotify_oauth_config['client_secret'],
+                                               redirect_uri=spotify_oauth_config['redirect_url_base']+spotify_oauth_config['redirect_url_end'],
+                                               scope="user-library-read"))
+        return "good"
+        
+"""    
+@app.route(vk_oauth_config['redirect_url_end'])
 def auth_complete():
     #tg_id = request.args.get('state')
     code = request.args.get('code') 
@@ -59,7 +99,7 @@ def auth_complete():
     #    access_token = request.args.get('access_token')
     #    print(email, access_token)
     return "good"
-
+"""
 
 app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'
