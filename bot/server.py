@@ -26,7 +26,7 @@ spotify_oauth_config = {
     'client_id' : "7e7a1e938e2640b6a029cf9ba3fa150b",
     'client_secret' : "c0d618591a494b34b5eb5cbba13574f6",
     'redirect_url_end' : "/spotify",
-    'redirect_url_base' : "http://localhost:8000",
+    'redirect_url_base' : "http://localhost:7000",
 }
 
 
@@ -47,9 +47,9 @@ app = Flask(__name__)
 
 @app.route('/auth')
 def auth():
-    #tg_id = request.args.get('tg_id')
-    #auth_scope = request.args.get('scope')
-    if False: #vk
+    tg_id = request.args.get('tg_id')
+    auth_scope = request.args.get('scope')
+    if auth_scope == "vk": #vk
         redirect_url = vk_oauth_config['url'].format(
             basic_url_for_code = vk_oauth_config['basic_url_for_code'],
             client_id = vk_oauth_config['client_id'],
@@ -61,24 +61,29 @@ def auth():
             scope = vk_oauth_config['scope'],
             responce_type = vk_oauth_config['responce_type']
         )
-        #print(redirect_url)
         return redirect(redirect_url)
-    elif True: #spotify
-        sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=spotify_oauth_config['client_id'],
+
+
+
+    elif auth_scope == "spotify": #spotify
+        auth_manager = SpotifyOAuth(client_id=spotify_oauth_config['client_id'],
                                                client_secret=spotify_oauth_config['client_secret'],
                                                redirect_uri=spotify_oauth_config['redirect_url_base']+spotify_oauth_config['redirect_url_end'],
-                                               scope="user-library-read"))
+                                               scope="user-library-read", open_browser = True)
+        sp = spotipy.Spotify(auth_manager = auth_manager)
+        results = sp.current_user_saved_tracks()
+        print(results)
         return "good"
         
-"""    
+
 @app.route(vk_oauth_config['redirect_url_end'])
 def auth_complete():
     #tg_id = request.args.get('state')
     code = request.args.get('code') 
-    vk_session = vk_api.VkApi(app_id=client_id, client_secret=client_secret, scope = '8')
+    vk_session = vk_api.VkApi(app_id=vk_oauth_config['client_id'], client_secret=vk_oauth_config['client_secret'], scope = '8')
 
     try:
-        vk_session.code_auth(code, redirect_url_base+redirect_url_end)
+        vk_session.code_auth(code, vk_oauth_config['redirect_url_base']+vk_oauth_config['redirect_url_end'])
     except vk_api.AuthError as error_msg:
         print(error_msg)
         return
@@ -99,7 +104,6 @@ def auth_complete():
     #    access_token = request.args.get('access_token')
     #    print(email, access_token)
     return "good"
-"""
 
 app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'

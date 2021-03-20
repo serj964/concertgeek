@@ -29,7 +29,7 @@ def handle_message(message):
 @bot.callback_query_handler(func=lambda call: True)
 def callback_worker(call):
     if call.data == "yes_vk_analyze":
-        url = address+"?tg_id="+str(call.from_user.id)
+        url = address+"?tg_id="+str(call.from_user.id)+"&scope=vk"
         bot.send_message(call.from_user.id, text = url)
         print("YES\n")
         
