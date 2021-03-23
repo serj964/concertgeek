@@ -27,7 +27,10 @@ def handle_message(message):
 def callback_worker(message):
     if message.text == '/yes':
         bot.send_message(message.from_user.id, text = "Введи, пожалуйста, свой id вк")
-        bot.register_next_step_handler(message, get_vk_id)
+        try:
+            bot.register_next_step_handler(message, get_vk_id)
+        except:
+            bot.send_message(message.from_user.id, text = "Я сломался(\nСейчас мой создатель меня перезапустит, и давай попробуем сначала")
         
         
 def get_vk_id(message):
@@ -57,6 +60,7 @@ def get_vk_id(message):
                 bot.send_message(message.from_user.id, text=txt)
             time.sleep(10)
     bot.send_message(message.from_user.id, text = "Наслаждайся)")
+    print("done")
         
         
     
