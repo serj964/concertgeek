@@ -2,7 +2,7 @@ import telebot
 import time
 from telebot import types
 import logging
-import random
+#import random
 #from Music_analyzer.vk_music_analyzer import vk_music_analyzer
 #from Concerts.yandex_afisha_concerts import Concerts
 
@@ -20,11 +20,14 @@ def make_keyboard(d):
     keyboard.add(*buttons)
     return keyboard
 
-def menu_analize_proc(message):
+def menu_analyze_proc(message):
     text = "Выбери действие среди предложенных:"
-    bot.send_message(message.chat.id, text=text, reply_markup=make_keyboard(menu_analize))
+    bot.send_message(message.chat.id, text=text, reply_markup=make_keyboard(menu_analyze))
     bot.register_next_step_handler(message, menu_analize_keyboard_handler)
     return
+
+def change_service():
+    return 1
 
 def menu_manage_list_proc():
     return 1
@@ -35,67 +38,97 @@ def menu_send_concerts_proc():
 def menu_reset_proc():
     return 1
 
-def menu_analize_spotify_proc():
+def menu_analyze_spotify_proc():
     return 1
 
-def menu_analize_vk_proc():
+def menu_analyze_vk_proc():
     return 1
 
 def menu_startup_vk_proc(message):
-    bot.send_message(message.chat.id, "Для работы сервиса необходимо, чтобы у вас был открытый аккаунт и открытые аудио")
-    bot.send_message(message.chat.id, text = "Перейдите, пожалуйста, по ссылке для авторизации. "+address+"?&tg_id="+str(message.from_user.id)+"&scope=vk")
-    bot.register_next_step_handler(message, get_vk_id)
+    bot.send_message(message.chat.id, "Для работы сервиса необходимо, чтобы у тебя был открытый аккаунт и открытые аудио!")
+    time.sleep(3)
+    bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+address+"?&tg_id="+str(message.from_user.id)+"&scope=vk")
+    #bot.register_next_step_handler(message, get_vk_id)
     return 1
 
-def menu_startup_spotify_proc():
+def menu_startup_spotify_proc(message):
+    #bot.send_message(message.chat.id, "Для работы сервиса необходимо, чтобы у вас был открытый аккаунт и открытые аудио")
+    #bot.send_message(message.chat.id, text = "Перейдите, пожалуйста, по ссылке для авторизации. "+address+"?&tg_id="+str(message.from_user.id)+"&scope=vk")
+    #bot.register_next_step_handler(message, get_vk_id)
+    bot.send_message(message.chat.id, text = "ХАЙп")
     return 1
 
-def menu_startup_abort():
+def menu_startup_abort(message):
+    bot.send_message(message.chat.id, text = "Тогда я просто побуду у тебя в телефоне)\nПиши, если вдруг надумаешь)")
+    bot.register_next_step_handler(message, talk)
     return 1
 
-menu_analize = {
-    'btn_menu_analize_vk' : ('Проанализировать медиатеку Vk', menu_analize_vk_proc),
-    'btn_menu_analize_spotify' : ('Проанализировать медиатеку Spotify', menu_analize_spotify_proc)
+
+change_service = {
+    'btn_menu_analize_vk' : ('Vk', menu_startup_vk_proc),
+    'btn_menu_analize_spotify' : ('Spotify', menu_startup_spotify_proc)
 }
 
-menu = {
-    'btn_menu_analize' : ('Проанализировать медиатеку', menu_analize_proc), 
-    'btn_menu_manage_list' : ('Конфигурировать список любимых исполнителей', menu_manage_list_proc),
-    'btn_menu_send_concerts' : ('Прислать рекомендованные концерты', menu_send_concerts_proc),
+handle_menu = {
+    'btn_menu_analize' : ('Выбрать другой сервис', change_service), 
+    'btn_menu_manage_list' : ('Обновить музыкальные предпочтения', menu_manage_list_proc),
+    #'btn_menu_send_concerts' : ('Прислать рекомендованные концерты', menu_send_concerts_proc),
     'btn_menu_reset' : ('Стереть данные', menu_reset_proc)
 }
 
 startup_menu = {
     'btn_menu_startup_vk' : ('Vk', menu_startup_vk_proc),
     'btn_menu_startup_spotify' : ('Spotify', menu_startup_spotify_proc),
-    'btn_menu_startup_abort' : ('Потом', menu_startup_abort)
+    'btn_menu_startup_abort' : ('Выберу потом', menu_startup_abort)
 }
 
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    bot.send_message(message.from_user.id, f'Я MUSICGEEK бот. Приятно познакомиться. Я помогу тебе не пропустить концерт или любое другое мероприятие любимой группы. Напиши любое сообщение боту в любое время и он тебе пришлет варианты взаимодействия.')
-    text = "Для работы нашего сервиса ннеобходимо проанализировать медиатеку. Выбери подходящий тебе вариант:"
+    text = "Привет, я MusicGEEKbot. Приятно познакомиться)\nЯ помогу тебе не пропустить концерт или любое другое мероприятие любимых групп.\n\nДля работы нашего сервиса необходимо проанализировать твою медиатеку. Выбери подходящий вариант:"
     bot.send_message(message.from_user.id, text = text, reply_markup=make_keyboard(startup_menu))
     bot.register_next_step_handler(message, menu_startup_keyboard_handler)
     return
 
 
-@bot.message_handler(content_types = ["text", "sticker", "pinned_message", "photo", "audio"])
-def handle_menu(message):
-    text = "Выбери действие среди предложенных:"
-    bot.send_message(message.from_user.id, text=text, reply_markup=make_keyboard(menu))
-    bot.register_next_step_handler(message, menu_keyboard_handler)
-    return
+@bot.callback_query_handler(func=lambda call: True)
+def menu_startup_keyboard_handler(call):
+    try:
+        btn = call.data
+        print(btn)
+        if startup_menu.get(btn) != None:
+            print('ok')
+            startup_menu[btn][1](call.message)
+    except AttributeError:
+        pass
         
+    
+
+@bot.message_handler(content_types = ["text", "sticker", "pinned_message", "photo", "audio"])
+def talk(message):
+    text = "Можем пообщаться\nА если хочешь перейти в меню, напиши мне /menu"
+    #bot.send_message(message.from_user.id, text=text, reply_markup=make_keyboard(menu))
+    #bot.register_next_step_handler(message, menu_keyboard_handler)
+    return
+
+'''
 @bot.callback_query_handler(func=lambda call: True)
 def menu_startup_keyboard_handler(call):
     btn = call.data
     print(btn)
     if startup_menu.get(btn) != None:
         print('ok')
-        startup_menu[btn][1](call.message)
+        startup_menu[btn][1](call.message)'''
 
+
+@bot.message_handler(commands=['menu'])
+def handle_menu(message):
+    text = "Выбери действие среди предложенных:"
+    bot.send_message(message.from_user.id, text=text, reply_markup=make_keyboard(handle_menu))
+    bot.register_next_step_handler(message, menu_keyboard_handler)
+    return
+     
+'''
 @bot.callback_query_handler(func=lambda call: True)
 def menu_keyboard_handler(call):
     btn = call.data
@@ -104,13 +137,14 @@ def menu_keyboard_handler(call):
         print('ok')
         menu[btn][1](call.message)
 
+
 @bot.callback_query_handler(func=lambda call: True)
 def menu_analize_keyboard_handler(call):
     btn = call.data
     print(btn)
     #if menu.get(btn) != None:
     #    print('ok')
-    #    menu[btn][1](call.message)
+    #    menu[btn][1](call.message)'''
 
    
 def get_vk_id(message):
@@ -133,7 +167,6 @@ def get_vk_id(message):
             
     bot.send_message(message.from_user.id, text = "Наслаждайся)")
           
-
 
 
 

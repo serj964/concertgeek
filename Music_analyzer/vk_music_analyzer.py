@@ -147,7 +147,7 @@ class vk_music_analyzer:
 
         list_d.sort(key = lambda i: i[1], reverse=True)
 
-        for i in range(math.ceil((len(list_d) ** 0.7))):
+        for i in range(math.ceil((len(list_d) ** 0.8))):
             lst.append(list_d[i][0])
             
         return lst
