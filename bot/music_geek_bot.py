@@ -46,11 +46,15 @@ def menu_reset_proc(message):
 
 
 def menu_analyze_spotify_proc():
-    bot.send_message(message.from_user.id, text = "хайп")
+    url = address+"?&tg_id="+str(message.from_user.id)+"&scope=spotify"
+    bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
 
 
 def menu_analyze_vk_proc():
-    bot.send_message(message.from_user.id, text = "хайп")
+    url = address+"?&tg_id="+str(message.from_user.id)+"&scope=vk"
+    bot.send_message(message.chat.id, "Для работы сервиса необходимо, чтобы у тебя был открытый аккаунт и открытые аудио!")
+    time.sleep(1)
+    bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
 
 
 def menu_change_service_proc(message):
@@ -59,17 +63,16 @@ def menu_change_service_proc(message):
 
 
 def menu_startup_vk_proc(message):
+    url = address+"?&tg_id="+str(message.from_user.id)+"&scope=vk"
     bot.send_message(message.chat.id, "Для работы сервиса необходимо, чтобы у тебя был открытый аккаунт и открытые аудио!")
-    time.sleep(3)
-    bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+address+"?&tg_id="+str(message.from_user.id)+"&scope=vk")
+    time.sleep(1)
+    bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     #bot.register_next_step_handler(message, get_vk_id)
     
 
 def menu_startup_spotify_proc(message):
-    #bot.send_message(message.chat.id, "Для работы сервиса необходимо, чтобы у вас был открытый аккаунт и открытые аудио")
-    #bot.send_message(message.chat.id, text = "Перейдите, пожалуйста, по ссылке для авторизации. "+address+"?&tg_id="+str(message.from_user.id)+"&scope=vk")
-    #bot.register_next_step_handler(message, get_vk_id)
-    bot.send_message(message.chat.id, text = "ХАЙп")
+    url = address+"?&tg_id="+str(message.from_user.id)+"&scope=spotify"
+    bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     
 
 def menu_abort_proc(message):

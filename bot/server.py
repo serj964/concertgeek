@@ -18,7 +18,7 @@ vk_oauth_config = {
     'client_secret' : "SsVRgiVPrle4mhxR3aOd",
     'responce_type' : "code",
     'scope' : "audio,email",
-    'url' : "{basic_url_for_code}?client_id={client_id}&v={v}&redirect_uri={redirect_url_base}{redirect_url_end}&grant_type={grant_type}&client_secret={client_secret}&scope={scope}&responce_type={responce_type}"
+    'url' : "{basic_url_for_code}?client_id={client_id}&v={v}&redirect_uri={redirect_url_base}{redirect_url_end}&grant_type={grant_type}&client_secret={client_secret}&scope={scope}&responce_type={responce_type}&state={state}"
 }
 
 
@@ -27,6 +27,7 @@ spotify_oauth_config = {
     'client_secret' : "c0d618591a494b34b5eb5cbba13574f6",
     'redirect_url_end' : "/spotify",
     'redirect_url_base' : "http://localhost:7000",
+    'scope' : "user-library-read, playlist-read-private, user-read-recently-played, user-read-playback-state, user-top-read, playlist-read-collaborative, user-read-currently-playing"
 }
 
 
@@ -59,8 +60,9 @@ def auth():
                                                 grant_type = vk_oauth_config['grant_type'],
                                                 client_secret = vk_oauth_config['client_secret'],
                                                 scope = vk_oauth_config['scope'],
-                                                responce_type = vk_oauth_config['responce_type'])
-        #print(redirect_url)
+                                                responce_type = vk_oauth_config['responce_type'],
+                                                state = tg_id)
+        print(redirect_url)
         return redirect(redirect_url)
 
 
@@ -69,18 +71,18 @@ def auth():
         auth_manager = SpotifyOAuth(client_id=spotify_oauth_config['client_id'],
                                                client_secret=spotify_oauth_config['client_secret'],
                                                redirect_uri=spotify_oauth_config['redirect_url_base']+spotify_oauth_config['redirect_url_end'],
-                                               scope="user-library-read", open_browser = True)
+                                               scope=spotify_oauth_config['scope'], open_browser = True)
         sp = spotipy.Spotify(auth_manager = auth_manager)
-        results = sp.current_user_saved_tracks()
-        print(results)
+        
+        results = sp.current_user()['id']
+        print(tg_id, results)
         return "good"
         
 
 @app.route(vk_oauth_config['redirect_url_end'])
 def auth_complete():
-    #tg_id = request.args.get('state')
+    tg_id = request.args.get('state')
     code = request.args.get('code') 
-    #print(code)
     vk_session = vk_api.VkApi(app_id=vk_oauth_config['client_id'], client_secret=vk_oauth_config['client_secret'], scope = '8')
 
     try:
@@ -92,7 +94,7 @@ def auth_complete():
 
     vk = vk_session.get_api()
     resp = vk.users.get(v=5.89, name_case="Nom")
-    print(resp)
+    print(tg_id, resp[0]['id'])
 
     #vk = vk_music_analyzer()
     #print(email)
