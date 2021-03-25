@@ -169,16 +169,27 @@ def get_vk_id(message):
     #print(answer)
     #bot.send_message(message.from_user.id, answer)
     con = Concerts()
-    con.load_concerts()
+    con.load_concerts(number_of_days=160)
     bot.send_message(message.from_user.id, text = "Вот, что мне удалось найти)")
     for i in range(len(artists)):
         concert = con.find_concerts(artists[i])
         if concert != []:
-            txt = "Концерт группы {title}\nОн пройдет {date}\nВот ссылка на мероприятие {url}".format(title = concert[0]['title'], date = concert[0]['date'], url = concert[0]['url'])
-            bot.send_message(message.from_user.id, text=txt)
+            try:
+                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей\nВот ссылка на мероприятие {url}".format(price = concert[0]['price'],
+                                      place = concert[0]['place'],
+                                      title = concert[0]['title'],
+                                      date = concert[0]['date'],
+                                      url = concert[0]['url'])
+                bot.send_message(message.from_user.id, text=txt)
+            except KeyError:
+                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие {url}".format(place = concert[0]['place'],
+                                      title = concert[0]['title'],
+                                      date = concert[0]['date'],
+                                      url = concert[0]['url'])
+                bot.send_message(message.from_user.id, text=txt)
             time.sleep(10)
-            
     bot.send_message(message.from_user.id, text = "Наслаждайся)")
+    print("done")
           
 
 
