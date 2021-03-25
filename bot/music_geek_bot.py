@@ -41,6 +41,17 @@ def menu_analize_spotify_proc():
 def menu_analize_vk_proc():
     return 1
 
+def menu_startup_vk_proc(message):
+    bot.send_message(message.chat.id, "Для работы сервиса необходимо, чтобы у вас был открытый аккаунт и открытые аудио")
+    bot.send_message(message.chat.id, text = "Перейдите, пожалуйста, по ссылке для авторизации. "+address+"?&tg_id="+str(message.from_user.id)+"&scope=vk")
+    bot.register_next_step_handler(message, get_vk_id)
+    return 1
+
+def menu_startup_spotify_proc():
+    return 1
+
+def menu_startup_abort():
+    return 1
 
 menu_analize = {
     'btn_menu_analize_vk' : ('Проанализировать медиатеку Vk', menu_analize_vk_proc),
@@ -54,12 +65,20 @@ menu = {
     'btn_menu_reset' : ('Стереть данные', menu_reset_proc)
 }
 
-
+startup_menu = {
+    'btn_menu_startup_vk' : ('Vk', menu_startup_vk_proc),
+    'btn_menu_startup_spotify' : ('Spotify', menu_startup_spotify_proc),
+    'btn_menu_startup_abort' : ('Потом', menu_startup_abort)
+}
 
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    bot.reply_to(message, f'Я MUSICGEEK бот. Приятно познакомиться. Я помогу тебе не пропустить концерт или любое другое мероприятие любимой группы. Напиши любое сообщение боту в любое время и он тебе пришлет варианты взаимодействия.')
+    bot.send_message(message.from_user.id, f'Я MUSICGEEK бот. Приятно познакомиться. Я помогу тебе не пропустить концерт или любое другое мероприятие любимой группы. Напиши любое сообщение боту в любое время и он тебе пришлет варианты взаимодействия.')
+    text = "Для работы нашего сервиса ннеобходимо проанализировать медиатеку. Выбери подходящий тебе вариант:"
+    bot.send_message(message.from_user.id, text = text, reply_markup=make_keyboard(startup_menu))
+    bot.register_next_step_handler(message, menu_startup_keyboard_handler)
+    return
 
 
 @bot.message_handler(content_types = ["text", "sticker", "pinned_message", "photo", "audio"])
@@ -68,14 +87,15 @@ def handle_menu(message):
     bot.send_message(message.from_user.id, text=text, reply_markup=make_keyboard(menu))
     bot.register_next_step_handler(message, menu_keyboard_handler)
     return
-
-
-@bot.message_handler(content_types = ['text'])
-def callback_worker(message):
-    if message.text == '/yes':
-        bot.send_message(message.from_user.id, text = "Перейдите, пожалуйста, по ссылке для авторизации. "+address+"?&tg_id="+str(message.from_user.id))
-        #bot.register_next_step_handler(message, get_vk_id)
         
+@bot.callback_query_handler(func=lambda call: True)
+def menu_startup_keyboard_handler(call):
+    btn = call.data
+    print(btn)
+    if startup_menu.get(btn) != None:
+        print('ok')
+        startup_menu[btn][1](call.message)
+
 @bot.callback_query_handler(func=lambda call: True)
 def menu_keyboard_handler(call):
     btn = call.data
@@ -92,7 +112,7 @@ def menu_analize_keyboard_handler(call):
     #    print('ok')
     #    menu[btn][1](call.message)
 
-"""        
+   
 def get_vk_id(message):
     vk_id = message.text
     print(message.from_user.id, vk_id) #add this pair to db
@@ -112,9 +132,7 @@ def get_vk_id(message):
             time.sleep(10)
             
     bot.send_message(message.from_user.id, text = "Наслаждайся)")
-        
-        
-"""    
+          
 
 
 

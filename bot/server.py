@@ -51,16 +51,16 @@ def auth():
     auth_scope = request.args.get('scope')
     if auth_scope == "vk": #vk
         redirect_url = vk_oauth_config['url'].format(
-            basic_url_for_code = vk_oauth_config['basic_url_for_code'],
-            client_id = vk_oauth_config['client_id'],
-            v = vk_oauth_config['v'],
-            redirect_url_base = vk_oauth_config['redirect_url_base'],
-            redirect_url_end = vk_oauth_config['redirect_url_end'],
-            grant_type = vk_oauth_config['grant_type'],
-            client_secret = vk_oauth_config['client_secret'],
-            scope = vk_oauth_config['scope'],
-            responce_type = vk_oauth_config['responce_type']
-        )
+                                                basic_url_for_code = vk_oauth_config['basic_url_for_code'],
+                                                client_id = vk_oauth_config['client_id'],
+                                                v = vk_oauth_config['v'],
+                                                redirect_url_base = vk_oauth_config['redirect_url_base'],
+                                                redirect_url_end = vk_oauth_config['redirect_url_end'],
+                                                grant_type = vk_oauth_config['grant_type'],
+                                                client_secret = vk_oauth_config['client_secret'],
+                                                scope = vk_oauth_config['scope'],
+                                                responce_type = vk_oauth_config['responce_type'])
+        #print(redirect_url)
         return redirect(redirect_url)
 
 
@@ -80,6 +80,7 @@ def auth():
 def auth_complete():
     #tg_id = request.args.get('state')
     code = request.args.get('code') 
+    #print(code)
     vk_session = vk_api.VkApi(app_id=vk_oauth_config['client_id'], client_secret=vk_oauth_config['client_secret'], scope = '8')
 
     try:
