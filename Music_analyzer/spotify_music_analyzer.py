@@ -8,6 +8,20 @@ class spotify_music_analyzer:
     def __init__(self):
         self.MEDIANA = 0.4
         self.WEIGHT = 0.125
+        self.SLOVAR = {'pasosh':'пасош',
+                       'buerak':'буерак', 
+                       'dzhizus': 'джизус', 
+                       'mukka': 'мукка', 
+                       'valentin strykalo': 'валентин стрыкало', 
+                       'zavtra broshu': 'завтра брошу',
+                       'pasha technique': 'паша техник',
+                       'leto v gorode': 'лето в городе',
+                       'nurminsky': 'нурминский',
+                       'svidaniye': 'свидание',
+                       'kasta': 'каста',
+                       'electroforez': 'электрофорез',
+                       'agatha christie': 'агата кристи',
+                       'kino': 'кино'}0
 
 
 
@@ -119,6 +133,16 @@ class spotify_music_analyzer:
             pass
     
     
+    #транслитерация для spotify
+    def __transliterate(self, lst):
+        for key in self.SLOVAR:
+            for i in range(len(lst)):
+                if lst[i] == key:
+                    lst[i] = self.SLOVAR[key]
+                    
+        return lst
+        
+    
     #возвращает наиболее "любимых" исполнителей
     def get_favourite_artists(self, sp):
         dic1 = self.__points_songs(sp)
@@ -141,7 +165,7 @@ class spotify_music_analyzer:
 
         list_d.sort(key = lambda i: i[1], reverse=True)
 
-        for i in range(math.ceil((len(list_d) ** 0.65))):
+        for i in range(math.ceil((len(list_d) ** 0.85))):
             lst.append(list_d[i][0])
         
-        return lst
+        return self.__transliterate(lst)
