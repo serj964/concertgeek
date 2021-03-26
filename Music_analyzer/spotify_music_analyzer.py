@@ -2,6 +2,7 @@ import re
 import math
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+from Music_analyzer.slovar import slovar
 
 
 class spotify_music_analyzer:
@@ -21,7 +22,7 @@ class spotify_music_analyzer:
                        'kasta': 'каста',
                        'electroforez': 'электрофорез',
                        'agatha christie': 'агата кристи',
-                       'kino': 'кино'}0
+                       'kino': 'кино'}
 
 
 
@@ -132,17 +133,7 @@ class spotify_music_analyzer:
         except ValueError:
             pass
     
-    
-    #транслитерация для spotify
-    def __transliterate(self, lst):
-        for key in self.SLOVAR:
-            for i in range(len(lst)):
-                if lst[i] == key:
-                    lst[i] = self.SLOVAR[key]
-                    
-        return lst
-        
-    
+            
     #возвращает наиболее "любимых" исполнителей
     def get_favourite_artists(self, sp):
         dic1 = self.__points_songs(sp)
@@ -168,4 +159,6 @@ class spotify_music_analyzer:
         for i in range(math.ceil((len(list_d) ** 0.85))):
             lst.append(list_d[i][0])
         
-        return self.__transliterate(lst)
+        final_lst = slovar()
+        
+        return final_lst.transliterate(lst)
