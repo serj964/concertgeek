@@ -9,21 +9,6 @@ class spotify_music_analyzer:
     def __init__(self):
         self.MEDIANA = 0.4
         self.WEIGHT = 0.125
-        self.SLOVAR = {'pasosh':'пасош',
-                       'buerak':'буерак', 
-                       'dzhizus': 'джизус', 
-                       'mukka': 'мукка', 
-                       'valentin strykalo': 'валентин стрыкало', 
-                       'zavtra broshu': 'завтра брошу',
-                       'pasha technique': 'паша техник',
-                       'leto v gorode': 'лето в городе',
-                       'nurminsky': 'нурминский',
-                       'svidaniye': 'свидание',
-                       'kasta': 'каста',
-                       'electroforez': 'электрофорез',
-                       'agatha christie': 'агата кристи',
-                       'kino': 'кино'}
-
 
 
     #проверяет исполнителей на наличие feat.
