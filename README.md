@@ -1,13 +1,13 @@
 # musicGEEK
 service for melomans
-#run bot (root derictory of the project):
+## run bot (root derictory of the project):
 python3 -m bot.music_geek_bot.py
 python3 -m bot.server.py
-#run db:
+## run db:
 docker-compose up -d
-#make migration:
+## make migration:
 yoyo apply migrations.sql
-#stop db:
+## stop db:
 docker stop MUSICGEEK_db
-#remove db:
+## remove db:
 docker rm MUSICGEEK_db
