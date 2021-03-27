@@ -40,9 +40,9 @@ def menu_manage_list_proc(message):
 def menu_send_concerts_proc():
     return 1'''
 
-
+'''
 def menu_reset_proc(message):
-    bot.send_message(message.chat.id, text = "хайп")
+    bot.send_message(message.chat.id, text = "хайп")'''
 
 
 def menu_analyze_spotify_proc():
@@ -74,10 +74,10 @@ def menu_startup_spotify_proc(message):
     url = address+"?&tg_id="+str(message.from_user.id)+"&scope=spotify"
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     
-
+'''
 def menu_abort_proc(message):
     text1 = "Тогда я просто побуду у тебя в телефоне)\n\n"
-    bot.send_message(message.chat.id, text = text1+TEXT)
+    bot.send_message(message.chat.id, text = text1+TEXT)'''
 
 def menu_startup_abort_proc(message):
     text1 = "Тогда я просто побуду у тебя в телефоне)\n\n"
@@ -93,10 +93,10 @@ menu_change_service = {
 
 menu = {
     'btn_menu_change_service' : ('Другой сервис', menu_change_service_proc), 
-    'btn_menu_manage_list' : ('Обновить музыку', menu_manage_list_proc),
+    'btn_menu_manage_list' : ('Обновить плейлист', menu_manage_list_proc),
     #'btn_menu_send_concerts' : ('Прислать рекомендованные концерты', menu_send_concerts_proc),
-    'btn_menu_reset' : ('Стереть', menu_reset_proc),
-    'btn_menu_abort' : ('Выберу потом', menu_abort_proc)
+    #'btn_menu_reset' : ('Стереть', menu_reset_proc)
+    #'btn_menu_abort' : ('Выберу потом', menu_abort_proc)
 }
 
 
@@ -120,10 +120,10 @@ def send_welcome(message):
 def handle_menu(message):
     text1 = "Это основное меню!\n\n"
     text2 = "Если у тебя появился новый стриминговый сервис и ты хочешь, чтобы я его проанализировал, нажми ДРУГОЙ СЕРВИС\n\n"
-    text3 = "Если твои вкусы изменились, ты добавил много нового и хочешь, чтобы я это учел, нажми ОБНОВИТЬ МУЗЫКУ\n\n"
-    text4 = "Если хочешь, чтобы твои данные были стерты, нажми СТЕРЕТЬ\n\n"
+    text3 = "Если твои вкусы изменились, ты добавил много нового и хочешь, чтобы я это учел, нажми ОБНОВИТЬ ПЛЕЙЛИСТ\n\n"
+    #text4 = "Если хочешь, чтобы твои данные были стерты, нажми СТЕРЕТЬ\n\n"
     text5 = "(если ты еще не отправлял мне свой плейлист, напиши /start)"
-    bot.send_message(message.from_user.id, text=text1+text2+text3+text4+text5, reply_markup=make_keyboard(menu))
+    bot.send_message(message.from_user.id, text=text1+text2+text3+text5, reply_markup=make_keyboard(menu))
     #bot.register_next_step_handler(message, menu_keyboard_handler)
 
 
