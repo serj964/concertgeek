@@ -2,6 +2,7 @@ import telebot
 import time
 from telebot import types
 import logging
+from pymongo import MongoClient
 #import random
 #from Music_analyzer.vk_music_analyzer import vk_music_analyzer
 #from Concerts.yandex_afisha_concerts import Concerts
@@ -12,6 +13,37 @@ bot = telebot.TeleBot(TOKEN)
 
 address = "127.0.0.1:8000/auth"
 TEXT = "(если ты еще не отправлял мне свой плейлист - напиши /start, если хочешь перейти в основное меню - напиши /menu)"
+
+client = MongoClient('localhost', 27017)
+db = client['MUSICGEEKdb']
+
+vk_collection = db['vk']
+spotify_collection = db['spotify']
+
+def get_vk_id_from_db(tg_id):
+    res = vk_collection.find_one({'_id' : tg_id})
+    if res != None:
+        vk_collection.delete_one({'_id' : tg_id})
+    return res
+
+def get_spotify_id_from_db(tg_id):
+    res = spotify_collection.find_one({'_id' : tg_id})
+    if res != None:
+        spotify_collection.delete_one({'_id' : tg_id})
+    return res
+
+
+def get_info_from_db(mode, tg_id):
+    while True:
+        if mode == 0:
+            res = get_vk_id_from_db(str(tg_id))
+            if res != None:
+                return res
+        elif mode == 1:
+            res = get_spotify_id_from_db(str(tg_id))
+            if res != None:
+               return res
+        time.sleep(5)
 
 def make_keyboard(d):
     keyboard = types.InlineKeyboardMarkup()
@@ -48,6 +80,7 @@ def menu_reset_proc(message):
 def menu_analyze_spotify_proc():
     url = address+"?&tg_id="+str(message.from_user.id)+"&scope=spotify"
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
+    print(get_info_from_db(1, message.from_user.id))
 
 
 def menu_analyze_vk_proc():
@@ -55,6 +88,7 @@ def menu_analyze_vk_proc():
     bot.send_message(message.chat.id, "Для работы сервиса необходимо, чтобы у тебя был открытый аккаунт и открытые аудио!")
     time.sleep(1)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
+    print(get_info_from_db(0, message.from_user.id))
 
 
 def menu_change_service_proc(message):
@@ -67,13 +101,13 @@ def menu_startup_vk_proc(message):
     bot.send_message(message.chat.id, "Для работы сервиса необходимо, чтобы у тебя был открытый аккаунт и открытые аудио!")
     time.sleep(1)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
-    #bot.register_next_step_handler(message, get_vk_id)
+    print(get_info_from_db(0, message.from_user.id))
     
 
 def menu_startup_spotify_proc(message):
     url = address+"?&tg_id="+str(message.from_user.id)+"&scope=spotify"
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
-    
+    print(get_info_from_db(1, message.from_user.id))
 
 def menu_abort_proc(message):
     text1 = "Тогда я просто побуду у тебя в телефоне)\n\n"
@@ -162,6 +196,32 @@ def menu_change_service_keyboard_handler(call):
         print('ok')
         menu_change_service[btn][1](call.message)
 
+def get_info_from_vk(vk_id):
+    vk = vk_music_analyzer()
+    bot.send_message(message.from_user.id, text = "Подожди, пока я подберу для тебя концерты)")
+    artists = vk.get_favourite_artists(vk_id)
+    con = Concerts()
+    con.load_concerts(number_of_days=160)
+    bot.send_message(message.from_user.id, text = "Вот, что мне удалось найти)")
+    for i in range(len(artists)):
+        concert = con.find_concerts(artists[i])
+        if concert != []:
+            try:
+                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей\nВот ссылка на мероприятие {url}".format(price = concert[0]['price'],
+                                      place = concert[0]['place'],
+                                      title = concert[0]['title'],
+                                      date = concert[0]['date'],
+                                      url = concert[0]['url'])
+                bot.send_message(message.from_user.id, text=txt)
+            except KeyError:
+                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие {url}".format(place = concert[0]['place'],
+                                      title = concert[0]['title'],
+                                      date = concert[0]['date'],
+                                      url = concert[0]['url'])
+                bot.send_message(message.from_user.id, text=txt)
+            time.sleep(10)
+    bot.send_message(message.from_user.id, text = "Наслаждайся)")
+    print("done")
    
 def get_vk_id(message):
     vk_id = message.text

@@ -5,7 +5,13 @@ from flask_session import Session
 from vk_api.audio import VkAudio
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+from pymongo import MongoClient
 
+client = MongoClient('localhost', 27017)
+db = client['MUSICGEEKdb']
+
+vk_collection = db['vk']
+spotify_collection = db['spotify']
 
 vk_oauth_config = {
     'client_id' : "7794879",
@@ -74,8 +80,13 @@ def auth():
                                                scope=spotify_oauth_config['scope'], open_browser = True)
         sp = spotipy.Spotify(auth_manager = auth_manager)
         
-        results = sp.current_user()['id']
-        print(tg_id, results)
+        spotify_id = sp.current_user()['id']
+        spotify_collection.insert_one({
+            '_id' : str(tg_id),
+            'spotify_id' : str(spotify_id)
+        })
+        #error process
+        print(tg_id, spotify_id)
         return "good"
         
 
@@ -94,7 +105,12 @@ def auth_complete():
 
     vk = vk_session.get_api()
     resp = vk.users.get(v=5.89, name_case="Nom")
-    print(tg_id, resp[0]['id'])
+    vk_id = resp[0]['id']
+    vk_collection.insert_one({
+            '_id' : str(tg_id),
+            'vk_id' : str(vk_id)
+        })
+    print(tg_id, vk_id)
 
     #vk = vk_music_analyzer()
     #print(email)
