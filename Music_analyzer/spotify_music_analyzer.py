@@ -2,13 +2,13 @@ import re
 import math
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+from Music_analyzer.slovar import slovar
 
 
 class spotify_music_analyzer:
     def __init__(self):
         self.MEDIANA = 0.4
         self.WEIGHT = 0.125
-
 
 
     #проверяет исполнителей на наличие feat.
@@ -118,7 +118,7 @@ class spotify_music_analyzer:
         except ValueError:
             pass
     
-    
+            
     #возвращает наиболее "любимых" исполнителей
     def get_favourite_artists(self, sp):
         dic1 = self.__points_songs(sp)
@@ -141,7 +141,9 @@ class spotify_music_analyzer:
 
         list_d.sort(key = lambda i: i[1], reverse=True)
 
-        for i in range(math.ceil((len(list_d) ** 0.65))):
+        for i in range(math.ceil((len(list_d) ** 0.85))):
             lst.append(list_d[i][0])
         
-        return lst
+        final_lst = slovar()
+        
+        return final_lst.transliterate(lst)
