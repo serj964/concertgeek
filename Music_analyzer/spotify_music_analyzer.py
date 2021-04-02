@@ -29,7 +29,6 @@ class spotify_music_analyzer:
         return lst
 
 
-
     #возвращает список песен, добавленных в "любимые треки" (по названию артистов)
     def __get_list_songs(self, sp):
         lst = []
@@ -117,6 +116,24 @@ class spotify_music_analyzer:
     
         except ValueError:
             pass
+        
+        
+    #уточнение очков с учетом того, что пользователь сейчас слушает
+    def __check_current_top(self, sp, dic):
+        lst = []
+        j = 0
+        while (j <= (len(lst) // 50)):
+            results = sp.current_user_top_artists(time_range='short_term', offset = 50*j, limit = 50)
+            for i, item in enumerate(results['items']):
+                lst.append(item['name'].lower())
+            j += 1
+        
+        for artist in dic.keys():
+            for j in range(len(lst)):
+                if lst[j] == artist:
+                    dic[artist] = dic[artist]* 1.25
+                    
+        return dic    
     
             
     #возвращает наиболее "любимых" исполнителей
@@ -137,8 +154,9 @@ class spotify_music_analyzer:
         for artist in result.keys():
             result[artist] = sum((result[artist]))
     
-        list_d = list(result.items())
-
+        new_result = self.__check_current_top(sp, result)
+        
+        list_d = list(new_result.items())
         list_d.sort(key = lambda i: i[1], reverse=True)
 
         for i in range(math.ceil((len(list_d) ** 0.85))):

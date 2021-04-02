@@ -5,6 +5,7 @@ import logging
 from pymongo import MongoClient
 #import random
 #from Music_analyzer.vk_music_analyzer import vk_music_analyzer
+#from Music_analyzer.spotify_music_analyzer import spotify_music_analyzer
 #from Concerts.yandex_afisha_concerts import Concerts
 
 TOKEN = '1787836132:AAE6ZA6psgjHfEM5nSP9Ti5ya2AWwuIKJl8'
