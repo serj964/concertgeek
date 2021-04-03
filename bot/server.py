@@ -130,4 +130,4 @@ def auth_complete():
 app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
-app.run(port = 8000)
+app.run(port = 8000, host="0.0.0.0")
