@@ -4,14 +4,14 @@ from telebot import types
 import logging
 from pymongo import MongoClient
 #import random
-#from Music_analyzer.vk_music_analyzer import vk_music_analyzer
-#from Concerts.yandex_afisha_concerts import Concerts
+from Music_analyzer.vk_music_analyzer import vk_music_analyzer
+from Concerts.yandex_afisha_concerts import Concerts
 
 TOKEN = '1787836132:AAE6ZA6psgjHfEM5nSP9Ti5ya2AWwuIKJl8'
 
 bot = telebot.TeleBot(TOKEN)
 
-address = "127.0.0.1:8000/auth"
+address = "http://91.203.193.57/auth"
 TEXT = "(если ты еще не отправлял мне свой плейлист - напиши /start, если хочешь перейти в основное меню - напиши /menu)"
 
 client = MongoClient('localhost', 27017)
@@ -102,6 +102,9 @@ def menu_startup_vk_proc(message):
     time.sleep(1)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     print(get_info_from_db(0, message.from_user.id))
+    vk_id = get_info_from_db(0, message.from_user.id)['vk_id']
+    return get_info_from_vk(vk_id)
+
     
 
 def menu_startup_spotify_proc(message):

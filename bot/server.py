@@ -16,7 +16,7 @@ spotify_collection = db['spotify']
 vk_oauth_config = {
     'client_id' : "7794879",
     'redirect_url_end' : "/auth_complete",
-    'redirect_url_base' : "http://localhost:8000",
+    'redirect_url_base' : "http://91.203.193.57",
     'v' : "5.130",
     'basic_url_for_token' : "https://oauth.vk.com/access_token",
     'basic_url_for_code' : "https://oauth.vk.com/authorize",
@@ -32,7 +32,7 @@ spotify_oauth_config = {
     'client_id' : "7e7a1e938e2640b6a029cf9ba3fa150b",
     'client_secret' : "c0d618591a494b34b5eb5cbba13574f6",
     'redirect_url_end' : "/spotify",
-    'redirect_url_base' : "http://localhost:7000",
+    'redirect_url_base' : "http://91.203.193.57:7000",
     'scope' : "user-library-read, playlist-read-private, user-read-recently-played, user-read-playback-state, user-top-read, playlist-read-collaborative, user-read-currently-playing"
 }
 
@@ -78,15 +78,18 @@ def auth():
                                                client_secret=spotify_oauth_config['client_secret'],
                                                redirect_uri=spotify_oauth_config['redirect_url_base']+spotify_oauth_config['redirect_url_end'],
                                                scope=spotify_oauth_config['scope'], open_browser = True)
-        sp = spotipy.Spotify(auth_manager = auth_manager)
+
         
-        spotify_id = sp.current_user()['id']
+        #sp = spotipy.Spotify(auth_manager = auth_manager)
+        #spotify_id = sp.current_user()['id']
+
+        token = auth_manager.get_access_token()['access_token']
         spotify_collection.insert_one({
             '_id' : str(tg_id),
-            'spotify_id' : str(spotify_id)
+            'spotify_access_token' : token
         })
         #error process
-        print(tg_id, spotify_id)
+        #print(tg_id, spotify_id)
         return "good"
         
 
