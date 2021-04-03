@@ -5,6 +5,7 @@ import logging
 from pymongo import MongoClient
 #import random
 from Music_analyzer.vk_music_analyzer import vk_music_analyzer
+from Music_analyzer.spotify_music_analyzer import spotify_music_analyzer
 from Concerts.yandex_afisha_concerts import Concerts
 
 TOKEN = '1787836132:AAE6ZA6psgjHfEM5nSP9Ti5ya2AWwuIKJl8'
@@ -89,6 +90,8 @@ def menu_analyze_vk_proc():
     time.sleep(1)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     print(get_info_from_db(0, message.from_user.id))
+    token = get_info_from_db(0, message.from_user.id)['spotify_access_token']
+    return get_info_from_spotify(token)
 
 
 def menu_change_service_proc(message):
@@ -196,6 +199,7 @@ def menu_change_service_keyboard_handler(call):
         print('ok')
         menu_change_service[btn][1](call.message)
 
+
 def get_info_from_vk(vk_id):
     vk = vk_music_analyzer()
     bot.send_message(message.from_user.id, text = "Подожди, пока я подберу для тебя концерты)")
@@ -223,6 +227,35 @@ def get_info_from_vk(vk_id):
     bot.send_message(message.from_user.id, text = "Наслаждайся)")
     print("done")
    
+    
+def get_info_from_spotify(token):
+    sp = spotify_music_analyzer()
+    bot.send_message(message.from_user.id, text = "Подожди, пока я подберу для тебя концерты)")
+    artists = sp.get_favourite_artists(token)
+    con = Concerts()
+    con.load_concerts(number_of_days=160)
+    bot.send_message(message.from_user.id, text = "Вот, что мне удалось найти)")
+    for i in range(len(artists)):
+        concert = con.find_concerts(artists[i])
+        if concert != []:
+            try:
+                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей\nВот ссылка на мероприятие {url}".format(price = concert[0]['price'],
+                                      place = concert[0]['place'],
+                                      title = concert[0]['title'],
+                                      date = concert[0]['date'],
+                                      url = concert[0]['url'])
+                bot.send_message(message.from_user.id, text=txt)
+            except KeyError:
+                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие {url}".format(place = concert[0]['place'],
+                                      title = concert[0]['title'],
+                                      date = concert[0]['date'],
+                                      url = concert[0]['url'])
+                bot.send_message(message.from_user.id, text=txt)
+            time.sleep(10)
+    bot.send_message(message.from_user.id, text = "Наслаждайся)")
+    print("done")    
+    
+    
 def get_vk_id(message):
     vk_id = message.text
     print(message.from_user.id, vk_id) #add this pair to db

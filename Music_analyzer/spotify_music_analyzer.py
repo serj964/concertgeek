@@ -137,7 +137,8 @@ class spotify_music_analyzer:
     
             
     #возвращает наиболее "любимых" исполнителей
-    def get_favourite_artists(self, sp):
+    def get_favourite_artists(self, token):
+        sp = spotipy.Spotify(token)
         dic1 = self.__points_songs(sp)
         dic2 = self.__points_playlists(sp)
         result = {}
