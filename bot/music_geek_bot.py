@@ -84,7 +84,7 @@ def menu_analyze_spotify_proc():
     db_object = get_info_from_db(1, message.from_user.id)
     print(db_object)
     token = db_object['spotify_access_token']
-    get_info_from_spotify(token, message)
+    get_info_from_spotify(message, token)
 
 
 def menu_analyze_vk_proc():
@@ -121,7 +121,7 @@ def menu_startup_spotify_proc(message):
     db_object = get_info_from_db(1, message.from_user.id)
     print(db_object)
     token = db_object['spotify_access_token']
-    get_info_from_spotify(token, message)
+    get_info_from_spotify(message, token)
 
 def menu_startup_abort_proc(message):
     text1 = "Тогда я просто побуду у тебя в телефоне)\n\n"
@@ -207,15 +207,13 @@ def menu_change_service_keyboard_handler(call):
         menu_change_service[btn][1](call.message)
 
 
-def get_info_from_vk(message, vk_id):
-    bot.send_message(message.from_user.id, text = "hhm")
-    print('hmm')
+def get_info_from_vk(message, vk_id): 
     vk = vk_music_analyzer()
-    bot.send_message(message.from_user.id, text = "Подожди, пока я подберу для тебя концерты)")
+    bot.send_message(message.chat.id, text = "Подожди, пока я подберу для тебя концерты)")
     artists = vk.get_favourite_artists(vk_id)
     con = Concerts()
     con.load_concerts(number_of_days=160)
-    bot.send_message(message.from_user.id, text = "Вот, что мне удалось найти)")
+    bot.send_message(message.chat.id, text = "Вот, что мне удалось найти)")
     for i in range(len(artists)):
         concert = con.find_concerts(artists[i])
         if concert != []:
@@ -225,26 +223,26 @@ def get_info_from_vk(message, vk_id):
                                       title = concert[0]['title'],
                                       date = concert[0]['date'],
                                       url = concert[0]['url'])
-                bot.send_message(message.from_user.id, text=txt)
+                bot.send_message(message.chat.id, text=txt)
             except KeyError:
                 txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие {url}".format(place = concert[0]['place'],
                                       title = concert[0]['title'],
                                       date = concert[0]['date'],
                                       url = concert[0]['url'])
-                bot.send_message(message.from_user.id, text=txt)
+                bot.send_message(message.chat.id, text=txt)
             time.sleep(10)
-    bot.send_message(message.from_user.id, text = "Наслаждайся)")
+    bot.send_message(message.chat.id, text = "Наслаждайся)")
     print("done")
     return
    
     
-def get_info_from_spotify(token, message):
+def get_info_from_spotify(message, token):
     sp = spotify_music_analyzer()
-    bot.send_message(message.from_user.id, text = "Подожди, пока я подберу для тебя концерты)")
+    bot.send_message(message.chat.id, text = "Подожди, пока я подберу для тебя концерты)")
     artists = sp.get_favourite_artists(token)
     con = Concerts()
     con.load_concerts(number_of_days=160)
-    bot.send_message(message.from_user.id, text = "Вот, что мне удалось найти)")
+    bot.send_message(message.chat.id, text = "Вот, что мне удалось найти)")
     for i in range(len(artists)):
         concert = con.find_concerts(artists[i])
         if concert != []:
@@ -254,15 +252,15 @@ def get_info_from_spotify(token, message):
                                       title = concert[0]['title'],
                                       date = concert[0]['date'],
                                       url = concert[0]['url'])
-                bot.send_message(message.from_user.id, text=txt)
+                bot.send_message(message.chat.id, text=txt)
             except KeyError:
                 txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие {url}".format(place = concert[0]['place'],
                                       title = concert[0]['title'],
                                       date = concert[0]['date'],
                                       url = concert[0]['url'])
-                bot.send_message(message.from_user.id, text=txt)
+                bot.send_message(message.chat.id, text=txt)
             time.sleep(10)
-    bot.send_message(message.from_user.id, text = "Наслаждайся)")
+    bot.send_message(message.chat.id, text = "Наслаждайся)")
     print("done")    
     
     

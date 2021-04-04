@@ -74,20 +74,23 @@ def auth():
 
 
     elif auth_scope == "spotify": #spotify
+        print("1")
         auth_manager = SpotifyOAuth(client_id=spotify_oauth_config['client_id'],
                                                client_secret=spotify_oauth_config['client_secret'],
-                                               redirect_uri=spotify_oauth_config['redirect_url_base']+spotify_oauth_config['redirect_url_end'],
-                                               scope=spotify_oauth_config['scope'], open_browser = True)
+                                               redirect_uri="http://0.0.0.0:7000"+spotify_oauth_config['redirect_url_end'],
+                                               scope=spotify_oauth_config['scope'], open_browser=True)
 
-        
-        #sp = spotipy.Spotify(auth_manager = auth_manager)
-        #spotify_id = sp.current_user()['id']
-
-        token = auth_manager.get_access_token()['access_token']
-        spotify_collection.insert_one({
-            '_id' : str(tg_id),
-            'spotify_access_token' : token
-        })
+        print("1")
+        sp = spotipy.Spotify(auth_manager = auth_manager)
+        spotify_id = sp.current_user()['id']
+        print(spotify_id)
+        print("1")
+        #token = auth_manager.get_access_token(as_dict = False)
+        #spotify_collection.insert_one({
+         #   '_id' : str(tg_id),
+        #    'spotify_access_token' : token
+        #})
+        print("1")
         #error process
         #print(tg_id, spotify_id)
         return "good"
