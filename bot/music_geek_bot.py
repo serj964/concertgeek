@@ -12,7 +12,7 @@ TOKEN = '1787836132:AAE6ZA6psgjHfEM5nSP9Ti5ya2AWwuIKJl8'
 
 bot = telebot.TeleBot(TOKEN)
 
-address = "http://91.203.193.57/auth"
+address = "http://91.203.193.57:8000/auth"
 TEXT = "(если ты еще не отправлял мне свой плейлист - напиши /start, если хочешь перейти в основное меню - напиши /menu)"
 
 client = MongoClient('localhost', 27017)
@@ -81,7 +81,10 @@ def menu_reset_proc(message):
 def menu_analyze_spotify_proc():
     url = address+"?&tg_id="+str(message.from_user.id)+"&scope=spotify"
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
-    print(get_info_from_db(1, message.from_user.id))
+    db_object = get_info_from_db(1, message.from_user.id)
+    print(db_object)
+    token = db_object['spotify_access_token']
+    get_info_from_spotify(token, message)
 
 
 def menu_analyze_vk_proc():
@@ -89,9 +92,10 @@ def menu_analyze_vk_proc():
     bot.send_message(message.chat.id, "Для работы сервиса необходимо, чтобы у тебя был открытый аккаунт и открытые аудио!")
     time.sleep(1)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
-    print(get_info_from_db(0, message.from_user.id))
-    token = get_info_from_db(0, message.from_user.id)['spotify_access_token']
-    return get_info_from_spotify(token)
+    db_object = get_info_from_db(0, message.from_user.id)
+    print(db_object)
+    vk_id = db_object['vk_id']
+    get_info_from_vk(message, vk_id)
 
 
 def menu_change_service_proc(message):
@@ -104,17 +108,20 @@ def menu_startup_vk_proc(message):
     bot.send_message(message.chat.id, "Для работы сервиса необходимо, чтобы у тебя был открытый аккаунт и открытые аудио!")
     time.sleep(1)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
-    print(get_info_from_db(0, message.from_user.id))
-    vk_id = get_info_from_db(0, message.from_user.id)['vk_id']
-    return get_info_from_vk(vk_id)
+    db_object = get_info_from_db(0, message.from_user.id)
+    print(db_object)
+    vk_id = db_object['vk_id']
+    get_info_from_vk(message, vk_id)
 
     
 
 def menu_startup_spotify_proc(message):
     url = address+"?&tg_id="+str(message.from_user.id)+"&scope=spotify"
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
-    print(get_info_from_db(1, message.from_user.id))
-
+    db_object = get_info_from_db(1, message.from_user.id)
+    print(db_object)
+    token = db_object['spotify_access_token']
+    get_info_from_spotify(token, message)
 
 def menu_startup_abort_proc(message):
     text1 = "Тогда я просто побуду у тебя в телефоне)\n\n"
@@ -200,7 +207,9 @@ def menu_change_service_keyboard_handler(call):
         menu_change_service[btn][1](call.message)
 
 
-def get_info_from_vk(vk_id):
+def get_info_from_vk(message, vk_id):
+    bot.send_message(message.from_user.id, text = "hhm")
+    print('hmm')
     vk = vk_music_analyzer()
     bot.send_message(message.from_user.id, text = "Подожди, пока я подберу для тебя концерты)")
     artists = vk.get_favourite_artists(vk_id)
@@ -226,9 +235,10 @@ def get_info_from_vk(vk_id):
             time.sleep(10)
     bot.send_message(message.from_user.id, text = "Наслаждайся)")
     print("done")
+    return
    
     
-def get_info_from_spotify(token):
+def get_info_from_spotify(token, message):
     sp = spotify_music_analyzer()
     bot.send_message(message.from_user.id, text = "Подожди, пока я подберу для тебя концерты)")
     artists = sp.get_favourite_artists(token)
@@ -286,6 +296,7 @@ def get_vk_id(message):
             time.sleep(10)
     bot.send_message(message.from_user.id, text = "Наслаждайся)")
     print("done")
+
           
 
 

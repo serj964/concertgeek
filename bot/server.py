@@ -16,7 +16,7 @@ spotify_collection = db['spotify']
 vk_oauth_config = {
     'client_id' : "7794879",
     'redirect_url_end' : "/auth_complete",
-    'redirect_url_base' : "http://91.203.193.57",
+    'redirect_url_base' : "http://91.203.193.57:8000",
     'v' : "5.130",
     'basic_url_for_token' : "https://oauth.vk.com/access_token",
     'basic_url_for_code' : "https://oauth.vk.com/authorize",
@@ -93,6 +93,10 @@ def auth():
         return "good"
         
 
+@app.route("/start")
+def start():
+    return "well done"
+
 @app.route(vk_oauth_config['redirect_url_end'])
 def auth_complete():
     tg_id = request.args.get('state')
@@ -130,4 +134,4 @@ def auth_complete():
 app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
-app.run(port = 8000, host="0.0.0.0")
+app.run(host="0.0.0.0", port = "8000")
