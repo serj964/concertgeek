@@ -241,7 +241,7 @@ def get_info_from_vk(message, vk_id):
         bot.send_message(message.chat.id, text = "Наслаждайся)")
         print("done")
     except Exception as e:
-        if str(e) == 'You don\'t have permissions to browse {}\'s albums'.format(user_id):
+        if str(e) == 'You don\'t have permissions to browse {}\'s albums'.format(vk_id):
             text1 = "Мне кажется, что у тебя все-таки закрытый аккаунт или закрытые аудио(\n"
             text2 = "Проверь это еще раз пожалуйста"
             bot.send_message(message.chat.id, text = text1 + text2)
