@@ -149,8 +149,7 @@ class spotify_music_analyzer:
                 if key in dic2: result.setdefault(key, []).extend(dic2[key])
                 
         except AttributeError:
-            result = dic1
-    
+            result = dic1    
     
         for artist in result.keys():
             result[artist] = sum((result[artist]))

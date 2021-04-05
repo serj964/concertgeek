@@ -118,7 +118,7 @@ class vk_music_analyzer:
     def get_favourite_artists(self, user_id):
         LOGIN = '+79060733528'
         user_id = int(user_id)
-        #логинится 
+
         vk_session = vk_api.VkApi(LOGIN, password)
         try:
             vk_session.auth()
@@ -138,8 +138,7 @@ class vk_music_analyzer:
                     
         except AttributeError:
             result = dic1
-        
-        
+                
         for artist in result.keys():
             result[artist] = sum((result[artist]))
         

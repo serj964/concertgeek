@@ -23,11 +23,13 @@ db = client['MUSICGEEKdb']
 vk_collection = db['vk']
 spotify_collection = db['spotify']
 
+
 def get_vk_id_from_db(tg_id):
     res = vk_collection.find_one({'_id' : tg_id})
     if res != None:
         vk_collection.delete_one({'_id' : tg_id})
     return res
+
 
 def get_spotify_id_from_db(tg_id):
     res = spotify_collection.find_one({'_id' : tg_id})
@@ -47,6 +49,7 @@ def get_info_from_db(mode, tg_id):
             if res != None:
                return res
         time.sleep(5)
+
 
 def make_keyboard(d):
     keyboard = types.InlineKeyboardMarkup()
@@ -107,7 +110,7 @@ def menu_change_service_proc(message):
 
 def menu_startup_vk_proc(message):
     url = vk_oauth_url+"?&tg_id="+str(message.from_user.id)
-    bot.send_message(message.chat.id, "Для работы сервиса необходимо, чтобы у тебя был открытый аккаунт и открытые аудио!")
+    bot.send_message(message.chat.id, "Проверь пожалуйста, что у тебя открытый аккаунт и открытые аудио!")
     time.sleep(1)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     db_object = get_info_from_db(0, message.from_user.id)
@@ -124,6 +127,7 @@ def menu_startup_spotify_proc(message):
     print(db_object)
     token = db_object['spotify_access_token']
     get_info_from_spotify(message, token)
+
 
 def menu_startup_abort_proc(message):
     text1 = "Тогда я просто побуду у тебя в телефоне)\n\n"
@@ -210,32 +214,39 @@ def menu_change_service_keyboard_handler(call):
 
 
 def get_info_from_vk(message, vk_id): 
-    vk = vk_music_analyzer()
-    bot.send_message(message.chat.id, text = "Подожди, пока я подберу для тебя концерты)")
-    artists = vk.get_favourite_artists(vk_id)
-    con = Concerts()
-    con.load_concerts(number_of_days=160)
-    bot.send_message(message.chat.id, text = "Вот, что мне удалось найти)")
-    for i in range(len(artists)):
-        concert = con.find_concerts(artists[i])
-        if concert != []:
-            try:
-                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей\nВот ссылка на мероприятие {url}".format(price = concert[0]['price'],
-                                      place = concert[0]['place'],
-                                      title = concert[0]['title'],
-                                      date = concert[0]['date'],
-                                      url = concert[0]['url'])
-                bot.send_message(message.chat.id, text=txt)
-            except KeyError:
-                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие {url}".format(place = concert[0]['place'],
-                                      title = concert[0]['title'],
-                                      date = concert[0]['date'],
-                                      url = concert[0]['url'])
-                bot.send_message(message.chat.id, text=txt)
-            time.sleep(10)
-    bot.send_message(message.chat.id, text = "Наслаждайся)")
-    print("done")
-    return
+    try:    
+        vk = vk_music_analyzer()
+        bot.send_message(message.chat.id, text = "Подожди, пока я подберу для тебя концерты)")
+        artists = vk.get_favourite_artists(vk_id)
+        con = Concerts()
+        con.load_concerts(number_of_days=160)
+        bot.send_message(message.chat.id, text = "Вот, что мне удалось найти)")
+        for i in range(len(artists)):
+            concert = con.find_concerts(artists[i])
+            if concert != []:
+                try:
+                    txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей\nВот ссылка на мероприятие {url}".format(price = concert[0]['price'],
+                                          place = concert[0]['place'],
+                                          title = concert[0]['title'],
+                                          date = concert[0]['date'],
+                                          url = concert[0]['url'])
+                    bot.send_message(message.chat.id, text=txt)
+                except KeyError:
+                    txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие {url}".format(place = concert[0]['place'],
+                                          title = concert[0]['title'],
+                                          date = concert[0]['date'],
+                                          url = concert[0]['url'])
+                    bot.send_message(message.chat.id, text=txt)
+                time.sleep(10)
+        bot.send_message(message.chat.id, text = "Наслаждайся)")
+        print("done")
+    except Exception as e:
+        if str(e) == 'You don\'t have permissions to browse {}\'s albums'.format(user_id):
+            text1 = "Мне кажется, что у тебя все-таки закрытый аккаунт или закрытые аудио(\n"
+            text2 = "Проверь это еще раз пожалуйста"
+            bot.send_message(message.chat.id, text = text1 + text2)
+        else:
+            bot.send_message(message.chat.id, text = "Что-то тут не так! хм-хм")
    
     
 def get_info_from_spotify(message, token):
