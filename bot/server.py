@@ -94,7 +94,7 @@ def spotify_oauth():
     if request.args.get("code"):
         # Step 3. Being redirected from Spotify auth page
         tok = auth_manager.get_access_token(request.args.get("code"), as_dict = False)
-        vk_collection.insert_one({
+        spotify_collection.insert_one({
             '_id' : str(tg_id),
             'spotify_access_token' : str(tok)
         })
