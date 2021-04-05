@@ -19,7 +19,7 @@ vk_oauth_config = {
     'v' : "5.130",
     'basic_url_for_token' : "https://oauth.vk.com/access_token",
     'basic_url_for_code' : "https://oauth.vk.com/authorize",
-    'oauth_startpoint' : "/vk_oauth"
+    'oauth_startpoint' : "/vk_oauth",
     'grant_type' : "client_credentials",
     'client_secret' : "SsVRgiVPrle4mhxR3aOd",
     'responce_type' : "code",
