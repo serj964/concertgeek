@@ -12,7 +12,9 @@ TOKEN = '1787836132:AAE6ZA6psgjHfEM5nSP9Ti5ya2AWwuIKJl8'
 
 bot = telebot.TeleBot(TOKEN)
 
-address = "http://91.203.193.57:8000/auth"
+vk_oauth_url = "http://91.203.193.57:8000/vk_oauth"
+spotify_oauth_url = "http://91.203.193.57:8000/spotify_oauth"
+
 TEXT = "(если ты еще не отправлял мне свой плейлист - напиши /start, если хочешь перейти в основное меню - напиши /menu)"
 
 client = MongoClient('localhost', 27017)
@@ -79,7 +81,7 @@ def menu_reset_proc(message):
 
 
 def menu_analyze_spotify_proc():
-    url = address+"?&tg_id="+str(message.from_user.id)+"&scope=spotify"
+    url = spotify_oauth_url+"?&tg_id="+str(message.from_user.id)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     db_object = get_info_from_db(1, message.from_user.id)
     print(db_object)
@@ -88,7 +90,7 @@ def menu_analyze_spotify_proc():
 
 
 def menu_analyze_vk_proc():
-    url = address+"?&tg_id="+str(message.from_user.id)+"&scope=vk"
+    url = spotify_oauth_url+"?&tg_id="+str(message.from_user.id)
     bot.send_message(message.chat.id, "Для работы сервиса необходимо, чтобы у тебя был открытый аккаунт и открытые аудио!")
     time.sleep(1)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
@@ -104,7 +106,7 @@ def menu_change_service_proc(message):
 
 
 def menu_startup_vk_proc(message):
-    url = address+"?&tg_id="+str(message.from_user.id)+"&scope=vk"
+    url = vk_oauth_url+"?&tg_id="+str(message.from_user.id)
     bot.send_message(message.chat.id, "Для работы сервиса необходимо, чтобы у тебя был открытый аккаунт и открытые аудио!")
     time.sleep(1)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
@@ -116,7 +118,7 @@ def menu_startup_vk_proc(message):
     
 
 def menu_startup_spotify_proc(message):
-    url = address+"?&tg_id="+str(message.from_user.id)+"&scope=spotify"
+    url = spotify_oauth_url+"?&tg_id="+str(message.from_user.id)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     db_object = get_info_from_db(1, message.from_user.id)
     print(db_object)
