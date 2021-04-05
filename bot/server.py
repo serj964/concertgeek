@@ -6,6 +6,7 @@ from vk_api.audio import VkAudio
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from pymongo import MongoClient
+import uuid
 
 client = MongoClient('localhost', 27017)
 db = client['MUSICGEEKdb']
