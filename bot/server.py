@@ -78,12 +78,12 @@ def vk_oauth_start():
 
 @app.route(spotify_oauth_config['oauth_startpoint'])
 def spotify_oauth():
-    tg_id = ""
     if not session.get('uuid'):
         # Step 1. Visitor is unknown, give random ID
         session['uuid'] = str(uuid.uuid4())
     if request.args.get('tg_id'):
         tg_id = request.args.get('tg_id')
+        session['tg_id'] = tg_id
 
 
     cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
@@ -94,11 +94,12 @@ def spotify_oauth():
     if request.args.get("code"):
         # Step 3. Being redirected from Spotify auth page
         tok = auth_manager.get_access_token(request.args.get("code"), as_dict = False)
+        tg_id = session.get('tg_id')
+        print(tg_id, tok)
         spotify_collection.insert_one({
             '_id' : str(tg_id),
             'spotify_access_token' : str(tok)
         })
-        print(tg_id, tok)
         try:
             # Remove the CACHE file (.cache-test) so that a new user can authorize.
             os.remove(session_cache_path())
