@@ -75,7 +75,7 @@ def vk_oauth_start():
     return redirect(redirect_url)
 
 
-@app.route(spotify_oauth_config['oauth_endpoint'])
+@app.route(spotify_oauth_config['oauth_startpoint'])
 def spotify_oauth():
     if not session.get('uuid'):
         # Step 1. Visitor is unknown, give random ID
