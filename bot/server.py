@@ -33,7 +33,7 @@ spotify_oauth_config = {
     'client_secret' : "c0d618591a494b34b5eb5cbba13574f6",
     'redirect_url_end' : "/spotify_oauth",
     'oauth_startpoint' : "/spotify_oauth"
-    'redirect_url_base' : "http://91.203.193.57:7000",
+    'redirect_url_base' : "http://91.203.193.57:8000",
     'scope' : "user-library-read, playlist-read-private, user-read-recently-played, user-read-playback-state, user-top-read, playlist-read-collaborative, user-read-currently-playing"
 }
 
