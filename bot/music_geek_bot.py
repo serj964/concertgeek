@@ -3,25 +3,41 @@ import time
 from telebot import types
 import logging
 from pymongo import MongoClient
-#import random
 from Music_analyzer.vk_music_analyzer import vk_music_analyzer
 from Music_analyzer.spotify_music_analyzer import spotify_music_analyzer
 from Concerts.yandex_afisha_concerts import Concerts
+import json
 
-TOKEN = '1787836132:AAE6ZA6psgjHfEM5nSP9Ti5ya2AWwuIKJl8'
 
+CONFIG_FILE = './bot/config.json'
+
+with open(CONFIG_FILE) as conf:
+    config = json.load(conf)
+
+bot_config = config['bot_config']
+oauth_config = config["oauth_config"]
+server_config = config["server_config"]
+db_config = config["db_config"]
+
+client = MongoClient(db_config['address'], db_config['port'])
+db = client[db_config['name']]
+vk_collection = db[db_config['collections']['vk_collection']]
+spotify_collection = db[db_config['collections']['spotify_collection']]
+
+vk_oauth_config = oauth_config['vk_oauth_config']
+spotify_oauth_config = oauth_config['spotify_oauth_config']
+
+
+
+
+
+TOKEN = bot_config['token']
 bot = telebot.TeleBot(TOKEN)
 
-vk_oauth_url = "http://91.203.193.57:8000/vk_oauth"
-spotify_oauth_url = "http://91.203.193.57:8000/spotify_oauth"
+vk_oauth_url = vk_oauth_config['redirect_url_base']+vk_oauth_config['oauth_startpoint']
+spotify_oauth_url = spotify_oauth_config['redirect_url_base']+spotify_oauth_config['oauth_startpoint']
 
 TEXT = "(если ты еще не отправлял мне свой плейлист - напиши /start, если хочешь перейти в основное меню - напиши /menu)"
-
-client = MongoClient('localhost', 27017)
-db = client['MUSICGEEKdb']
-
-vk_collection = db['vk']
-spotify_collection = db['spotify']
 
 
 def get_vk_id_from_db(tg_id):

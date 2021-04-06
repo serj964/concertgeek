@@ -7,51 +7,36 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from pymongo import MongoClient
 import uuid
-
-client = MongoClient('localhost', 27017)
-db = client['MUSICGEEKdb']
-vk_collection = db['vk']
-spotify_collection = db['spotify']
-
-vk_oauth_config = {
-    'client_id' : "7794879",
-    'redirect_url_end' : "/vk_oauth_complete",
-    'redirect_url_base' : "http://91.203.193.57:8000",
-    'v' : "5.130",
-    'basic_url_for_token' : "https://oauth.vk.com/access_token",
-    'basic_url_for_code' : "https://oauth.vk.com/authorize",
-    'oauth_startpoint' : "/vk_oauth",
-    'grant_type' : "client_credentials",
-    'client_secret' : "SsVRgiVPrle4mhxR3aOd",
-    'responce_type' : "code",
-    'scope' : "audio,email",
-    'url' : "{basic_url_for_code}?client_id={client_id}&v={v}&redirect_uri={redirect_url_base}{redirect_url_end}&grant_type={grant_type}&client_secret={client_secret}&scope={scope}&responce_type={responce_type}&state={state}"
-}
+import json
 
 
-spotify_oauth_config = {
-    'client_id' : "7e7a1e938e2640b6a029cf9ba3fa150b",
-    'client_secret' : "c0d618591a494b34b5eb5cbba13574f6",
-    'redirect_url_end' : "/spotify_oauth",
-    'oauth_startpoint' : "/spotify_oauth",
-    'redirect_url_base' : "http://91.203.193.57:8000",
-    'scope' : "user-library-read, playlist-read-private, user-read-recently-played, user-read-playback-state, user-top-read, playlist-read-collaborative, user-read-currently-playing"
-}
+CONFIG_FILE = './bot/config.json'
 
+with open(CONFIG_FILE) as conf:
+    config = json.load(conf)
 
-NAME = 'tg_id'
+oauth_config = config["oauth_config"]
+server_config = config["server_config"]
+db_config = config["db_config"]
 
-url2 = "{basic_url_for_token}?client_id={client_id}&redirect_uri={redirect_url_base}{redirect_url_end}&client_secret={client_secret}&code="
+client = MongoClient(db_config['address'], db_config['port'])
+db = client[db_config['name']]
+vk_collection = db[db_config['collections']['vk_collection']]
+spotify_collection = db[db_config['collections']['spotify_collection']]
 
+vk_oauth_config = oauth_config['vk_oauth_config']
+spotify_oauth_config = oauth_config['spotify_oauth_config']
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(64)
-app.config['SESSION_TYPE'] = 'filesystem'
-app.config['SESSION_FILE_DIR'] = './.flask_session/'
+app.config['SESSION_TYPE'] = server_config['session_type']
+app.config['SESSION_FILE_DIR'] = server_config['session_file_dir']
 Session(app)
 
-caches_folder = './.spotify_caches/'
+caches_folder = server_config['caches_folder']
+
+
 if not os.path.exists(caches_folder):
     os.makedirs(caches_folder)
 
@@ -89,7 +74,10 @@ def spotify_oauth():
     cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
     auth_manager = spotipy.oauth2.SpotifyOAuth(scope='user-library-read, playlist-read-private, user-read-recently-played, user-read-playback-state, user-top-read, playlist-read-collaborative, user-read-currently-playing',
                                                 cache_handler=cache_handler, 
-                                                show_dialog=True)
+                                                show_dialog=True, 
+                                                client_secret=spotify_oauth_config['client_secret'],
+                                                client_id=spotify_oauth_config['client_id'],
+                                                redirect_uri=spotify_oauth_config['redirect_url_base']+spotify_oauth_config['redirect_url_end'])
 
     if request.args.get("code"):
         # Step 3. Being redirected from Spotify auth page
@@ -143,4 +131,4 @@ def vk_oauth_complete():
     return "good"
 
 
-app.run(host="0.0.0.0", port = "8000", threaded=True)
+app.run(host="0.0.0.0", port = server_config['port'], threaded=True)
