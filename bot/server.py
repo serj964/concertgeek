@@ -78,27 +78,24 @@ def spotify_oauth():
                                                 client_id=spotify_oauth_config['client_id'],
                                                 redirect_uri=spotify_oauth_config['redirect_url_base']+spotify_oauth_config['redirect_url_end'])
 
-    try:
-        if request.args.get("code"):
-            # Step 3. Being redirected from Spotify auth page
-            tok = auth_manager.get_access_token(request.args.get("code"), as_dict = False)
-            tg_id = session.get('tg_id')
-            print(tg_id, tok)
-            spotify_collection.insert_one({
-                '_id' : str(tg_id),
-                'spotify_access_token' : str(tok)
-            })
-            try:
-                # Remove the CACHE file (.cache-test) so that a new user can authorize.
-                os.remove(session_cache_path())
-                session.clear()
-            except OSError as e:
-                print ("Error: %s - %s." % (e.filename, e.strerror))
-            return '<p style = "font-family:courier,arial,helvetica;">good, now wait for your concerts in telegram</p>'
-        elif not request.args.get("code"):
-            print("nope")
-    except:
-        pass
+    if request.args.get("code"):
+        # Step 3. Being redirected from Spotify auth page
+        tok = auth_manager.get_access_token(request.args.get("code"), as_dict = False)
+        tg_id = session.get('tg_id')
+        print(tg_id, tok)
+        spotify_collection.insert_one({
+            '_id' : str(tg_id),
+            'spotify_access_token' : str(tok)
+        })
+        try:
+            # Remove the CACHE file (.cache-test) so that a new user can authorize.
+            os.remove(session_cache_path())
+            session.clear()
+        except OSError as e:
+            print ("Error: %s - %s." % (e.filename, e.strerror))
+        return '<p style = "font-family:courier,arial,helvetica;">good, now wait for your concerts in telegram</p>'
+    elif not request.args.get("code"):
+        print("nope")
     
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
         # Step 2. Display sign in link when no token
