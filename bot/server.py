@@ -2,9 +2,8 @@ from flask import Flask, session, request, redirect
 import vk_api, datetime
 import os
 from flask_session import Session
-from vk_api.audio import VkAudio
 import spotipy
-from spotipy.oauth2 import SpotifyOAuth
+#from spotipy.oauth2 import SpotifyOAuth
 from pymongo import MongoClient
 import uuid
 import json
@@ -100,7 +99,7 @@ def spotify_oauth():
         # Step 2. Display sign in link when no token
         auth_url = auth_manager.get_authorize_url()
         return redirect(auth_url)
-    return "good"
+    return "good, now wait for your concerts in telegram"
         
 
 @app.route("/start")
@@ -128,7 +127,7 @@ def vk_oauth_complete():
             'vk_id' : str(vk_id)
         })
     print(tg_id, vk_id)
-    return "good"
+    return "good, now wait for your concerts in telegram"
 
 
 app.run(host="0.0.0.0", port = server_config['port'], threaded=True)

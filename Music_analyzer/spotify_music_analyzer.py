@@ -1,7 +1,7 @@
 import re
 import math
 import spotipy
-from spotipy.oauth2 import SpotifyOAuth
+#from spotipy.oauth2 import SpotifyOAuth
 from Music_analyzer.slovar import slovar
 
 

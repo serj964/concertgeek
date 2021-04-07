@@ -259,7 +259,7 @@ def get_info_from_vk(message, vk_id):
     except Exception as e:
         if str(e) == 'You don\'t have permissions to browse {}\'s albums'.format(vk_id):
             text1 = "Мне кажется, что у тебя все-таки закрытый аккаунт или закрытые аудио(\n"
-            text2 = "Проверь это еще раз пожалуйста"
+            text2 = "Проверь это еще раз пожалуйста!"
             bot.send_message(message.chat.id, text = text1 + text2)
         else:
             bot.send_message(message.chat.id, text = "Что-то тут не так! хм-хм")
@@ -291,41 +291,7 @@ def get_info_from_spotify(message, token):
             time.sleep(10)
     bot.send_message(message.chat.id, text = "Наслаждайся)")
     print("done")    
-    
-    
-def get_vk_id(message):
-    vk_id = message.text
-    print(message.from_user.id, vk_id) #add this pair to db
-    vk = vk_music_analyzer()
-    bot.send_message(message.from_user.id, text = "Подожди, пока я подберу для тебя концерты)")
-    artists = vk.get_favourite_artists(vk_id)
-    #print(answer)
-    #bot.send_message(message.from_user.id, answer)
-    con = Concerts()
-    con.load_concerts(number_of_days=160)
-    bot.send_message(message.from_user.id, text = "Вот, что мне удалось найти)")
-    for i in range(len(artists)):
-        concert = con.find_concerts(artists[i])
-        if concert != []:
-            try:
-                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей\nВот ссылка на мероприятие {url}".format(price = concert[0]['price'],
-                                      place = concert[0]['place'],
-                                      title = concert[0]['title'],
-                                      date = concert[0]['date'],
-                                      url = concert[0]['url'])
-                bot.send_message(message.from_user.id, text=txt)
-            except KeyError:
-                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие {url}".format(place = concert[0]['place'],
-                                      title = concert[0]['title'],
-                                      date = concert[0]['date'],
-                                      url = concert[0]['url'])
-                bot.send_message(message.from_user.id, text=txt)
-            time.sleep(10)
-    bot.send_message(message.from_user.id, text = "Наслаждайся)")
-    print("done")
-
-          
-
+      
 
 #logger = telebot.logger
 #telebot.logger.setLevel(logging.DEBUG)
