@@ -99,7 +99,7 @@ def spotify_oauth():
         # Step 2. Display sign in link when no token
         auth_url = auth_manager.get_authorize_url()
         return redirect(auth_url)
-    return '<p style = "font-family:courier,arial,helvetica;">, now wait for your concerts in telegram</p>good'
+    return '<p style = "font-family:courier,arial,helvetica;">good, now wait for your concerts in telegram</p>'
         
 
 @app.route("/start")
@@ -127,7 +127,7 @@ def vk_oauth_complete():
             'vk_id' : str(vk_id)
         })
     print(tg_id, vk_id)
-    return "good, now wait for your concerts in telegram"
+    return '<p style = "font-family:courier,arial,helvetica;">good, now wait for your concerts in telegram</p>'
 
 
 app.run(host="0.0.0.0", port = server_config['port'], threaded=True)
