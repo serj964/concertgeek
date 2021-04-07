@@ -232,11 +232,11 @@ def menu_change_service_keyboard_handler(call):
 def get_info_from_vk(message, vk_id): 
     try:    
         vk = vk_music_analyzer()
-        bot.send_message(message.chat.id, text = "Подожди, пока я подберу для тебя концерты)")
+        bot.send_message(message.chat.id, text = "Подожди несколько минут, пока я подберу для тебя концерты)")
         artists = vk.get_favourite_artists(vk_id)
         con = Concerts()
         con.load_concerts(number_of_days=160)
-        bot.send_message(message.chat.id, text = "Вот, что мне удалось найти)")
+        bot.send_message(message.chat.id, text = "Вот, что мне удалось найти:")
         for i in range(len(artists)):
             concert = con.find_concerts(artists[i])
             if concert != []:
@@ -261,8 +261,10 @@ def get_info_from_vk(message, vk_id):
             text1 = "Мне кажется, что у тебя все-таки закрытый аккаунт или закрытые аудио(\n"
             text2 = "Проверь это еще раз пожалуйста!"
             bot.send_message(message.chat.id, text = text1 + text2)
+            print("closed account")
         else:
             bot.send_message(message.chat.id, text = "Что-то тут не так! хм-хм")
+            print("something happen")
    
     
 def get_info_from_spotify(message, token):
