@@ -34,8 +34,8 @@
             "url" : "{basic_url_for_code}?client_id={client_id}&v={v}&redirect_uri={redirect_url_base}{redirect_url_end}&grant_type={grant_type}&client_secret={client_secret}&scope={scope}&responce_type={responce_type}&state={state}"
         },
         "spotify_oauth_config" : {
-            "client_id" : "7e7a1e938e2640b6a029cf9ba3fa150b",
-            "client_secret" : "c0d618591a494b34b5eb5cbba13574f6",
+            "client_id" : "9145b67aed2d4c0091026c1491a7b24b",
+            "client_secret" : "c8bbaab611504a988ad447f213c1069d",
             "redirect_url_end" : "/spotify_oauth",
             "oauth_startpoint" : "/spotify_oauth",
             "redirect_url_base" : "http://91.203.193.57:8000",

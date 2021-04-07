@@ -130,6 +130,4 @@ def vk_oauth_complete():
     return "good, now wait for your concerts in telegram"
 
 
-
-print(spotify_oauth_config['redirect_url_base']+spotify_oauth_config['redirect_url_end'])
 app.run(host="0.0.0.0", port = server_config['port'], threaded=True)
