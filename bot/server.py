@@ -99,7 +99,7 @@ def spotify_oauth():
         # Step 2. Display sign in link when no token
         auth_url = auth_manager.get_authorize_url()
         return redirect(auth_url)
-    return "good, now wait for your concerts in telegram"
+    return '<p style = "font-family:courier,arial,helvetica;">, now wait for your concerts in telegram</p>good'
         
 
 @app.route("/start")
