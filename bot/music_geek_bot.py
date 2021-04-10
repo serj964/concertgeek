@@ -100,20 +100,20 @@ def menu_reset_proc(message):
 
 
 def menu_analyze_spotify_proc():
-    url = spotify_oauth_url+"?&tg_id="+str(message.from_user.id)
+    url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
-    db_object = get_info_from_db(1, message.from_user.id)
+    db_object = get_info_from_db(1, message.chat.id)
     print(db_object)
     token = db_object['spotify_access_token']
     get_info_from_spotify(message, token)
 
 
 def menu_analyze_vk_proc():
-    url = spotify_oauth_url+"?&tg_id="+str(message.from_user.id)
+    url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     bot.send_message(message.chat.id, "Для работы сервиса необходимо, чтобы у тебя был открытый аккаунт и открытые аудио!")
     time.sleep(1)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
-    db_object = get_info_from_db(0, message.from_user.id)
+    db_object = get_info_from_db(0, message.chat.id)
     print(db_object)
     vk_id = db_object['vk_id']
     get_info_from_vk(message, vk_id)
@@ -121,15 +121,15 @@ def menu_analyze_vk_proc():
 
 def menu_change_service_proc(message):
     txt = "хайп"
-    bot.send_message(message.from_user.id, text = txt, reply_markup=make_keyboard(menu_change_service))
+    bot.send_message(message.chat.id, text = txt, reply_markup=make_keyboard(menu_change_service))
 
 
 def menu_startup_vk_proc(message):
-    url = vk_oauth_url+"?&tg_id="+str(message.from_user.id)
+    url = vk_oauth_url+"?&tg_id="+str(message.chat.id)
     bot.send_message(message.chat.id, "Проверь пожалуйста, что у тебя открытый аккаунт и открытые аудио!")
     time.sleep(1)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
-    db_object = get_info_from_db(0, message.from_user.id)
+    db_object = get_info_from_db(0, message.chat.id)
     print(db_object)
     vk_id = db_object['vk_id']
     get_info_from_vk(message, vk_id)
@@ -137,9 +137,9 @@ def menu_startup_vk_proc(message):
     
 
 def menu_startup_spotify_proc(message):
-    url = spotify_oauth_url+"?&tg_id="+str(message.from_user.id)
+    url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
-    db_object = get_info_from_db(1, message.from_user.id)
+    db_object = get_info_from_db(1, message.chat.id)
     print(db_object)
     token = db_object['spotify_access_token']
     get_info_from_spotify(message, token)
@@ -178,7 +178,7 @@ def send_welcome(message):
     text1 = "Привет, я MusicGEEKbot. Приятно познакомиться)\nЯ помогу тебе не пропустить концерт или любое другое мероприятие любимых исполнителей.\n\n"
     text2 = "Для работы нашего сервиса необходимо проанализировать твою медиатеку, поэтому выбери подходящий вариант\n\n"
     #text3 = если хочешь перейти в основное меню - напиши /menu
-    bot.send_message(message.from_user.id, text = text1+text2, reply_markup=make_keyboard(menu_startup))
+    bot.send_message(message.chat.id, text = text1+text2, reply_markup=make_keyboard(menu_startup))
     #bot.register_next_step_handler(message, menu_startup_keyboard_handler)
 
 
@@ -189,7 +189,7 @@ def handle_menu(message):
     text3 = "Если твои вкусы изменились, ты добавил много нового и хочешь, чтобы я это учел, нажми ОБНОВИТЬ ПЛЕЙЛИСТ\n\n"
     #text4 = "Если хочешь, чтобы твои данные были стерты, нажми СТЕРЕТЬ\n\n"
     text5 = "(если ты еще не отправлял мне свой плейлист, напиши /start)"
-    bot.send_message(message.from_user.id, text=text1+text2+text3+text5, reply_markup=make_keyboard(menu))
+    bot.send_message(message.chat.id, text=text1+text2+text3+text5, reply_markup=make_keyboard(menu))
     #bot.register_next_step_handler(message, menu_keyboard_handler)
 
 
@@ -197,7 +197,7 @@ def handle_menu(message):
 def talk(message):
     text1 = "Мы могли бы пообщаться, но, к сожалению, пока что я умею отвечать только привет)\n"
     text2 = "Однако скоро мой создатель научит меня еще чему-нибудь)\n\n"
-    bot.send_message(message.from_user.id, text=text1+text2+TEXT)
+    bot.send_message(message.chat.id, text=text1+text2+TEXT)
     #bot.register_next_step_handler(message, menu_keyboard_handler)
 
         

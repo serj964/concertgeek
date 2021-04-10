@@ -6,3 +6,4 @@ vk_config.v2.json
 .cache
 .flask_session
 .spotify_caches
+config.json
