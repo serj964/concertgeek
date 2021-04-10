@@ -94,7 +94,9 @@ def spotify_oauth():
         except OSError as e:
             print ("Error: %s - %s." % (e.filename, e.strerror))
         return '<p style = "font-family:courier,arial,helvetica;">good, now wait for your concerts in telegram</p>'
-
+    else:
+        print("nope")
+    
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
         # Step 2. Display sign in link when no token
         auth_url = auth_manager.get_authorize_url()

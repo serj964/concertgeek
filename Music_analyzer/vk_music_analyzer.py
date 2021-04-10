@@ -11,7 +11,6 @@ class vk_music_analyzer:
         self.WEIGHT = 0.125
 
 
-
     #проверяет исполнителей на наличие feat.
     def __feat_check(self, lst):
         i = 0

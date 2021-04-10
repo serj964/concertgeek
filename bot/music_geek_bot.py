@@ -175,10 +175,11 @@ menu_startup = {
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    text1 = "Привет, я MusicGEEKbot. Приятно познакомиться)\nЯ помогу тебе не пропустить концерт или любое другое мероприятие любимых исполнителей.\n\n"
+    #text1 = "Привет, я MusicGEEKbot. Приятно познакомиться)\nЯ помогу тебе не пропустить концерт или любое другое мероприятие любимых исполнителей.\n\n"
     text2 = "Для работы нашего сервиса необходимо проанализировать твою медиатеку, поэтому выбери подходящий вариант\n\n"
     #text3 = если хочешь перейти в основное меню - напиши /menu
-    bot.send_message(message.chat.id, text = text1+text2, reply_markup=make_keyboard(menu_startup))
+    bot.send_message(message.chat.id, text = text2, reply_markup=make_keyboard(menu_startup))
+
     #bot.register_next_step_handler(message, menu_startup_keyboard_handler)
 
 
@@ -232,23 +233,23 @@ def menu_change_service_keyboard_handler(call):
 def get_info_from_vk(message, vk_id): 
     try:    
         vk = vk_music_analyzer()
-        bot.send_message(message.chat.id, text = "Подожди, пока я подберу для тебя концерты)")
+        bot.send_message(message.chat.id, text = "Подожди несколько минут, пока я подберу для тебя концерты)")
         artists = vk.get_favourite_artists(vk_id)
         con = Concerts()
         con.load_concerts(number_of_days=160)
-        bot.send_message(message.chat.id, text = "Вот, что мне удалось найти)")
+        bot.send_message(message.chat.id, text = "Вот, что мне удалось найти:")
         for i in range(len(artists)):
             concert = con.find_concerts(artists[i])
             if concert != []:
                 try:
-                    txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей\nВот ссылка на мероприятие {url}".format(price = concert[0]['price'],
+                    txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей\nВот ссылка на мероприятие: {url}".format(price = concert[0]['price'],
                                           place = concert[0]['place'],
                                           title = concert[0]['title'],
                                           date = concert[0]['date'],
                                           url = concert[0]['url'])
                     bot.send_message(message.chat.id, text=txt)
                 except KeyError:
-                    txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие {url}".format(place = concert[0]['place'],
+                    txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие: {url}".format(place = concert[0]['place'],
                                           title = concert[0]['title'],
                                           date = concert[0]['date'],
                                           url = concert[0]['url'])
@@ -261,8 +262,10 @@ def get_info_from_vk(message, vk_id):
             text1 = "Мне кажется, что у тебя все-таки закрытый аккаунт или закрытые аудио(\n"
             text2 = "Проверь это еще раз пожалуйста!"
             bot.send_message(message.chat.id, text = text1 + text2)
+            print("closed account")
         else:
             bot.send_message(message.chat.id, text = "Что-то тут не так! хм-хм")
+            print("something happen")
    
     
 def get_info_from_spotify(message, token):
@@ -276,14 +279,14 @@ def get_info_from_spotify(message, token):
         concert = con.find_concerts(artists[i])
         if concert != []:
             try:
-                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей\nВот ссылка на мероприятие {url}".format(price = concert[0]['price'],
+                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей\nВот ссылка на мероприятие: {url}".format(price = concert[0]['price'],
                                       place = concert[0]['place'],
                                       title = concert[0]['title'],
                                       date = concert[0]['date'],
                                       url = concert[0]['url'])
                 bot.send_message(message.chat.id, text=txt)
             except KeyError:
-                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие {url}".format(place = concert[0]['place'],
+                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие: {url}".format(place = concert[0]['place'],
                                       title = concert[0]['title'],
                                       date = concert[0]['date'],
                                       url = concert[0]['url'])
