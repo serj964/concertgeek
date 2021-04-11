@@ -293,6 +293,7 @@ def get_info_from_spotify(message, token):
                                           url = concert[0]['url'])
                     bot.send_message(message.chat.id, text=txt)
                 time.sleep(10)
+            bot.send_message(message.chat.id, text = artists[i])
         bot.send_message(message.chat.id, text = "Наслаждайся)")
     else:
         bot.send_message(message.chat.id, text = "Кажется у тебя нет песен в spotify...")
