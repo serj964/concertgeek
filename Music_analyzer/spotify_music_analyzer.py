@@ -72,24 +72,28 @@ class spotify_music_analyzer:
     #распределение очков между песнями из "любимых треков"
     def __points_songs(self, sp):
         dic = {}
-        k = ''
-        n = self.__get_list_songs(sp)
-        m = len(n)
-        p = self.__step(m)
-        s = self.MEDIANA + p
-        for artist in n:
+        try:
+            k = ''
+            n = self.__get_list_songs(sp)
+            m = len(n)
+            p = self.__step(m)
+            s = self.MEDIANA + p
+            for artist in n:
+
+                if (artist in dic):
+                    dic[artist].append(s)
+                else:
+                    dic[artist] = [s]
+
+                s = s - (2 * p) / m
+
+                if artist == k:
+                    dic[artist].append(0.005)
+                else:
+                    k = artist
         
-            if (artist in dic):
-                dic[artist].append(s)
-            else:
-                dic[artist] = [s]
-            
-            s = s - (2 * p) / m
-        
-            if artist == k:
-                dic[artist].append(0.005)
-            else:
-                k = artist
+        except ValueError:
+            pass
             
         return dic
     
@@ -119,20 +123,32 @@ class spotify_music_analyzer:
         
     #уточнение очков с учетом того, что пользователь сейчас слушает
     def __check_current_top(self, sp, dic):
-        lst = []
+        lst1 = []
         j = 0
-        while (j <= (len(lst) // 50)):
+        while (j <= (len(lst1) // 50)):
             results = sp.current_user_top_artists(time_range='short_term', offset = 50*j, limit = 50)
             for i, item in enumerate(results['items']):
-                lst.append(item['name'].lower())
+                lst1.append(item['name'].lower())
             j += 1
+        
+        lst2 = []
+        j = 0
+        while (j <= (len(lst2) // 50)):
+            results = sp.current_user_top_artists(time_range='short_term', offset = 50*j, limit = 50)
+            for i, item in enumerate(results['items']):
+                lst2.append(item['name'].lower())
+            j += 1
+            
+        set1 = set(lst1)
+        set2 = set(lst2)
+        lst = list(set1.union(set2))
         
         for artist in dic.keys():
             for j in range(len(lst)):
                 if lst[j] == artist:
                     dic[artist] = dic[artist]* 1.25
                     
-        return dic    
+        return dic  
     
             
     #возвращает наиболее "любимых" исполнителей
