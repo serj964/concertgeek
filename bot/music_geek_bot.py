@@ -272,10 +272,12 @@ def get_info_from_spotify(message, token):
     sp = spotify_music_analyzer()
     bot.send_message(message.chat.id, text = "Подожди, пока я подберу для тебя концерты)")
     artists = sp.get_favourite_artists(token)
-    if artists != []:
+    if artists == []:
+        bot.send_message(message.chat.id, text = "Кажется у тебя нет песен в spotify...")
+    else:
         con = Concerts()
         con.load_concerts(number_of_days=160)
-        bot.send_message(message.chat.id, text = "Вот, что мне удалось найти)")
+        bot.send_message(message.chat.id, text = "Вот, что мне удалось найти:")
         for i in range(len(artists)):
             concert = con.find_concerts(artists[i])
             if concert != []:
@@ -293,10 +295,8 @@ def get_info_from_spotify(message, token):
                                           url = concert[0]['url'])
                     bot.send_message(message.chat.id, text=txt)
                 time.sleep(10)
-            bot.send_message(message.chat.id, text = artists[i])
+            #bot.send_message(message.chat.id, text = artists[i])
         bot.send_message(message.chat.id, text = "Наслаждайся)")
-    else:
-        bot.send_message(message.chat.id, text = "Кажется у тебя нет песен в spotify...")
     print("done")    
       
 
