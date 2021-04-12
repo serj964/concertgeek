@@ -11,7 +11,6 @@ class vk_music_analyzer:
         self.WEIGHT = 0.125
 
 
-
     #проверяет исполнителей на наличие feat.
     def __feat_check(self, lst):
         i = 0
@@ -118,7 +117,7 @@ class vk_music_analyzer:
     def get_favourite_artists(self, user_id):
         LOGIN = '+79060733528'
         user_id = int(user_id)
-        #логинится 
+
         vk_session = vk_api.VkApi(LOGIN, password)
         try:
             vk_session.auth()
@@ -138,8 +137,7 @@ class vk_music_analyzer:
                     
         except AttributeError:
             result = dic1
-        
-        
+                
         for artist in result.keys():
             result[artist] = sum((result[artist]))
         
@@ -147,7 +145,7 @@ class vk_music_analyzer:
 
         list_d.sort(key = lambda i: i[1], reverse=True)
 
-        for i in range(math.ceil((len(list_d) ** 0.7))):
+        for i in range(math.ceil((len(list_d) ** 0.8))):
             lst.append(list_d[i][0])
             
         return lst
