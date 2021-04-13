@@ -14,4 +14,4 @@ fd = open(FILENAME,"r")
 while True:
     line = fd.readline()
     if line != "":
-        bot.send_message(CHAT_ID, line)git
+        bot.send_message(CHAT_ID, line)
