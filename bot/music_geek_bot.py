@@ -208,7 +208,9 @@ def talk(message):
 @bot.message_handler(content_types=['location'])
 def location_handler(message):
     print("{0}, {1}".format(message.location.latitude, message.location.longitude))
-    nearest_city = get_nearest_city(message.location.latitude, message.location.longitude)
+    lat = message.location.latitude
+    long = message.location.longitude
+    nearest_city = get_nearest_city(lat, long)
     #bot.send_message(message.chat.id, text=nearest_city)
     return nearest_city
 
