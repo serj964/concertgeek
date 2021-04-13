@@ -143,10 +143,11 @@ def menu_startup_spotify_proc(message):
     print(db_object)
     token = db_object['spotify_access_token']
     bot.send_message(message.chat.id, text = "Теперь, чтобы наши концерты были актуальны, поделись, пожалуйста, своей геопозицией")
-    bot.register_next_step_handler(message, location_handler)
+    a = bot.register_next_step_handler(message, location_handler)
     #city = location_handler(message)
     #bot.send_message(message.chat.id, text = city)
-    get_info_from_spotify(message, token)
+    #get_info_from_spotify(message, token)
+    bot.send_message(message.chat.id, text = a)
 
 
 def menu_startup_abort_proc(message):
@@ -213,7 +214,7 @@ def location_handler(message):
     long = message.location.longitude
     nearest_city = get_nearest_city(lat, long)
     bot.send_message(message.chat.id, text=nearest_city)
-    #return nearest_city
+    return nearest_city
 
         
 @bot.callback_query_handler(func=lambda call: type(call) == types.CallbackQuery and call.data in menu.keys())
