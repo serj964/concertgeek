@@ -203,12 +203,16 @@ def talk(message):
 
 @bot.message_handler(content_types=['location'])
 def location_handler(message, artists):
-    print("{0}, {1}".format(message.location.latitude, message.location.longitude))
-    bot.send_message(message.chat.id, text = "Подожди несколько минут, пока я подберу для тебя концерты)")
-    lat = message.location.latitude
-    long = message.location.longitude
-    nearest_city = get_nearest_city(lat, long)
-    show_concerts(message, artists, nearest_city)
+    try:
+        print("{0}, {1}".format(message.location.latitude, message.location.longitude))
+        bot.send_message(message.chat.id, text = "Подожди немного, пока я подберу для тебя концерты)")
+        lat = message.location.latitude
+        long = message.location.longitude
+        nearest_city = get_nearest_city(lat, long)
+        show_concerts(message, artists, nearest_city)
+    except TypeError:
+        print("{0}, {1}".format(message.location.latitude, message.location.longitude))
+        bot.send_message(message.chat.id, text = "ага, хайп")
     
         
 @bot.callback_query_handler(func=lambda call: type(call) == types.CallbackQuery and call.data in menu.keys())
