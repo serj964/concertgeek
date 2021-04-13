@@ -6,7 +6,7 @@ bot = telebot.TeleBot(TOKEN)
 CHAT_ID = -560631730
 
 
-LOGS_PATH = "/home/testServer/musicGEEK/logs"
+LOGS_PATH = "/home/testServer/musicGEEK/logs/"
 DBO_FNAME = "db.o"
 DBE_FNAME = "db.e"
 BOTO_FNAME = "bot.o"
@@ -32,4 +32,4 @@ while True:
     boto_line = boto_fd.readline()
     if boto_line != "":
         current_time = datetime.datetime.now()
-        bot.send_message(CHAT_ID, "[BOT OUTPUT, "+str(current_time)+"]: "+boto_line)
+        bot.send_message(CHAT_ID, "[BOT OUTPUT]: "+boto_line)
