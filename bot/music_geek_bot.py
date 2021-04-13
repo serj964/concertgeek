@@ -211,7 +211,7 @@ def location_handler(message):
     lat = message.location.latitude
     long = message.location.longitude
     nearest_city = get_nearest_city(lat, long)
-    #bot.send_message(message.chat.id, text=nearest_city)
+    bot.send_message(message.chat.id, text=nearest_city)
     return nearest_city
 
         
