@@ -147,7 +147,7 @@ def menu_startup_spotify_proc(message):
     #city = location_handler(message)
     #bot.send_message(message.chat.id, text = city)
     #get_info_from_spotify(message, token)
-    bot.send_message(message.chat.id, text = a)
+    print(a)
 
 
 def menu_startup_abort_proc(message):
