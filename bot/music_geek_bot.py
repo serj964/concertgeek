@@ -275,7 +275,7 @@ def get_info_from_spotify(message, token):
     print("done")    
       
     
-def show_concerts(artists):
+def show_concerts(message, artists):
     con = Concerts()
     con.load_concerts(number_of_days=160)
     bot.send_message(message.chat.id, text = "Вот, что мне удалось найти:")
