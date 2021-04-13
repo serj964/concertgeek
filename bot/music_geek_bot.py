@@ -251,7 +251,7 @@ def get_info_from_vk(message, vk_id):
         if artists == []:
             bot.send_message(message.chat.id, text = "Ох, кажется, у тебя нет песен в VK...")
         else:
-            show_concerts(artists)
+            show_concerts(message, artists)
         print("done")
     except Exception as e:
         if str(e) == 'You don\'t have permissions to browse {}\'s albums'.format(vk_id):
@@ -271,7 +271,7 @@ def get_info_from_spotify(message, token):
     if artists == []:
         bot.send_message(message.chat.id, text = "Ох, кажется, у тебя нет песен в spotify...")
     else:
-        show_concerts(artists)
+        show_concerts(message, artists)
     print("done")    
       
     
