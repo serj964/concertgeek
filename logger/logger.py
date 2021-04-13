@@ -1,4 +1,5 @@
 import telebot
+import datetime
 TOKEN = "1713650415:AAHpmqcTLVPFaoOtTi_POHk6Z66j3tr3ac4"
 
 bot = telebot.TeleBot(TOKEN)
@@ -30,4 +31,5 @@ boto_fd = open(LOGS_PATH+BOTO_FNAME,"r")
 while True:
     boto_line = boto_fd.readline()
     if boto_line != "":
-        bot.send_message(CHAT_ID, boto_line)
+        current_time = datetime.datetime.now()
+        bot.send_message(CHAT_ID, "[BOT OUTPUT, "+str(current_time)+"]: "+boto_line)
