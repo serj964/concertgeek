@@ -314,8 +314,7 @@ def get_info_from_spotify(message, token):
         bot.send_message(message.chat.id, text = "Наслаждайся)")
     print("done")    
       
-
+print(db)
 #logger = telebot.logger
 #telebot.logger.setLevel(logging.DEBUG)
-
 bot.polling(none_stop=True)
