@@ -248,27 +248,10 @@ def get_info_from_vk(message, vk_id):
         vk = vk_music_analyzer()
         bot.send_message(message.chat.id, text = "Подожди несколько минут, пока я подберу для тебя концерты)")
         artists = vk.get_favourite_artists(vk_id)
-        con = Concerts()
-        con.load_concerts(number_of_days=160)
-        bot.send_message(message.chat.id, text = "Вот, что мне удалось найти:")
-        for i in range(len(artists)):
-            concert = con.find_concerts(artists[i])
-            if concert != []:
-                try:
-                    txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей\nВот ссылка на мероприятие: {url}".format(price = concert[0]['price'],
-                                          place = concert[0]['place'],
-                                          title = concert[0]['title'],
-                                          date = concert[0]['date'],
-                                          url = concert[0]['url'])
-                    bot.send_message(message.chat.id, text=txt)
-                except KeyError:
-                    txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие: {url}".format(place = concert[0]['place'],
-                                          title = concert[0]['title'],
-                                          date = concert[0]['date'],
-                                          url = concert[0]['url'])
-                    bot.send_message(message.chat.id, text=txt)
-                time.sleep(10)
-        bot.send_message(message.chat.id, text = "Наслаждайся)")
+        if artists == []:
+            bot.send_message(message.chat.id, text = "Ох, кажется, у тебя нет песен в VK...")
+        else:
+            show_concerts(artists)
         print("done")
     except Exception as e:
         if str(e) == 'You don\'t have permissions to browse {}\'s albums'.format(vk_id):
@@ -288,29 +271,33 @@ def get_info_from_spotify(message, token):
     if artists == []:
         bot.send_message(message.chat.id, text = "Ох, кажется, у тебя нет песен в spotify...")
     else:
-        con = Concerts()
-        con.load_concerts(number_of_days=160)
-        bot.send_message(message.chat.id, text = "Вот, что мне удалось найти:")
-        for i in range(len(artists)):
-            concert = con.find_concerts(artists[i])
-            if concert != []:
-                try:
-                    txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей\nВот ссылка на мероприятие: {url}".format(price = concert[0]['price'],
-                                          place = concert[0]['place'],
-                                          title = concert[0]['title'],
-                                          date = concert[0]['date'],
-                                          url = concert[0]['url'])
-                    bot.send_message(message.chat.id, text=txt)
-                except KeyError:
-                    txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие: {url}".format(place = concert[0]['place'],
-                                          title = concert[0]['title'],
-                                          date = concert[0]['date'],
-                                          url = concert[0]['url'])
-                    bot.send_message(message.chat.id, text=txt)
-                time.sleep(10)
-        bot.send_message(message.chat.id, text = "Наслаждайся)")
+        show_concerts(artists)
     print("done")    
       
+    
+def show_concerts(artists):
+    con = Concerts()
+    con.load_concerts(number_of_days=160)
+    bot.send_message(message.chat.id, text = "Вот, что мне удалось найти:")
+    for i in range(len(artists)):
+        concert = con.find_concerts(artists[i])
+        if concert != []:
+            try:
+                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей\nВот ссылка на мероприятие: {url}".format(price = concert[0]['price'],
+                                      place = concert[0]['place'],
+                                      title = concert[0]['title'],
+                                      date = concert[0]['date'],
+                                      url = concert[0]['url'])
+                bot.send_message(message.chat.id, text=txt)
+            except KeyError:
+                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие: {url}".format(place = concert[0]['place'],
+                                      title = concert[0]['title'],
+                                      date = concert[0]['date'],
+                                      url = concert[0]['url'])
+                bot.send_message(message.chat.id, text=txt)
+            time.sleep(10)
+    bot.send_message(message.chat.id, text = "Наслаждайся)")
+    
 
 #logger = telebot.logger
 #telebot.logger.setLevel(logging.DEBUG)
