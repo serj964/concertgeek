@@ -143,7 +143,9 @@ def menu_startup_spotify_proc(message):
     print(db_object)
     token = db_object['spotify_access_token']
     bot.send_message(message.chat.id, text = "Теперь, чтобы наши концерты были актуальны, поделись, пожалуйста, своей геопозицией")
-    a = bot.register_next_step_handler(message, location_handler)
+    bot.register_next_step_handler(message, location_handler)
+    bot.enable_save_next_step_handlers()
+    a = bot.load_next_step_handlers(del_file_after_loading)
     #city = location_handler(message)
     #bot.send_message(message.chat.id, text = city)
     #get_info_from_spotify(message, token)
