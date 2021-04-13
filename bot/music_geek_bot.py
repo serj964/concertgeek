@@ -136,13 +136,15 @@ def menu_startup_vk_proc(message):
     get_info_from_vk(message, vk_id)
 
     
-
 def menu_startup_spotify_proc(message):
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     db_object = get_info_from_db(1, message.chat.id)
     print(db_object)
     token = db_object['spotify_access_token']
+    bot.send_message(message.chat.id, text = "Теперь, чтобы наши концерты были актуальны поделись пожалуйста своей геопозицией")
+    city = location_handler()
+    bot.send_message(message.chat.id, text = city)
     get_info_from_spotify(message, token)
 
 
@@ -159,7 +161,7 @@ menu_change_service = {
 
 
 menu = {
-    'btn_menu_change_service' : ('Другой сервис', menu_change_service_proc), 
+    #'btn_menu_change_service' : ('Другой сервис', menu_change_service_proc), 
     'btn_menu_manage_list' : ('Обновить плейлист', menu_manage_list_proc),
     #'btn_menu_send_concerts' : ('Прислать рекомендованные концерты', menu_send_concerts_proc),
     #'btn_menu_reset' : ('Стереть', menu_reset_proc)
@@ -207,7 +209,8 @@ def talk(message):
 def location_handler(message):
     print("{0}, {1}".format(message.location.latitude, message.location.longitude))
     nearest_city = get_nearest_city(message.location.latitude, message.location.longitude)
-    bot.send_message(message.chat.id, text=nearest_city)
+    #bot.send_message(message.chat.id, text=nearest_city)
+    return nearest_city
 
         
 @bot.callback_query_handler(func=lambda call: type(call) == types.CallbackQuery and call.data in menu.keys())
