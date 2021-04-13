@@ -6,6 +6,7 @@ from pymongo import MongoClient
 from Music_analyzer.vk_music_analyzer import vk_music_analyzer
 from Music_analyzer.spotify_music_analyzer import spotify_music_analyzer
 from Concerts.yandex_afisha_concerts import Concerts
+from bot.city_slovar import city_slovar
 import json
 
 
@@ -203,9 +204,10 @@ def talk(message):
 
 
 @bot.message_handler(content_types=['location'])
-def handle_location(message):
+def location_handler(message):
     print("{0}, {1}".format(message.location.latitude, message.location.longitude))
-    bot.send_message(message.chat.id, text='хайп')
+    nearest_city = get_nearest_city(message.location.latitude, message.location.longitude)
+    bot.send_message(message.chat.id, text=nearest_city)
 
         
 @bot.callback_query_handler(func=lambda call: type(call) == types.CallbackQuery and call.data in menu.keys())
@@ -234,6 +236,11 @@ def menu_change_service_keyboard_handler(call):
     if menu_change_service.get(btn) != None:
         print('ok')
         menu_change_service[btn][1](call.message)
+
+
+def get_nearest_city(user_lat, user_long):
+    coordinates = city_slovar()
+    return coordinates.nearest_city(user_lat, user_long) 
 
 
 def get_info_from_vk(message, vk_id): 
