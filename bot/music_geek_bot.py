@@ -142,14 +142,14 @@ def menu_startup_spotify_proc(message):
     db_object = get_info_from_db(1, message.chat.id)
     print(db_object)
     token = db_object['spotify_access_token']
-    bot.send_message(message.chat.id, text = "Теперь, чтобы наши концерты были актуальны, поделись, пожалуйста, своей геопозицией")
-    bot.register_next_step_handler(message, location_handler)
-    bot.enable_save_next_step_handlers(delay=1)
-    a = bot.load_next_step_handlers(delay=1)
+    #bot.send_message(message.chat.id, text = "Теперь, чтобы наши концерты были актуальны, поделись, пожалуйста, своей геопозицией")
+    #bot.register_next_step_handler(message, location_handler)
+    #bot.enable_save_next_step_handlers(delay=1)
+    #a = bot.load_next_step_handlers()
     #city = location_handler(message)
     #bot.send_message(message.chat.id, text = city)
-    #get_info_from_spotify(message, token)
-    print(a)
+    get_info_from_spotify(message, token)
+    #print(a)
 
 
 def menu_startup_abort_proc(message):
@@ -210,14 +210,15 @@ def talk(message):
 
 
 @bot.message_handler(content_types=['location'])
-def location_handler(message):
+def location_handler(message, artists):
     print("{0}, {1}".format(message.location.latitude, message.location.longitude))
     lat = message.location.latitude
     long = message.location.longitude
     nearest_city = get_nearest_city(lat, long)
-    bot.send_message(message.chat.id, text=nearest_city)
-    return nearest_city
-
+    #bot.send_message(message.chat.id, text=nearest_city)
+    #return nearest_city
+    show_concerts(message, artists, nearest_city)
+    
         
 @bot.callback_query_handler(func=lambda call: type(call) == types.CallbackQuery and call.data in menu.keys())
 def menu_keyboard_handler(call):
@@ -275,18 +276,24 @@ def get_info_from_vk(message, vk_id):
     
 def get_info_from_spotify(message, token):
     sp = spotify_music_analyzer()
-    bot.send_message(message.chat.id, text = "Подожди, пока я подберу для тебя концерты)")
+    #bot.send_message(message.chat.id, text = "Подожди, пока я проанализирую твой плейлист")
     artists = sp.get_favourite_artists(token)
     if artists == []:
         bot.send_message(message.chat.id, text = "Ох, кажется, у тебя нет песен в spotify...")
     else:
-        show_concerts(message, artists)
+        msg = bot.send_message(message.chat.id, text = "Теперь, чтобы наши концерты были актуальны, поделись, пожалуйста, своей геопозицией")
+        bot.register_next_step_handler(message, lambda msg: location_handler(msg, artists))
+        #bot.enable_save_next_step_handlers(delay=1)
+        #a = bot.load_next_step_handlers()
+        #city = location_handler(message)
+        #bot.send_message(message.chat.id, text = city)
+        #show_concerts(message, artists)
     print("done")    
       
     
-def show_concerts(message, artists):
+def show_concerts(message, artists, nearest_city):
     con = Concerts()
-    con.load_concerts(number_of_days=160)
+    con.load_concerts(city = nearest_city, number_of_days=170)
     bot.send_message(message.chat.id, text = "Вот, что мне удалось найти:")
     for i in range(len(artists)):
         concert = con.find_concerts(artists[i])
