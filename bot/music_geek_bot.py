@@ -272,27 +272,30 @@ def get_info_from_spotify(message, token):
     sp = spotify_music_analyzer()
     bot.send_message(message.chat.id, text = "Подожди, пока я подберу для тебя концерты)")
     artists = sp.get_favourite_artists(token)
-    con = Concerts()
-    con.load_concerts(number_of_days=160)
-    bot.send_message(message.chat.id, text = "Вот, что мне удалось найти)")
-    for i in range(len(artists)):
-        concert = con.find_concerts(artists[i])
-        if concert != []:
-            try:
-                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей\nВот ссылка на мероприятие: {url}".format(price = concert[0]['price'],
-                                      place = concert[0]['place'],
-                                      title = concert[0]['title'],
-                                      date = concert[0]['date'],
-                                      url = concert[0]['url'])
-                bot.send_message(message.chat.id, text=txt)
-            except KeyError:
-                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие: {url}".format(place = concert[0]['place'],
-                                      title = concert[0]['title'],
-                                      date = concert[0]['date'],
-                                      url = concert[0]['url'])
-                bot.send_message(message.chat.id, text=txt)
-            time.sleep(10)
-    bot.send_message(message.chat.id, text = "Наслаждайся)")
+    if artists == []:
+        bot.send_message(message.chat.id, text = "Ох, кажется, у тебя нет песен в spotify...")
+    else:
+        con = Concerts()
+        con.load_concerts(number_of_days=160)
+        bot.send_message(message.chat.id, text = "Вот, что мне удалось найти:")
+        for i in range(len(artists)):
+            concert = con.find_concerts(artists[i])
+            if concert != []:
+                try:
+                    txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей\nВот ссылка на мероприятие: {url}".format(price = concert[0]['price'],
+                                          place = concert[0]['place'],
+                                          title = concert[0]['title'],
+                                          date = concert[0]['date'],
+                                          url = concert[0]['url'])
+                    bot.send_message(message.chat.id, text=txt)
+                except KeyError:
+                    txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие: {url}".format(place = concert[0]['place'],
+                                          title = concert[0]['title'],
+                                          date = concert[0]['date'],
+                                          url = concert[0]['url'])
+                    bot.send_message(message.chat.id, text=txt)
+                time.sleep(10)
+        bot.send_message(message.chat.id, text = "Наслаждайся)")
     print("done")    
       
 

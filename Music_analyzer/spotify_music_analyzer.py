@@ -32,14 +32,17 @@ class spotify_music_analyzer:
     def __get_list_songs(self, sp):
         lst = []
         i = 0
-        while (i <= (len(lst) // 50)):
-            results = sp.current_user_saved_tracks(offset = 50*i, limit = 50)
-            for idx, item in enumerate(results['items']):
-                track = item['track']
-                lst.append(track['artists'][0]['name'].lower())
-            i += 1
-        
-        final_lst = self.__feat_check(lst)
+        try:
+            while (i <= (len(lst) // 50)):
+                results = sp.current_user_saved_tracks(offset = 50*i, limit = 50)
+                for idx, item in enumerate(results['items']):
+                    track = item['track']
+                    lst.append(track['artists'][0]['name'].lower())
+                i += 1
+
+            final_lst = self.__feat_check(lst)
+        except KeyError:
+            final_lst = []
     
         return final_lst
 
@@ -48,16 +51,19 @@ class spotify_music_analyzer:
     def __get_list_playlists(self, sp):
         lst = []
         i = 0
-        while (i <= (len(lst) // 50)):
-            play = sp.current_user_playlists(offset = 50*i, limit = 50)
-            for i in range(len(play['items'])):
-                item = play['items'][i]
-                playlist = sp.user_playlist(item['owner']['id'], item['id'])
+        try:
+            while (i <= (len(lst) // 50)):
+                play = sp.current_user_playlists(offset = 50*i, limit = 50)
+                for i in range(len(play['items'])):
+                    item = play['items'][i]
+                    playlist = sp.user_playlist(item['owner']['id'], item['id'])
 
-                for i in range(0, len(playlist["tracks"]["items"])):
-                    if playlist["tracks"]["items"][i]['track']['id'] != None:
-                        lst.append(playlist["tracks"]["items"][i]['track']['album']['artists'][0]['name'].lower())         
-            i += 1
+                    for i in range(0, len(playlist["tracks"]["items"])):
+                        if playlist["tracks"]["items"][i]['track']['id'] != None:
+                            lst.append(playlist["tracks"]["items"][i]['track']['album']['artists'][0]['name'].lower())         
+                i += 1
+        except KeyError:
+            final_lst = []
 
         final_lst = self.__feat_check(lst)
     
@@ -72,24 +78,28 @@ class spotify_music_analyzer:
     #распределение очков между песнями из "любимых треков"
     def __points_songs(self, sp):
         dic = {}
-        k = ''
-        n = self.__get_list_songs(sp)
-        m = len(n)
-        p = self.__step(m)
-        s = self.MEDIANA + p
-        for artist in n:
+        try:
+            k = ''
+            n = self.__get_list_songs(sp)
+            m = len(n)
+            p = self.__step(m)
+            s = self.MEDIANA + p
+            for artist in n:
+
+                if (artist in dic):
+                    dic[artist].append(s)
+                else:
+                    dic[artist] = [s]
+
+                s = s - (2 * p) / m
+
+                if artist == k:
+                    dic[artist].append(0.005)
+                else:
+                    k = artist
         
-            if (artist in dic):
-                dic[artist].append(s)
-            else:
-                dic[artist] = [s]
-            
-            s = s - (2 * p) / m
-        
-            if artist == k:
-                dic[artist].append(0.005)
-            else:
-                k = artist
+        except ValueError:
+            pass
             
         return dic
     
@@ -119,20 +129,40 @@ class spotify_music_analyzer:
         
     #уточнение очков с учетом того, что пользователь сейчас слушает
     def __check_current_top(self, sp, dic):
-        lst = []
+        lst1 = []
         j = 0
-        while (j <= (len(lst) // 50)):
+        while (j <= (len(lst1) // 50)):
             results = sp.current_user_top_artists(time_range='short_term', offset = 50*j, limit = 50)
             for i, item in enumerate(results['items']):
-                lst.append(item['name'].lower())
+                lst1.append(item['name'].lower())
             j += 1
         
-        for artist in dic.keys():
-            for j in range(len(lst)):
-                if lst[j] == artist:
-                    dic[artist] = dic[artist]* 1.25
+        lst2 = []
+        j = 0
+        while (j <= (len(lst2) // 50)):
+            results = sp.current_user_top_artists(time_range='short_term', offset = 50*j, limit = 50)
+            for i, item in enumerate(results['items']):
+                lst2.append(item['name'].lower())
+            j += 1
+            
+        set1 = set(lst1)
+        set2 = set(lst2)
+        lst = list(set1.union(set2))
+            
+        if dic != {}:
+            for artist in dic.keys():
+                for j in range(len(lst)):
+                    if lst[j] == artist:
+                        dic[artist] = dic[artist] * 1.25
+            for artist in lst:
+                if artist not in dic.keys():
+                    dic[artist] = 4
                     
-        return dic    
+        else:
+            for artist in lst:
+                dic[artist] = 2 * self.MEDIANA
+                    
+        return dic 
     
             
     #возвращает наиболее "любимых" исполнителей
@@ -158,7 +188,7 @@ class spotify_music_analyzer:
         list_d = list(new_result.items())
         list_d.sort(key = lambda i: i[1], reverse=True)
 
-        for i in range(math.ceil((len(list_d) ** 0.85))):
+        for i in range(math.ceil((len(list_d) ** 0.8))):
             lst.append(list_d[i][0])
         
         final_lst = slovar()
