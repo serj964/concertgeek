@@ -142,14 +142,7 @@ def menu_startup_spotify_proc(message):
     db_object = get_info_from_db(1, message.chat.id)
     print(db_object)
     token = db_object['spotify_access_token']
-    #bot.send_message(message.chat.id, text = "Теперь, чтобы наши концерты были актуальны, поделись, пожалуйста, своей геопозицией")
-    #bot.register_next_step_handler(message, location_handler)
-    #bot.enable_save_next_step_handlers(delay=1)
-    #a = bot.load_next_step_handlers()
-    #city = location_handler(message)
-    #bot.send_message(message.chat.id, text = city)
     get_info_from_spotify(message, token)
-    #print(a)
 
 
 def menu_startup_abort_proc(message):
@@ -186,14 +179,13 @@ def send_welcome(message):
     text2 = "Для работы нашего сервиса необходимо проанализировать твою медиатеку, поэтому выбери подходящий вариант\n\n"
     #text3 = если хочешь перейти в основное меню - напиши /menu
     bot.send_message(message.chat.id, text = text2, reply_markup=make_keyboard(menu_startup))
-
     #bot.register_next_step_handler(message, menu_startup_keyboard_handler)
 
 
 @bot.message_handler(commands=['menu'])
 def handle_menu(message):
     text1 = "Это основное меню!\n\n"
-    text2 = "Если у тебя появился новый стриминговый сервис и ты хочешь, чтобы я его проанализировал, нажми ДРУГОЙ СЕРВИС\n\n"
+    #text2 = "Если у тебя появился новый стриминговый сервис и ты хочешь, чтобы я его проанализировал, нажми ДРУГОЙ СЕРВИС\n\n"
     text3 = "Если твои вкусы изменились, ты добавил много нового и хочешь, чтобы я это учел, нажми ОБНОВИТЬ ПЛЕЙЛИСТ\n\n"
     #text4 = "Если хочешь, чтобы твои данные были стерты, нажми СТЕРЕТЬ\n\n"
     text5 = "(если ты еще не отправлял мне свой плейлист, напиши /start)"
@@ -212,11 +204,10 @@ def talk(message):
 @bot.message_handler(content_types=['location'])
 def location_handler(message, artists):
     print("{0}, {1}".format(message.location.latitude, message.location.longitude))
+    bot.send_message(message.chat.id, text = "Подожди несколько минут, пока я подберу для тебя концерты)")
     lat = message.location.latitude
     long = message.location.longitude
     nearest_city = get_nearest_city(lat, long)
-    #bot.send_message(message.chat.id, text=nearest_city)
-    #return nearest_city
     show_concerts(message, artists, nearest_city)
     
         
@@ -256,13 +247,15 @@ def get_nearest_city(user_lat, user_long):
 def get_info_from_vk(message, vk_id): 
     try:    
         vk = vk_music_analyzer()
-        bot.send_message(message.chat.id, text = "Подожди несколько минут, пока я подберу для тебя концерты)")
+        bot.send_message(message.chat.id, text = "Подожди немного, пока я проанализирую твой плейлист")
         artists = vk.get_favourite_artists(vk_id)
         if artists == []:
             bot.send_message(message.chat.id, text = "Ох, кажется, у тебя нет песен в VK...")
+            print('no songs in vk')
         else:
-            show_concerts(message, artists)
-        print("done")
+            msg = bot.send_message(message.chat.id, text = "Теперь, чтобы наши концерты были актуальны, поделись, пожалуйста, своей геопозицией")
+            bot.register_next_step_handler(message, lambda msg: location_handler(msg, artists))
+            print("send to identify location")
     except Exception as e:
         if str(e) == 'You don\'t have permissions to browse {}\'s albums'.format(vk_id):
             text1 = "Мне кажется, что у тебя все-таки закрытый аккаунт или закрытые аудио(\n"
@@ -280,15 +273,11 @@ def get_info_from_spotify(message, token):
     artists = sp.get_favourite_artists(token)
     if artists == []:
         bot.send_message(message.chat.id, text = "Ох, кажется, у тебя нет песен в spotify...")
+        print('no songs in spotify')
     else:
         msg = bot.send_message(message.chat.id, text = "Теперь, чтобы наши концерты были актуальны, поделись, пожалуйста, своей геопозицией")
         bot.register_next_step_handler(message, lambda msg: location_handler(msg, artists))
-        #bot.enable_save_next_step_handlers(delay=1)
-        #a = bot.load_next_step_handlers()
-        #city = location_handler(message)
-        #bot.send_message(message.chat.id, text = city)
-        #show_concerts(message, artists)
-    print("done")    
+        print("send to identify location")    
       
     
 def show_concerts(message, artists, nearest_city):
