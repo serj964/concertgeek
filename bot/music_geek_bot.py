@@ -201,6 +201,12 @@ def talk(message):
     bot.send_message(message.chat.id, text=text1+text2+TEXT)
     #bot.register_next_step_handler(message, menu_keyboard_handler)
 
+
+@bot.message_handler(content_types=['location'])
+def handle_location(message):
+    print("{0}, {1}".format(message.location.latitude, message.location.longitude))
+    bot.send_message(message.chat.id, text='хайп')
+
         
 @bot.callback_query_handler(func=lambda call: type(call) == types.CallbackQuery and call.data in menu.keys())
 def menu_keyboard_handler(call):
