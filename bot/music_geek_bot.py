@@ -218,9 +218,9 @@ def location_handler(message, artists = None):
             show_concerts(message, artists, nearest_city[nearest_city_rus])
         except AttributeError:
             try:
-                city = get_city_by_name(city)
+                city = get_city_by_name(message.text)
             except ValueError:
-                text1 = "Возможно твоего города еще нет в нашей базе, либо ты написал его неправильно\n\n"
+                text1 = "Возможно твоего города еще нет в нашей базе, либо ты написал его неправильно(\n\n"
                 text2 = "Попробуй еще раз с команды /start"
                 bot.send_message(message.chat.id, text = text1 + text2)
                 
@@ -275,7 +275,7 @@ def get_info_from_vk(message, vk_id):
             bot.send_message(message.chat.id, text = "Ох, кажется, у тебя нет песен в VK...")
             print('no songs in vk')
         else:
-            text1 = "Теперь, чтобы наши концерты были актуальны, поделись, пожалуйста, своей геопозицией\n\n"
+            text1 = "Теперь, чтобы наши концерты были актуальны, поделись, пожалуйста, своей геопозицией.\n\n"
             text2 = "Ты можешь отправить как точку на карте, так и название своего города (например \'Москва\' или \'Санкт-Петербург\')"
             msg = bot.send_message(message.chat.id, text = text1+text2)
             bot.register_next_step_handler(message, lambda msg: location_handler(msg, artists))
