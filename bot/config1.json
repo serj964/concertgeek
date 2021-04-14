@@ -1,0 +1,45 @@
+{
+    "server_config" : {
+        "address" : "http://91.203.193.57",
+        "port" : "8000",
+        "session_type" : "filesystem",
+        "session_file_dir" : "./.flask_session/",
+        "caches_folder" : "./.spotify_caches/"
+    },
+    "db_config" : {
+        "address" : "localhost",
+        "port" : 27017,
+        "name" : "MUSICGEEKdb",
+        "collections" : {
+            "vk_collection" : "vk",
+            "spotify_collection" : "spotify"
+        }
+    },
+    "bot_config" : {
+        "token" : "1787836132:AAE6ZA6psgjHfEM5nSP9Ti5ya2AWwuIKJl8"
+    },
+    "oauth_config": {
+        "vk_oauth_config" : {
+            "client_id" : "7794879",
+            "redirect_url_end" : "/vk_oauth_complete",
+            "redirect_url_base" : "http://91.203.193.57:8000",
+            "v" : "5.130",
+            "basic_url_for_token" : "https://oauth.vk.com/access_token",
+            "basic_url_for_code" : "https://oauth.vk.com/authorize",
+            "oauth_startpoint" : "/vk_oauth",
+            "grant_type" : "client_credentials",
+            "client_secret" : "SsVRgiVPrle4mhxR3aOd",
+            "responce_type" : "code",
+            "scope" : "audio,email",
+            "url" : "{basic_url_for_code}?client_id={client_id}&v={v}&redirect_uri={redirect_url_base}{redirect_url_end}&grant_type={grant_type}&client_secret={client_secret}&scope={scope}&responce_type={responce_type}&state={state}"
+        },
+        "spotify_oauth_config" : {
+            "client_id" : "9145b67aed2d4c0091026c1491a7b24b",
+            "client_secret" : "c8bbaab611504a988ad447f213c1069d",
+            "redirect_url_end" : "/spotify_oauth",
+            "oauth_startpoint" : "/spotify_oauth",
+            "redirect_url_base" : "http://91.203.193.57:8000",
+            "scope" : "user-library-read, playlist-read-private, user-read-recently-played, user-read-playback-state, user-top-read, playlist-read-collaborative, user-read-currently-playing"
+        }
+    }
+}
