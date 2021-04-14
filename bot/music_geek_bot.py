@@ -31,7 +31,6 @@ spotify_oauth_config = oauth_config['spotify_oauth_config']
 
 
 
-
 TOKEN = bot_config['token']
 bot = telebot.TeleBot(TOKEN)
 
@@ -212,9 +211,8 @@ def location_handler(message, artists = None):
         lat = message.location.latitude
         long = message.location.longitude
         nearest_city = get_nearest_city(lat, long)
-        show_concerts(message, artists, nearest_city)
-        #print("{0}, {1}".format(message.location.latitude, message.location.longitude))
-        #bot.send_message(message.chat.id, text = "ага, хайп")
+        nearest_city_rus = list(nearest_city.keys())[0]
+        show_concerts(message, artists, nearest_city[nearest_city_rus])
     
         
 @bot.callback_query_handler(func=lambda call: type(call) == types.CallbackQuery and call.data in menu.keys())
@@ -232,7 +230,7 @@ def menu_startup_keyboard_handler(call):
     btn = call.data
     print(btn)
     if menu_startup.get(btn) != None:
-        print('ok')
+        #print('ok')
         menu_startup[btn][1](call.message)
 
      
@@ -241,7 +239,7 @@ def menu_change_service_keyboard_handler(call):
     btn = call.data
     print(btn)
     if menu_change_service.get(btn) != None:
-        print('ok')
+        #print('ok')
         menu_change_service[btn][1](call.message)
 
 

@@ -1,10 +1,10 @@
 import math
 
-class city_slovar:
+class slovar:
     def __init__(self):
-        self.SLOVAR = {'Москва': '55.755814, 37.617635',
-                       'Санкт-Петербург': '59.939095, 30.315868',
-                       'Сочи': '43.585472, 39.723089'
+        self.SLOVAR = {'Москва': 'moscow; 55.755814, 37.617635',
+                       'Санкт-Петербург': 'saint-petersburg; 59.939095, 30.315868',
+                       'Сочи': 'sochi; 43.585472, 39.723089'
                        #'Краснодар': '45.035470, 38.975313',
                        #'Казань': '55.796127, 49.106405',
                        #'Новосибирск': '55.030199, 82.920430',
@@ -42,12 +42,12 @@ class city_slovar:
         return 6367*math.acos(a + b)
     
     
-    #транслитерация для spotify
     def nearest_city(self, user_lat, user_long):
         dicti = {}
+        city_dicti = {}
         for city in self.SLOVAR.keys():
             s = self.SLOVAR[city]
-            lat = float(s[0:s.find(',', 0,len(s))])
+            lat = float(s[s.find(';', 0,len(s))+2:s.find(',', 0,len(s))])
             long = float(s[s.find(',', 0,len(s))+2:len(s)])
             dist = self.__measure(user_lat, user_long, lat, long)
             dicti[city] = dist
@@ -58,5 +58,8 @@ class city_slovar:
             if dicti[city] < dist:
                 nearest = city
                 dist = dicti[city]
+        
+        s = self.SLOVAR[nearest]
+        city_dicti[nearest] = s[0:s.find(';', 0,len(s))]
                 
-        return nearest
+        return city_dicti
