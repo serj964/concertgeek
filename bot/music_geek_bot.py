@@ -210,7 +210,7 @@ def location_handler(message, artists = None):
             print("{0}, {1}".format(message.location.latitude, message.location.longitude))
             lat = message.location.latitude
             long = message.location.longitude
-            nearest_city = get_nearest_city_by_loc(lat, long)
+            nearest_city = get_nearest_city_by_location(lat, long)
             nearest_city_rus = list(nearest_city.keys())[0]
             bot.send_message(message.chat.id, text = "Твой город - " + nearest_city_rus)
             time.sleep(5)
@@ -255,9 +255,9 @@ def menu_change_service_keyboard_handler(call):
 
 
 #по координатам возвращает ближайший город
-def get_nearest_city_by_loc(user_lat, user_long):
+def get_nearest_city_by_location(user_lat, user_long):
     coordinates = city_slovar()
-    return coordinates.nearest_city_by_loc(user_lat, user_long) 
+    return coordinates.nearest_city_by_location(user_lat, user_long) 
 
 
 #по названию возвращает город
