@@ -1,6 +1,6 @@
 import math
 
-class slovar:
+class city_slovar:
     def __init__(self):
         self.SLOVAR = {'Москва': 'moscow; 55.755814, 37.617635',
                        'Санкт-Петербург': 'saint-petersburg; 59.939095, 30.315868',
