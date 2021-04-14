@@ -259,7 +259,9 @@ def get_info_from_vk(message, vk_id):
             bot.send_message(message.chat.id, text = "Ох, кажется, у тебя нет песен в VK...")
             print('no songs in vk')
         else:
-            msg = bot.send_message(message.chat.id, text = "Теперь, чтобы наши концерты были актуальны, поделись, пожалуйста, своей геопозицией")
+            text1 = "Теперь, чтобы наши концерты были актуальны, поделись, пожалуйста, своей геопозицией\n\n"
+            text2 = "Это очень легко сделать со своего телефона)"
+            msg = bot.send_message(message.chat.id, text = text1 + text2)
             bot.register_next_step_handler(message, lambda msg: location_handler(msg, artists))
             print("send to identify location")
     except Exception as e:
