@@ -212,6 +212,7 @@ def location_handler(message, artists = None):
         long = message.location.longitude
         nearest_city = get_nearest_city(lat, long)
         nearest_city_rus = list(nearest_city.keys())[0]
+        bot.send_message(message.chat.id, text = "Твой город - " + nearest_city_rus)
         show_concerts(message, artists, nearest_city[nearest_city_rus])
     
         
