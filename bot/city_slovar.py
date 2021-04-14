@@ -42,7 +42,7 @@ class city_slovar:
         return 6367*math.acos(a + b)
     
     
-    def nearest_city(self, user_lat, user_long):
+    def nearest_city_by_location(self, user_lat, user_long):
         dicti = {}
         city_dicti = {}
         for city in self.SLOVAR.keys():
@@ -62,4 +62,20 @@ class city_slovar:
         s = self.SLOVAR[nearest]
         city_dicti[nearest] = s[0:s.find(';', 0,len(s))]
                 
+        print(s[0:s.find(';', 0,len(s))])
         return city_dicti
+    
+    def city_by_name(self, name):
+        city_name = ''
+        for city in self.SLOVAR.keys():
+            if name.lower() == city.lower():
+                s = self.SLOVAR[city]
+                city_name = s[0:s.find(';', 0,len(s))]
+            else:
+                pass
+            
+        if city_name != '':
+            print(city_name)
+            return city_name
+        else:
+            raise ValueError
