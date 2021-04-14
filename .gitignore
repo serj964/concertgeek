@@ -1,9 +1,9 @@
 *.pyc
 venv
-flask_session
+**/flask_session
 Music_analyzer/password.py
 vk_config.v2.json
 .cache
 .flask_session
 .spotify_caches
-config.json
+bot/config.json
