@@ -220,7 +220,7 @@ def location_handler(message, artists = None):
             try:
                 city = get_city_by_name(message.text)
                 bot.send_message(message.chat.id, text = "Подожди немного, пока я подберу для тебя концерты)")
-                show_concerts(message, artists, nearest_city[nearest_city_rus])
+                show_concerts(message, artists, city)
             except ValueError:
                 text1 = "Возможно твоего города еще нет в нашей базе, либо ты написал его неправильно(\n\n"
                 text2 = "Попробуй еще раз с команды /start"
