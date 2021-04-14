@@ -202,16 +202,17 @@ def talk(message):
 
 
 @bot.message_handler(content_types=['location'])
-def location_handler(message, artists):
-    try:
+def location_handler(message, artists = None):
+    if artists is None:
+        print("{0}, {1}".format(message.location.latitude, message.location.longitude))
+        bot.send_message(message.chat.id, text = "ага, хайп")
+    else:
         print("{0}, {1}".format(message.location.latitude, message.location.longitude))
         bot.send_message(message.chat.id, text = "Подожди немного, пока я подберу для тебя концерты)")
         lat = message.location.latitude
         long = message.location.longitude
         nearest_city = get_nearest_city(lat, long)
         show_concerts(message, artists, nearest_city)
-    except TypeError:
-        pass
         #print("{0}, {1}".format(message.location.latitude, message.location.longitude))
         #bot.send_message(message.chat.id, text = "ага, хайп")
     
