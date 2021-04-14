@@ -6,7 +6,7 @@ from Music_analyzer.slovar import slovar
 
 class spotify_music_analyzer:
     def __init__(self):
-        self.MEDIANA = 0.4
+        self.MEDIANA = 0.42
         self.WEIGHT = 0.125
 
 
@@ -72,7 +72,7 @@ class spotify_music_analyzer:
 
     #шаг
     def __step(self, m): 
-        return math.log(m) / 25
+        return math.log(m) / 30
 
 
     #распределение очков между песнями из "любимых треков"
@@ -153,7 +153,7 @@ class spotify_music_analyzer:
             for artist in dic.keys():
                 for j in range(len(lst)):
                     if lst[j] == artist:
-                        dic[artist] = dic[artist] * 1.25
+                        dic[artist] = dic[artist] * 1.2
             for artist in lst:
                 if artist not in dic.keys():
                     dic[artist] = 4

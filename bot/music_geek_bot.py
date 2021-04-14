@@ -224,10 +224,10 @@ def location_handler(message, artists = None):
             except ValueError:
                 text1 = "Возможно твоего города еще нет в нашей базе, либо ты написал его неправильно(\n\n"
                 text2 = "Попробуй еще раз с команды /start"
+                print('wrong city name or no city in our base')
                 bot.send_message(message.chat.id, text = text1 + text2)
                 
-            
-    
+             
 @bot.callback_query_handler(func=lambda call: type(call) == types.CallbackQuery and call.data in menu.keys())
 def menu_keyboard_handler(call):
     btn = call.data
@@ -278,7 +278,7 @@ def get_info_from_vk(message, vk_id):
             print('no songs in vk')
         else:
             text1 = "Теперь, чтобы наши концерты были актуальны, поделись, пожалуйста, своей геопозицией.\n\n"
-            text2 = "Ты можешь отправить как точку на карте, так и название своего города (например \'Москва\' или \'Санкт-Петербург\')"
+            text2 = "Ты можешь отправить как точку на карте, так и название интересующего города (например \'Москва\' или \'Санкт-Петербург\')"
             msg = bot.send_message(message.chat.id, text = text1+text2)
             bot.register_next_step_handler(message, lambda msg: location_handler(msg, artists))
             print("send to identify location")
@@ -302,7 +302,7 @@ def get_info_from_spotify(message, token):
         print('no songs in spotify')
     else:
         text1 = "Теперь, чтобы наши концерты были актуальны, поделись, пожалуйста, своей геопозицией\n\n"
-        text2 = "Ты можешь отправить как точку на карте, так и название своего города (например \'Москва\' или \'Санкт-Петербург\')"
+        text2 = "Ты можешь отправить как точку на карте, так и название интересующего города (например \'Москва\' или \'Санкт-Петербург\')"
         msg = bot.send_message(message.chat.id, text = text1+text2)
         bot.register_next_step_handler(message, lambda msg: location_handler(msg, artists))
         print("send to identify location")    
