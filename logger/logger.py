@@ -32,5 +32,5 @@ while True:
     boto_line = boto_fd.readline()
     if boto_line != "":
         current_time = datetime.datetime.now()
-        bot.send_message(CHAT_ID, "[BOT OUTPUT - "+boto_line.split()[0]+"]: "+' '.join(boto_line.split()[1:]))
+        bot.send_message(CHAT_ID, "[BOT OUTPUT - "+boto_line.split()[0]+"]: "+' '.join(boto_line.split()[0:]))
         #bot.send_message(CHAT_ID, boto_line)
