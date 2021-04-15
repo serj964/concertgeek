@@ -6,6 +6,7 @@ from pymongo import MongoClient
 from Music_analyzer.vk_music_analyzer import vk_music_analyzer
 from Music_analyzer.spotify_music_analyzer import spotify_music_analyzer
 from Concerts.yandex_afisha_concerts import Concerts
+from bot.city_slovar import city_slovar
 import json
 
 
@@ -151,7 +152,6 @@ def menu_startup_vk_proc(message):
     get_info_from_vk(message, vk_id)
 
     
-
 def menu_startup_spotify_proc(message):
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
@@ -174,7 +174,7 @@ menu_change_service = {
 
 
 menu = {
-    'btn_menu_change_service' : ('Другой сервис', menu_change_service_proc), 
+    #'btn_menu_change_service' : ('Другой сервис', menu_change_service_proc), 
     'btn_menu_manage_list' : ('Обновить плейлист', menu_manage_list_proc),
     #'btn_menu_send_concerts' : ('Прислать рекомендованные концерты', menu_send_concerts_proc),
     #'btn_menu_reset' : ('Стереть', menu_reset_proc)
@@ -195,14 +195,13 @@ def send_welcome(message):
     text2 = "Для работы нашего сервиса необходимо проанализировать твою медиатеку, поэтому выбери подходящий вариант\n\n"
     #text3 = если хочешь перейти в основное меню - напиши /menu
     bot.send_message(message.chat.id, text = text2, reply_markup=make_keyboard(menu_startup))
-
     #bot.register_next_step_handler(message, menu_startup_keyboard_handler)
 
 
 @bot.message_handler(commands=['menu'])
 def handle_menu(message):
     text1 = "Это основное меню!\n\n"
-    text2 = "Если у тебя появился новый стриминговый сервис и ты хочешь, чтобы я его проанализировал, нажми ДРУГОЙ СЕРВИС\n\n"
+    #text2 = "Если у тебя появился новый стриминговый сервис и ты хочешь, чтобы я его проанализировал, нажми ДРУГОЙ СЕРВИС\n\n"
     text3 = "Если твои вкусы изменились, ты добавил много нового и хочешь, чтобы я это учел, нажми ОБНОВИТЬ ПЛЕЙЛИСТ\n\n"
     #text4 = "Если хочешь, чтобы твои данные были стерты, нажми СТЕРЕТЬ\n\n"
     text5 = "(если ты еще не отправлял мне свой плейлист, напиши /start)"
@@ -217,6 +216,22 @@ def talk(message):
     bot.send_message(message.chat.id, text=text1+text2+TEXT)
     #bot.register_next_step_handler(message, menu_keyboard_handler)
 
+
+@bot.message_handler(content_types=['location'])
+def location_handler(message, artists = None):
+    if artists is None:
+        print("{0}, {1}".format(message.location.latitude, message.location.longitude))
+        bot.send_message(message.chat.id, text = "ага, хайп")
+    else:
+        print("{0}, {1}".format(message.location.latitude, message.location.longitude))
+        bot.send_message(message.chat.id, text = "Подожди немного, пока я подберу для тебя концерты)")
+        lat = message.location.latitude
+        long = message.location.longitude
+        nearest_city = get_nearest_city(lat, long)
+        show_concerts(message, artists, nearest_city)
+        #print("{0}, {1}".format(message.location.latitude, message.location.longitude))
+        #bot.send_message(message.chat.id, text = "ага, хайп")
+    
         
 @bot.callback_query_handler(func=lambda call: type(call) == types.CallbackQuery and call.data in menu.keys())
 def menu_keyboard_handler(call):
@@ -246,33 +261,25 @@ def menu_change_service_keyboard_handler(call):
         menu_change_service[btn][1](call.message)
 
 
+def get_nearest_city(user_lat, user_long):
+    coordinates = city_slovar()
+    return coordinates.nearest_city(user_lat, user_long) 
+
+
 def get_info_from_vk(message, vk_id): 
     try:    
         vk = vk_music_analyzer()
-        bot.send_message(message.chat.id, text = "Подожди несколько минут, пока я подберу для тебя концерты)")
+        bot.send_message(message.chat.id, text = "Подожди немного, пока я проанализирую твой плейлист")
         artists = vk.get_favourite_artists(vk_id)
-        con = Concerts()
-        con.load_concerts(number_of_days=160)
-        bot.send_message(message.chat.id, text = "Вот, что мне удалось найти:")
-        for i in range(len(artists)):
-            concert = con.find_concerts(artists[i])
-            if concert != []:
-                try:
-                    txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей\nВот ссылка на мероприятие: {url}".format(price = concert[0]['price'],
-                                          place = concert[0]['place'],
-                                          title = concert[0]['title'],
-                                          date = concert[0]['date'],
-                                          url = concert[0]['url'])
-                    bot.send_message(message.chat.id, text=txt)
-                except KeyError:
-                    txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие: {url}".format(place = concert[0]['place'],
-                                          title = concert[0]['title'],
-                                          date = concert[0]['date'],
-                                          url = concert[0]['url'])
-                    bot.send_message(message.chat.id, text=txt)
-                time.sleep(10)
-        bot.send_message(message.chat.id, text = "Наслаждайся)")
-        print("done")
+        if artists == []:
+            bot.send_message(message.chat.id, text = "Ох, кажется, у тебя нет песен в VK...")
+            print('no songs in vk')
+        else:
+            text1 = "Теперь, чтобы наши концерты были актуальны, поделись, пожалуйста, своей геопозицией\n\n"
+            text2 = "Это очень легко сделать со своего телефона)"
+            msg = bot.send_message(message.chat.id, text = text1 + text2)
+            bot.register_next_step_handler(message, lambda msg: location_handler(msg, artists))
+            print("send to identify location")
     except Exception as e:
         if str(e) == 'You don\'t have permissions to browse {}\'s albums'.format(vk_id):
             text1 = "Мне кажется, что у тебя все-таки закрытый аккаунт или закрытые аудио(\n"
@@ -286,34 +293,41 @@ def get_info_from_vk(message, vk_id):
     
 def get_info_from_spotify(message, token):
     sp = spotify_music_analyzer()
-    bot.send_message(message.chat.id, text = "Подожди, пока я подберу для тебя концерты)")
+    #bot.send_message(message.chat.id, text = "Подожди, пока я проанализирую твой плейлист")
     artists = sp.get_favourite_artists(token)
     if artists == []:
         bot.send_message(message.chat.id, text = "Ох, кажется, у тебя нет песен в spotify...")
+        print('no songs in spotify')
     else:
-        con = Concerts()
-        con.load_concerts(number_of_days=160)
-        bot.send_message(message.chat.id, text = "Вот, что мне удалось найти:")
-        for i in range(len(artists)):
-            concert = con.find_concerts(artists[i])
-            if concert != []:
-                try:
-                    txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей\nВот ссылка на мероприятие: {url}".format(price = concert[0]['price'],
-                                          place = concert[0]['place'],
-                                          title = concert[0]['title'],
-                                          date = concert[0]['date'],
-                                          url = concert[0]['url'])
-                    bot.send_message(message.chat.id, text=txt)
-                except KeyError:
-                    txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие: {url}".format(place = concert[0]['place'],
-                                          title = concert[0]['title'],
-                                          date = concert[0]['date'],
-                                          url = concert[0]['url'])
-                    bot.send_message(message.chat.id, text=txt)
-                time.sleep(10)
-        bot.send_message(message.chat.id, text = "Наслаждайся)")
-    print("done")    
+        msg = bot.send_message(message.chat.id, text = "Теперь, чтобы наши концерты были актуальны, поделись, пожалуйста, своей геопозицией")
+        bot.register_next_step_handler(message, lambda msg: location_handler(msg, artists))
+        print("send to identify location")    
       
+    
+def show_concerts(message, artists, nearest_city):
+    con = Concerts()
+    con.load_concerts(city = nearest_city, number_of_days=170)
+    bot.send_message(message.chat.id, text = "Вот, что мне удалось найти:")
+    for i in range(len(artists)):
+        concert = con.find_concerts(artists[i])
+        if concert != []:
+            try:
+                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей\nВот ссылка на мероприятие: {url}".format(price = concert[0]['price'],
+                                      place = concert[0]['place'],
+                                      title = concert[0]['title'],
+                                      date = concert[0]['date'],
+                                      url = concert[0]['url'])
+                bot.send_message(message.chat.id, text=txt)
+            except KeyError:
+                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие: {url}".format(place = concert[0]['place'],
+                                      title = concert[0]['title'],
+                                      date = concert[0]['date'],
+                                      url = concert[0]['url'])
+                bot.send_message(message.chat.id, text=txt)
+            time.sleep(10)
+    bot.send_message(message.chat.id, text = "Наслаждайся)")
+    
+
 #logger = telebot.logger
 #telebot.logger.setLevel(logging.DEBUG)
 bot.polling(none_stop=True)
