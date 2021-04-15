@@ -120,7 +120,7 @@ def menu_analyze_spotify_proc():
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     db_object = get_info_from_db(1, message.chat.id)
-    print(db_object)
+    print(message.caht.id, db_object)
     token = db_object['spotify_access_token']
     get_info_from_spotify(message, token)
 
@@ -131,7 +131,7 @@ def menu_analyze_vk_proc():
     time.sleep(1)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     db_object = get_info_from_db(0, message.chat.id)
-    print(db_object)
+    print(message.chat.id, db_object)
     vk_id = db_object['vk_id']
     get_info_from_vk(message, vk_id)
 
@@ -147,7 +147,7 @@ def menu_startup_vk_proc(message):
     time.sleep(1)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     db_object = get_info_from_db(0, message.chat.id)
-    print(db_object)
+    print(message.chat.id, db_object)
     vk_id = db_object['vk_id']
     get_info_from_vk(message, vk_id)
 
@@ -156,7 +156,7 @@ def menu_startup_spotify_proc(message):
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     db_object = get_info_from_db(1, message.chat.id)
-    print(db_object)
+    print(message.chat.id, db_object)
     token = db_object['spotify_access_token']
     get_info_from_spotify(message, token)
 
@@ -220,10 +220,10 @@ def talk(message):
 @bot.message_handler(content_types=['location'])
 def location_handler(message, artists = None):
     if artists is None:
-        print("{0}, {1}".format(message.location.latitude, message.location.longitude))
+        print(message.chat.id, "{0}, {1}".format(message.location.latitude, message.location.longitude))
         bot.send_message(message.chat.id, text = "ага, хайп")
     else:
-        print("{0}, {1}".format(message.location.latitude, message.location.longitude))
+        print(message.caht.id, "{0}, {1}".format(message.location.latitude, message.location.longitude))
         bot.send_message(message.chat.id, text = "Подожди немного, пока я подберу для тебя концерты)")
         lat = message.location.latitude
         long = message.location.longitude
@@ -236,9 +236,9 @@ def location_handler(message, artists = None):
 @bot.callback_query_handler(func=lambda call: type(call) == types.CallbackQuery and call.data in menu.keys())
 def menu_keyboard_handler(call):
     btn = call.data
-    print(btn)
+    printcall.chat.id, (btn)
     if menu.get(btn) != None:
-        print('ok')
+        #print('ok')
         menu[btn][1](call.message)
 
 
@@ -246,16 +246,16 @@ def menu_keyboard_handler(call):
 def menu_startup_keyboard_handler(call):
     #print((lambda call: type(call) == types.CallbackQuery and call.data in menu_startup.keys())(call))
     btn = call.data
-    print(btn)
+    print(call.chat.id, btn)
     if menu_startup.get(btn) != None:
-        print('ok')
+        #print('ok')
         menu_startup[btn][1](call.message)
 
      
 @bot.callback_query_handler(func=lambda call: type(call) == types.CallbackQuery and call.data in menu_change_service.keys())
 def menu_change_service_keyboard_handler(call):
     btn = call.data
-    print(btn)
+    print(call.chat.id, btn)
     if menu_change_service.get(btn) != None:
         print('ok')
         menu_change_service[btn][1](call.message)
@@ -273,22 +273,22 @@ def get_info_from_vk(message, vk_id):
         artists = vk.get_favourite_artists(vk_id)
         if artists == []:
             bot.send_message(message.chat.id, text = "Ох, кажется, у тебя нет песен в VK...")
-            print('no songs in vk')
+            print(message.chat.id, 'no songs in vk')
         else:
             text1 = "Теперь, чтобы наши концерты были актуальны, поделись, пожалуйста, своей геопозицией\n\n"
             text2 = "Это очень легко сделать со своего телефона)"
             msg = bot.send_message(message.chat.id, text = text1 + text2)
             bot.register_next_step_handler(message, lambda msg: location_handler(msg, artists))
-            print("send to identify location")
+            print(message.chat.id, "send to identify location")
     except Exception as e:
         if str(e) == 'You don\'t have permissions to browse {}\'s albums'.format(vk_id):
             text1 = "Мне кажется, что у тебя все-таки закрытый аккаунт или закрытые аудио(\n"
             text2 = "Проверь это еще раз пожалуйста!"
             bot.send_message(message.chat.id, text = text1 + text2)
-            print("closed account")
+            print(message.chat.id, "closed account")
         else:
             bot.send_message(message.chat.id, text = "Что-то тут не так! хм-хм")
-            print("something happen")
+            print(message.chat.id, "something happen")
    
     
 def get_info_from_spotify(message, token):
@@ -297,11 +297,11 @@ def get_info_from_spotify(message, token):
     artists = sp.get_favourite_artists(token)
     if artists == []:
         bot.send_message(message.chat.id, text = "Ох, кажется, у тебя нет песен в spotify...")
-        print('no songs in spotify')
+        print(message.chat.id, 'no songs in spotify')
     else:
         msg = bot.send_message(message.chat.id, text = "Теперь, чтобы наши концерты были актуальны, поделись, пожалуйста, своей геопозицией")
         bot.register_next_step_handler(message, lambda msg: location_handler(msg, artists))
-        print("send to identify location")    
+        print(message.chat.id, "send to identify location")    
       
     
 def show_concerts(message, artists, nearest_city):
