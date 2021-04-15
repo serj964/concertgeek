@@ -49,7 +49,7 @@ spotify_oauth_config = oauth_config['spotify_oauth_config']
 
 
 TOKEN = bot_config['token']
-bot = telebot.TeleBot(TOKEN)
+bot = telebot.AsyncTeleBot(TOKEN)
 
 vk_oauth_url = vk_oauth_config['redirect_url_base']+vk_oauth_config['oauth_startpoint']
 spotify_oauth_url = spotify_oauth_config['redirect_url_base']+spotify_oauth_config['oauth_startpoint']
@@ -72,7 +72,7 @@ def get_spotify_id_from_db(tg_id):
 
 
 def get_info_from_db(mode, tg_id):
-    while True:
+    for i in range(24):
         if mode == 0:
             res = get_vk_id_from_db(str(tg_id))
             if res != None:
