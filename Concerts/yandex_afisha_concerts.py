@@ -8,7 +8,7 @@ class Concerts:
         self.concerts = []
         self.cities = {'Москва': 'moscow',
                        'Санкт-Петербург': 'saint-petersburg',
-                       'Сочи': 'sochi'
+                       'Сочи': 'sochi',
                        'Краснодар': 'krasnodar',
                        'Казань': 'kazan',
                        'Новосибирск': 'novosibirsk',
