@@ -14,6 +14,8 @@ bot = telebot.TeleBot(TOKEN)
 
 def Notify():
     #check db and if there are some events, it will notify user
+    #db will contain information about how often should the service notify user
+    #user would be notified in advance if the number of tickets is low
     bot.send_message(373959637, "hey")
 
 while True:
