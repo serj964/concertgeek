@@ -19,18 +19,19 @@ SERVERE_FNAME = "server.e"
 
 #dbo_fd = open(LOGS_PATH+DBO_FNAME,"r")
 #dbe_fd = open(LOGS_PATH+DBE_FNAME,"r")
-boto_fd = open(LOGS_PATH+BOTO_FNAME,"r")
 #bote_fd = open(LOGS_PATH+BOTE_FNAME,"r")
 #servero_fd = open(LOGS_PATH+SERVERO_FNAME,"r")
 #servere_fd = open(LOGS_PATH+SERVERE_FNAME,"r")
 
 
-
-
-
-while True:
-    boto_line = boto_fd.readline()
-    if boto_line != "":
-        current_time = datetime.datetime.now()
-        bot.send_message(CHAT_ID, "[BOT OUTPUT - "+boto_line.split()[0]+"]: "+' '.join(boto_line.split()[1:]))
-        #bot.send_message(CHAT_ID, boto_line)
+LOGFILE = LOGS_PATH+"log.log"
+with open(LOGFILE, "a") as f, open(LOGS_PATH+BOTO_FNAME,"r") as boto_fd:
+    while True:
+        boto_line = boto_fd.readline()
+        if boto_line != "":
+            current_time = datetime.datetime.now()
+            log_string = "[BOT OUTPUT - "+boto_line.split()[0]+"]: "+' '.join(boto_line.split()[1:])
+            f.write(log_string)
+            f.flush()
+            bot.send_message(CHAT_ID, log_string)
+            #bot.send_message(CHAT_ID, boto_line)
