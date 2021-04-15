@@ -236,7 +236,7 @@ def location_handler(message, artists = None):
 @bot.callback_query_handler(func=lambda call: type(call) == types.CallbackQuery and call.data in menu.keys())
 def menu_keyboard_handler(call):
     btn = call.data
-    print(call.from_user.id, btn)
+    print( btn)
     if menu.get(btn) != None:
         #print('ok')
         menu[btn][1](call.message)
@@ -246,7 +246,7 @@ def menu_keyboard_handler(call):
 def menu_startup_keyboard_handler(call):
     #print((lambda call: type(call) == types.CallbackQuery and call.data in menu_startup.keys())(call))
     btn = call.data
-    print(call.from_user.id, btn)
+    print( btn)
     if menu_startup.get(btn) != None:
         #print('ok')
         menu_startup[btn][1](call.message)
@@ -255,7 +255,7 @@ def menu_startup_keyboard_handler(call):
 @bot.callback_query_handler(func=lambda call: type(call) == types.CallbackQuery and call.data in menu_change_service.keys())
 def menu_change_service_keyboard_handler(call):
     btn = call.data
-    print(call.from_user.id, btn)
+    print( btn)
     if menu_change_service.get(btn) != None:
         print('ok')
         menu_change_service[btn][1](call.message)
