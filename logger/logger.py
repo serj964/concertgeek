@@ -30,7 +30,7 @@ with open(LOGFILE, "a") as f, open(LOGS_PATH+BOTO_FNAME,"r") as boto_fd:
         boto_line = boto_fd.readline()
         if boto_line != "":
             current_time = datetime.datetime.now()
-            log_string = "[BOT OUTPUT - "+str(current_time)+" - "+boto_line.split()[0]+"]: "+' '.join(boto_line.split()[1:])
+            log_string = "[BOT OUTPUT - "+current_time.strftime("%d/%m/%Y %H:%M:%S")+" - "+boto_line.split()[0]+"]: "+' '.join(boto_line.split()[1:])
             f.write(log_string+"\n")
             f.flush()
             bot.send_message(CHAT_ID, log_string)
