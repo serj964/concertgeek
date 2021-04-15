@@ -62,7 +62,7 @@ class vk_music_analyzer:
 
     #шаг
     def __step(self, m):
-        return math.log(m) / 25
+        return math.log(m) / 30
 
 
     #распределение очков между добавленными песнями
