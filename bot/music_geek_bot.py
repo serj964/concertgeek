@@ -236,7 +236,7 @@ def location_handler(message, artists = None):
 @bot.callback_query_handler(func=lambda call: type(call) == types.CallbackQuery and call.data in menu.keys())
 def menu_keyboard_handler(call):
     btn = call.data
-    print(call.from_user.id, (btn)
+    print(call.from_user.id, btn)
     if menu.get(btn) != None:
         #print('ok')
         menu[btn][1](call.message)
