@@ -120,7 +120,7 @@ def menu_analyze_spotify_proc():
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     db_object = get_info_from_db(1, message.chat.id)
-    print(message.caht.id, db_object)
+    print(message.chat.id, db_object)
     token = db_object['spotify_access_token']
     get_info_from_spotify(message, token)
 
@@ -223,7 +223,7 @@ def location_handler(message, artists = None):
         print(message.chat.id, "{0}, {1}".format(message.location.latitude, message.location.longitude))
         bot.send_message(message.chat.id, text = "ага, хайп")
     else:
-        print(message.caht.id, "{0}, {1}".format(message.location.latitude, message.location.longitude))
+        print(message.chat.id, "{0}, {1}".format(message.location.latitude, message.location.longitude))
         bot.send_message(message.chat.id, text = "Подожди немного, пока я подберу для тебя концерты)")
         lat = message.location.latitude
         long = message.location.longitude
