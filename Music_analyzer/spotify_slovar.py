@@ -36,7 +36,12 @@ class slovar:
                        'bi-2': 'би-2',
                        'pika': 'пика',
                        'malbec': 'мальбэк',
-                       'eldzhey': 'элджей'}
+                       'eldzhey': 'элджей',
+                       'sektor gaza': 'сектор газа',
+                       'chicherina': 'чичерина',
+                       'krematorij': 'крематорий',
+                       'zhuki': 'жуки',
+                       'yanka': 'янка'}
 
         
     #транслитерация для spotify
