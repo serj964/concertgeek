@@ -232,14 +232,14 @@ def location_handler(message, artists = None):
             nearest_city_rus = list(nearest_city.keys())[0]
             print(message.chat.id, nearest_city_rus)
             text1 = "Твой город - "
-            text2 = "\n\nОсталось подождать совсем чуть-чуть, я подбераю для тебя концерты)"
+            text2 = "\n\nОсталось подождать совсем чуть-чуть, я подбираю для тебя концерты)"
             bot.send_message(message.chat.id, text = text1 + nearest_city_rus + text2)
             show_concerts(message, artists, nearest_city[nearest_city_rus])
         except AttributeError:
             try:
                 city = get_city_by_name(message.text)
                 print(message.chat.id, city)
-                bot.send_message(message.chat.id, text = "Подожди немного, пока я подберу для тебя концерты)")
+                bot.send_message(message.chat.id, text = "Осталось подождать совсем чуть-чуть, я подбираю для тебя концерты)")
                 show_concerts(message, artists, city)
             except ValueError:
                 text1 = "Возможно твоего города еще нет в нашей базе, либо ты написал его неправильно(\n\n"

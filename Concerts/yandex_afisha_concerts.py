@@ -38,10 +38,10 @@ class Concerts:
 
     def load_concerts(self, city='Москва', day=datetime.date.today(), number_of_days=30):
         self.concerts = []
-        try:
+        """try:
             city = self.cities[city]
         except Exception:
-            city = 'moscow'
+            city = 'moscow'"""
         limit = 20
         offset = 0
         link = f"https://afisha.yandex.ru/api/events/rubric/concert?limit={limit}&offset={offset}&hasMixed=0&date={day.strftime('%Y-%m-%d')}&period={number_of_days}&city={city}&_=1615390892410"
