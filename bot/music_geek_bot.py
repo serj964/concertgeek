@@ -197,6 +197,7 @@ def send_welcome(message):
     #text1 = "Привет, я MusicGEEKbot. Приятно познакомиться)\nЯ помогу тебе не пропустить концерт или любое другое мероприятие любимых исполнителей.\n\n"
     text2 = "Мне необходимо проанализировать твою медиатеку, поэтому выбери подходящий вариант:"
     #text3 = если хочешь перейти в основное меню - напиши /menu
+    print(message.chat.id, message.from_user.first_name)
     bot.send_message(message.chat.id, text = text2, reply_markup=make_keyboard(menu_startup))
     #bot.register_next_step_handler(message, menu_startup_keyboard_handler)
 
