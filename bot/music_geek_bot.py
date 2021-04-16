@@ -288,15 +288,17 @@ def get_city_by_name(city):
 def get_info_from_vk(message, vk_id): 
     try:    
         vk = vk_music_analyzer()
-        bot.send_message(message.chat.id, text = "Подожди немного, пока я проанализирую твой плейлист...")
+        text1 = "Подожди немного, пока я анализирую твой плейлист\n\n"
+        text2 = "Обычно это занимает 3-5 минут."
+        bot.send_message(message.chat.id, text = text1 + text2)
         artists = vk.get_favourite_artists(vk_id)
         if artists == []:
             bot.send_message(message.chat.id, text = "Ох, кажется, у тебя нет песен в VK...")
             print(message.chat.id, 'no songs in vk')
         else:
-            text1 = "Теперь, чтобы наши концерты были актуальны, поделись, пожалуйста, своей геопозицией.\n\n"
-            text2 = "Ты можешь отправить как точку на карте, так и название интересующего города (например \'Москва\' или \'Санкт-Петербург\')"
-            msg = bot.send_message(message.chat.id, text = text1+text2)
+            text1 = "Поделись, пожалуйста, своей геопозицией, чтобы я показал концерты в интересующем тебя городе\n\n"
+            text2 = "Ты можешь отправить как точку на карте, так и название города (например \'Москва\' или \'Санкт-Петербург\')"
+            msg = bot.send_message(message.chat.id, text = text1 + text2)
             bot.register_next_step_handler(message, lambda msg: location_handler(msg, artists))
             print(message.chat.id, "send to identify location")
     except Exception as e:
@@ -312,14 +314,14 @@ def get_info_from_vk(message, vk_id):
     
 def get_info_from_spotify(message, token):
     sp = spotify_music_analyzer()
-    #bot.send_message(message.chat.id, text = "Подожди, пока я проанализирую твой плейлист")
+    bot.send_message(message.chat.id, text = "Подожди немного, пока я анализирую твой плейлист")
     artists = sp.get_favourite_artists(token)
     if artists == []:
         bot.send_message(message.chat.id, text = "Ох, кажется, у тебя нет песен в spotify...")
         print(message.chat.id, 'no songs in spotify')
     else:
-        text1 = "Теперь, чтобы наши концерты были актуальны, поделись, пожалуйста, своей геопозицией\n\n"
-        text2 = "Ты можешь отправить как точку на карте, так и название интересующего города (например \'Москва\' или \'Санкт-Петербург\')"
+        text1 = "Поделись, пожалуйста, своей геопозицией, чтобы я показал концерты в интересующем тебя городе\n\n"
+        text2 = "Ты можешь отправить как точку на карте, так и название города (например \'Москва\' или \'Санкт-Петербург\')"
         msg = bot.send_message(message.chat.id, text = text1+text2)
         bot.register_next_step_handler(message, lambda msg: location_handler(msg, artists))
         print(message.chat.id, "send to identify location")    
