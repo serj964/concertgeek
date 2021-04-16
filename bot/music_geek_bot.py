@@ -119,7 +119,6 @@ def menu_analyze_spotify_proc():
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     db_object = get_info_from_db(1, message.chat.id)
-    print(message.chat.id, message.from_user.first_name)
     print(message.chat.id, "successful authorization")
     token = db_object['spotify_access_token']
     get_info_from_spotify(message, token)
@@ -131,7 +130,6 @@ def menu_analyze_vk_proc():
     text2 = "После этого перейди, пожалуйста, по ссылке для авторизации: "
     bot.send_message(message.chat.id, text = text1 + text2 + url)
     db_object = get_info_from_db(0, message.chat.id)
-    print(message.chat.id, message.from_user.first_name)
     print(message.chat.id, db_object)
     vk_id = db_object['vk_id']
     get_info_from_vk(message, vk_id)
@@ -148,7 +146,6 @@ def menu_startup_vk_proc(message):
     text2 = "После этого перейди, пожалуйста, по ссылке для авторизации: "
     bot.send_message(message.chat.id, text = text1 + text2 + url)
     db_object = get_info_from_db(0, message.chat.id)
-    print(message.chat.id, message.from_user.first_name)
     print(message.chat.id, db_object)
     vk_id = db_object['vk_id']
     get_info_from_vk(message, vk_id)
@@ -158,7 +155,6 @@ def menu_startup_spotify_proc(message):
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     db_object = get_info_from_db(1, message.chat.id)
-    print(message.chat.id, message.from_user.first_name)
     print(message.chat.id, "successful authorization")
     token = db_object['spotify_access_token']
     get_info_from_spotify(message, token)
