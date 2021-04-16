@@ -1,7 +1,7 @@
 import re
 import math
 import spotipy
-from Music_analyzer.slovar import slovar
+from Music_analyzer.spotify_slovar import slovar
 
 
 class spotify_music_analyzer:
@@ -132,7 +132,7 @@ class spotify_music_analyzer:
         lst1 = []
         j = 0
         while (j <= (len(lst1) // 50)):
-            results = sp.current_user_top_artists(time_range='short_term', offset = 50*j, limit = 50)
+            results = sp.current_user_top_artists(time_range='medium_term', offset = 50*j, limit = 50)
             for i, item in enumerate(results['items']):
                 lst1.append(item['name'].lower())
             j += 1
@@ -140,7 +140,7 @@ class spotify_music_analyzer:
         lst2 = []
         j = 0
         while (j <= (len(lst2) // 50)):
-            results = sp.current_user_top_artists(time_range='short_term', offset = 50*j, limit = 50)
+            results = sp.current_user_top_artists(time_range='long_term', offset = 50*j, limit = 50)
             for i, item in enumerate(results['items']):
                 lst2.append(item['name'].lower())
             j += 1
