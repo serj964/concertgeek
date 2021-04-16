@@ -75,7 +75,6 @@ class city_slovar:
                 pass
             
         if city_name != '':
-            print(city_name)
             return city_name
         else:
             raise ValueError

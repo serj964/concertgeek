@@ -119,7 +119,7 @@ def menu_analyze_spotify_proc():
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     db_object = get_info_from_db(1, message.chat.id)
-    print(message.chat.id, db_object)
+    print(message.chat.id, "successful authorization")
     token = db_object['spotify_access_token']
     get_info_from_spotify(message, token)
 
@@ -155,7 +155,7 @@ def menu_startup_spotify_proc(message):
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     db_object = get_info_from_db(1, message.chat.id)
-    print(message.chat.id, db_object)
+    print(message.chat.id, "successful authorization")
     token = db_object['spotify_access_token']
     get_info_from_spotify(message, token)
 
@@ -191,7 +191,7 @@ menu_startup = {
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     #text1 = "Привет, я MusicGEEKbot. Приятно познакомиться)\nЯ помогу тебе не пропустить концерт или любое другое мероприятие любимых исполнителей.\n\n"
-    text2 = "Для работы нашего сервиса необходимо проанализировать твою медиатеку, поэтому выбери подходящий вариант\n\n"
+    text2 = "Мне необходимо проанализировать твою медиатеку, поэтому выбери подходящий вариант:"
     #text3 = если хочешь перейти в основное меню - напиши /menu
     bot.send_message(message.chat.id, text = text2, reply_markup=make_keyboard(menu_startup))
     #bot.register_next_step_handler(message, menu_startup_keyboard_handler)
@@ -236,6 +236,7 @@ def location_handler(message, artists = None):
         except AttributeError:
             try:
                 city = get_city_by_name(message.text)
+                print(message.chat.id, city)
                 bot.send_message(message.chat.id, text = "Подожди немного, пока я подберу для тебя концерты)")
                 show_concerts(message, artists, city)
             except ValueError:
@@ -288,15 +289,15 @@ def get_city_by_name(city):
 def get_info_from_vk(message, vk_id): 
     try:    
         vk = vk_music_analyzer()
-        text1 = "Подожди немного, пока я анализирую твой плейлист\n\n"
-        text2 = "Обычно это занимает 3-5 минут."
+        text1 = "Подожди немного, пока я анализирую твой плейлист...\n\n"
+        text2 = "Обычно это занимает 4-6 минут."
         bot.send_message(message.chat.id, text = text1 + text2)
         artists = vk.get_favourite_artists(vk_id)
         if artists == []:
             bot.send_message(message.chat.id, text = "Ох, кажется, у тебя нет песен в VK...")
             print(message.chat.id, 'no songs in vk')
         else:
-            text1 = "Поделись, пожалуйста, своей геопозицией, чтобы я показал концерты в интересующем тебя городе\n\n"
+            text1 = "Поделись, пожалуйста, своей геопозицией, чтобы я показал концерты в интересующем тебя городе!\n\n"
             text2 = "Ты можешь отправить как точку на карте, так и название города (например \'Москва\' или \'Санкт-Петербург\')"
             msg = bot.send_message(message.chat.id, text = text1 + text2)
             bot.register_next_step_handler(message, lambda msg: location_handler(msg, artists))
@@ -314,13 +315,13 @@ def get_info_from_vk(message, vk_id):
     
 def get_info_from_spotify(message, token):
     sp = spotify_music_analyzer()
-    bot.send_message(message.chat.id, text = "Подожди немного, пока я анализирую твой плейлист")
+    bot.send_message(message.chat.id, text = "Подожди немного, пока я анализирую твой плейлист...")
     artists = sp.get_favourite_artists(token)
     if artists == []:
         bot.send_message(message.chat.id, text = "Ох, кажется, у тебя нет песен в spotify...")
         print(message.chat.id, 'no songs in spotify')
     else:
-        text1 = "Поделись, пожалуйста, своей геопозицией, чтобы я показал концерты в интересующем тебя городе\n\n"
+        text1 = "Поделись, пожалуйста, своей геопозицией, чтобы я показал концерты в интересующем тебя городе!\n\n"
         text2 = "Ты можешь отправить как точку на карте, так и название города (например \'Москва\' или \'Санкт-Петербург\')"
         msg = bot.send_message(message.chat.id, text = text1+text2)
         bot.register_next_step_handler(message, lambda msg: location_handler(msg, artists))
@@ -331,6 +332,7 @@ def show_concerts(message, artists, nearest_city):
     con = Concerts()
     con.load_concerts(city = nearest_city, number_of_days=170)
     bot.send_message(message.chat.id, text = "Вот, что мне удалось найти:")
+    concert_counter = 0
     for i in range(len(artists)):
         concert = con.find_concerts(artists[i])
         if concert != []:
@@ -341,16 +343,20 @@ def show_concerts(message, artists, nearest_city):
                                       date = concert[0]['date'],
                                       url = concert[0]['url'])
                 bot.send_message(message.chat.id, text=txt)
+                concert_counter += 1
             except KeyError:
                 txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие: {url}".format(place = concert[0]['place'],
                                       title = concert[0]['title'],
                                       date = concert[0]['date'],
                                       url = concert[0]['url'])
                 bot.send_message(message.chat.id, text=txt)
+                concert_counter += 1
             time.sleep(8)
-    print(message.chat.id, "{0} concerts were sent".format(i))
-    bot.send_message(message.chat.id, text = "Наслаждайся)")
-    
+    print(message.chat.id, "{0} concerts were sent".format(concert_counter))
+    if concert_counter != 0:
+        bot.send_message(message.chat.id, text = "Наслаждайся)")
+    else:
+        bot.send_message(message.chat.id, text = "Кажется, что в выбранном тобой городе нет концертов, которые могли бы тебе понраться(")
 
 #logger = telebot.logger
 #telebot.logger.setLevel(logging.DEBUG)
