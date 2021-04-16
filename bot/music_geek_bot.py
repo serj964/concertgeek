@@ -230,7 +230,7 @@ def location_handler(message, artists = None):
             long = message.location.longitude
             nearest_city = get_nearest_city_by_location(lat, long)
             nearest_city_rus = list(nearest_city.keys())[0]
-            print(message.chat.id, nearest_city_rus)
+            print(message.chat.id, "city " + nearest_city_rus)
             text1 = "Твой город - "
             text2 = "\n\nОсталось подождать совсем чуть-чуть, я подбираю для тебя концерты)"
             bot.send_message(message.chat.id, text = text1 + nearest_city_rus + text2)
@@ -238,7 +238,7 @@ def location_handler(message, artists = None):
         except AttributeError:
             try:
                 city = get_city_by_name(message.text)
-                print(message.chat.id, city)
+                print(message.chat.id, "city " + city)
                 bot.send_message(message.chat.id, text = "Осталось подождать совсем чуть-чуть, я подбираю для тебя концерты)")
                 show_concerts(message, artists, city)
             except ValueError:
@@ -333,7 +333,7 @@ def get_info_from_spotify(message, token):
 def show_concerts(message, artists, nearest_city):
     con = Concerts()
     con.load_concerts(city = nearest_city, number_of_days=170)
-    bot.send_message(message.chat.id, text = "Вот, что мне удалось найти:")
+    bot.send_message(message.chat.id, text = "Вот всё, что мне удалось найти:")
     concert_counter = 0
     for i in range(len(artists)):
         concert = con.find_concerts(artists[i])
@@ -358,7 +358,8 @@ def show_concerts(message, artists, nearest_city):
     if concert_counter != 0:
         bot.send_message(message.chat.id, text = "Наслаждайся)")
     else:
-        bot.send_message(message.chat.id, text = "Кажется, что в выбранном тобой городе нет концертов, которые могли бы тебе понраться(")
+        time.sleep(5)
+        bot.send_message(message.chat.id, text = "Ох, кажется, что в выбранном тобой городе нет концертов, которые могли бы тебе понравиться(")
 
 #logger = telebot.logger
 #telebot.logger.setLevel(logging.DEBUG)
