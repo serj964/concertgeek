@@ -126,9 +126,9 @@ def menu_analyze_spotify_proc():
 
 def menu_analyze_vk_proc():
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
-    bot.send_message(message.chat.id, "Для работы сервиса необходимо, чтобы у тебя был открытый аккаунт и открытые аудио!")
-    time.sleep(1)
-    bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
+    text1 = "Обязательно проверь, что у тебя открытый аккаунт и открытые аудио!\n\n"
+    text2 = "После этого перейди, пожалуйста, по ссылке для авторизации: "
+    bot.send_message(message.chat.id, text = text1 + text2 + url)
     db_object = get_info_from_db(0, message.chat.id)
     print(message.chat.id, db_object)
     vk_id = db_object['vk_id']
@@ -142,9 +142,9 @@ def menu_change_service_proc(message):
 
 def menu_startup_vk_proc(message):
     url = vk_oauth_url+"?&tg_id="+str(message.chat.id)
-    bot.send_message(message.chat.id, "Проверь пожалуйста, что у тебя открытый аккаунт и открытые аудио!")
-    time.sleep(1)
-    bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
+    text1 = "Обязательно проверь, что у тебя открытый аккаунт и открытые аудио!\n\n"
+    text2 = "После этого перейди, пожалуйста, по ссылке для авторизации: "
+    bot.send_message(message.chat.id, text = text1 + text2 + url)
     db_object = get_info_from_db(0, message.chat.id)
     print(message.chat.id, db_object)
     vk_id = db_object['vk_id']
@@ -223,14 +223,15 @@ def location_handler(message, artists = None):
         bot.send_message(message.chat.id, text = "ага, хайп")
     else:
         try:
-            print("{0}, {1}".format(message.location.latitude, message.location.longitude))
+            loc = "{0}, {1}".format(message.location.latitude, message.location.longitude)
+            print(message.chat.id, loc)
             lat = message.location.latitude
             long = message.location.longitude
             nearest_city = get_nearest_city_by_location(lat, long)
             nearest_city_rus = list(nearest_city.keys())[0]
-            bot.send_message(message.chat.id, text = "Твой город - " + nearest_city_rus)
-            time.sleep(4)
-            bot.send_message(message.chat.id, text = "Подожди немного, пока я подберу для тебя концерты)")
+            text1 = "Твой город - "
+            text2 = "\n\nТеперь немного подожди, пока я подберу для тебя концерты)"
+            bot.send_message(message.chat.id, text = text1 + nearest_city_rus + text2)
             show_concerts(message, artists, nearest_city[nearest_city_rus])
         except AttributeError:
             try:
@@ -240,7 +241,7 @@ def location_handler(message, artists = None):
             except ValueError:
                 text1 = "Возможно твоего города еще нет в нашей базе, либо ты написал его неправильно(\n\n"
                 text2 = "Попробуй еще раз с команды /start"
-                print('wrong city name or no city in our base')
+                print(message.chat.id, 'wrong city name or no city in our base')
                 bot.send_message(message.chat.id, text = text1 + text2)
                 
              
@@ -300,8 +301,8 @@ def get_info_from_vk(message, vk_id):
             print(message.chat.id, "send to identify location")
     except Exception as e:
         if str(e) == 'You don\'t have permissions to browse {}\'s albums'.format(vk_id):
-            text1 = "Мне кажется, что у тебя все-таки закрытый аккаунт или закрытые аудио(\n"
-            text2 = "Проверь это еще раз пожалуйста!"
+            text1 = "Мне кажется, что у тебя все-таки закрытый аккаунт или закрытые аудио(\n\n"
+            text2 = "Проверь это еще раз, пожалуйста!"
             bot.send_message(message.chat.id, text = text1 + text2)
             print(message.chat.id, "closed account")
         else:
@@ -344,7 +345,8 @@ def show_concerts(message, artists, nearest_city):
                                       date = concert[0]['date'],
                                       url = concert[0]['url'])
                 bot.send_message(message.chat.id, text=txt)
-            time.sleep(10)
+            time.sleep(8)
+    print(message.chat.id, "{0} concerts were sent".format(i))
     bot.send_message(message.chat.id, text = "Наслаждайся)")
     
 
