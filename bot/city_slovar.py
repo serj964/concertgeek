@@ -29,7 +29,9 @@ class city_slovar:
                        'Тула': 'tula; 54.193122, 37.617348',
                        'Рязань': 'ryazan; 54.629560, 39.741908',
                        'Калуга': 'kaluga; 54.513845, 36.261215',
-                       'Тверь': 'tver; 56.859625, 35.911851'
+                       'Тверь': 'tver; 56.859625, 35.911851',
+                       'Брянск': 'bryansk; 53.243556, 34.363425',
+                       'Курск': 'kursk; 51.730846, 36.193015'
                 }
 
     def __rad(self, x):
@@ -42,6 +44,7 @@ class city_slovar:
         return 6367*math.acos(a + b)
     
     
+    #возвращает по координатам
     def nearest_city_by_location(self, user_lat, user_long):
         dicti = {}
         city_dicti = {}
@@ -62,9 +65,10 @@ class city_slovar:
         s = self.SLOVAR[nearest]
         city_dicti[nearest] = s[0:s.find(';', 0,len(s))]
                 
-        print(s[0:s.find(';', 0,len(s))])
         return city_dicti
     
+    
+    #возвращает по имени
     def city_by_name(self, name):
         city_name = ''
         for city in self.SLOVAR.keys():

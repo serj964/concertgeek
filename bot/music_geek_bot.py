@@ -230,8 +230,9 @@ def location_handler(message, artists = None):
             long = message.location.longitude
             nearest_city = get_nearest_city_by_location(lat, long)
             nearest_city_rus = list(nearest_city.keys())[0]
+            print(message.chat.id, nearest_city_rus)
             text1 = "Твой город - "
-            text2 = "\n\nТеперь немного подожди, пока я подберу для тебя концерты)"
+            text2 = "\n\nОсталось подождать совсем чуть-чуть, я подбераю для тебя концерты)"
             bot.send_message(message.chat.id, text = text1 + nearest_city_rus + text2)
             show_concerts(message, artists, nearest_city[nearest_city_rus])
         except AttributeError:
