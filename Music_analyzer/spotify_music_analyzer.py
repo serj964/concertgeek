@@ -1,7 +1,7 @@
 import re
 import math
 import spotipy
-from Music_analyzer.slovar import slovar
+from Music_analyzer.spotify_slovar import slovar
 
 
 class spotify_music_analyzer:
