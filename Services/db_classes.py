@@ -2,14 +2,12 @@ from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.types import BigInteger
-import time
 
+engine = create_engine('sqlite:///:memory:', echo=True)
 
-engine = create_engine('sqlite:///test.db', echo = True)
+Base = declarative_base()
 
-base = declarative_base()
-
-class User(base):
+class User(Base):
     __tablename__ = 'users'
     tg_id = Column(BigInteger, primary_key=True)
     tg_nickname = Column(String)
@@ -25,4 +23,16 @@ class User(base):
         return "<User('%d','%s', '%d', '%d')>" % (self.tg_id, self.tg_nickname, self.vk_id, self.spotify_id)
 
 # Создание таблицы
-base.metadata.create_all(engine)
+Base.metadata.create_all(engine)
+
+Session = sessionmaker(bind=engine)
+session = Session()
+
+
+vasiaUser = User(1234, "Vasiliy Pypkin", 1234, 1234)
+session.add(vasiaUser)
+
+ourUser = session.query(User)
+print(ourUser)
+
+
