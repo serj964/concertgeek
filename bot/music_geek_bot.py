@@ -9,14 +9,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import datetime
 
-
-from Music_analyzer.vk_music_analyzer import vk_music_analyzer
-from Music_analyzer.spotify_music_analyzer import spotify_music_analyzer
-from Concerts.yandex_afisha_concerts import Concerts
-from bot.city_slovar import city_slovar
-import Db.db as db_classes
-
-
 class Unbuffered(object):
    def __init__(self, stream):
        self.stream = stream
@@ -28,6 +20,16 @@ class Unbuffered(object):
        self.stream.flush()
    def __getattr__(self, attr):
        return getattr(self.stream, attr)
+
+
+from Music_analyzer.vk_music_analyzer import vk_music_analyzer
+from Music_analyzer.spotify_music_analyzer import spotify_music_analyzer
+from Concerts.yandex_afisha_concerts import Concerts
+from bot.city_slovar import city_slovar
+import Db.db as db_classes
+
+
+
 
 
 sys.stdout = Unbuffered(sys.stdout)
@@ -342,6 +344,7 @@ def show_concerts(message, artists, nearest_city):
 #telebot.logger.setLevel(logging.DEBUG)
 
 vasiaUser = db_classes.User(1234, "Vasiliy Pypkin", 1234, 1234, datetime.datetime.now(), 1)
+print(vasiaUser)
 db_session.add(vasiaUser)
 db_session.commit()
 bot.polling(none_stop=True)
