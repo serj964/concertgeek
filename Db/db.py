@@ -96,5 +96,6 @@ if __name__ == "__main__":
         config = json.load(conf)
     db_config = config["db_config"]
     sqlite_address = db_config['sqlite_address']
+    print(sqlite_address)
     engine = create_engine(sqlite_address, echo = True)
     base.metadata.create_all(engine)
