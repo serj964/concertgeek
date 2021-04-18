@@ -230,7 +230,7 @@ def location_handler(message, artists = None):
             long = message.location.longitude
             nearest_city = get_nearest_city_by_location(lat, long)
             nearest_city_rus = list(nearest_city.keys())[0]
-            print(message.chat.id, "city " + nearest_city_rus)
+            print(message.chat.id, "city " + nearest_city[nearest_city_rus])
             text1 = "Твой город - "
             text2 = "\n\nОсталось подождать совсем чуть-чуть, я подбираю для тебя концерты)"
             bot.send_message(message.chat.id, text = text1 + nearest_city_rus + text2)
