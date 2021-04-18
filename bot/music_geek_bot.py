@@ -344,15 +344,15 @@ def show_concerts(message, artists, nearest_city):
                                       title = concert[0]['title'],
                                       date = concert[0]['date'],
                                       url = concert[0]['url'])
-                txt2 = "<a href='https://www.google.com/'>Google</a>"
-                bot.send_message(message.chat.id, text=txt + txt2, parse_mode=ParseMode.HTML)
+                txt2 = "<a href=concert[0]['url']>Google</a>"
+                bot.send_message(message.chat.id, text=txt + txt2, parse_mode='HTML')
                 concert_counter += 1
             except KeyError:
                 txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие: {url}".format(place = concert[0]['place'],
                                       title = concert[0]['title'],
                                       date = concert[0]['date'],
                                       url = concert[0]['url'])
-                bot.send_message(message.chat.id, text=txt, parse_mode='MarkdownV2')
+                bot.send_message(message.chat.id, text=txt, parse_mode='HTML')
                 concert_counter += 1
             time.sleep(8)
     print(message.chat.id, "{0} concerts were sent".format(concert_counter))
