@@ -4,9 +4,6 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.types import BigInteger, SmallInteger, Float, DateTime, Text
 import time
 
-
-engine = create_engine('sqlite:///Db/test.db', echo = True)
-
 base = declarative_base()
 
 ConcertMusicianTable = Table('concert_musician_link', base.metadata,
@@ -91,6 +88,12 @@ class Concert(base):
 
 
 
+if __name__ == "__main__":
+    CONFIG_FILE = './bot/config.json'
 
-# Создание таблицы
-base.metadata.create_all(engine)
+    with open(CONFIG_FILE) as conf:
+        config = json.load(conf)
+    db_config = config["db_config"]
+    sqlite_address = db_config['sqlite_address']
+    engine = create_engine(sqlite_address, echo = True)
+    base.metadata.create_all(engine)

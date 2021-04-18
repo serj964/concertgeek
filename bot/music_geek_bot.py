@@ -3,11 +3,18 @@ import time
 from telebot import types
 import logging
 from pymongo import MongoClient
+import json
+import sys
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+import datetime
+
+
 from Music_analyzer.vk_music_analyzer import vk_music_analyzer
 from Music_analyzer.spotify_music_analyzer import spotify_music_analyzer
 from Concerts.yandex_afisha_concerts import Concerts
 from bot.city_slovar import city_slovar
-import json
+import Db.db as db_classes
 
 
 class Unbuffered(object):
@@ -22,7 +29,7 @@ class Unbuffered(object):
    def __getattr__(self, attr):
        return getattr(self.stream, attr)
 
-import sys
+
 sys.stdout = Unbuffered(sys.stdout)
 
 
@@ -36,6 +43,11 @@ oauth_config = config["oauth_config"]
 server_config = config["server_config"]
 db_config = config["db_config"]
 
+
+
+engine = create_engine(db_config['sqlite_address'])
+db_session = sessionmaker(bind=engine)()
+
 client = MongoClient(db_config['address'], db_config['port'])
 db = client[db_config['name']]
 vk_collection = db[db_config['collections']['vk_collection']]
@@ -43,8 +55,6 @@ spotify_collection = db[db_config['collections']['spotify_collection']]
 
 vk_oauth_config = oauth_config['vk_oauth_config']
 spotify_oauth_config = oauth_config['spotify_oauth_config']
-
-
 
 
 
@@ -330,4 +340,8 @@ def show_concerts(message, artists, nearest_city):
 
 #logger = telebot.logger
 #telebot.logger.setLevel(logging.DEBUG)
+
+vasiaUser = db_classes.User(1234, "Vasiliy Pypkin", 1234, 1234, datetime.datetime.now(), 1)
+db_session.add(vasiaUser)
+db_session.commit()
 bot.polling(none_stop=True)
