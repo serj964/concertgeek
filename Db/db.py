@@ -89,6 +89,7 @@ class Concert(base):
 
 
 if __name__ == "__main__":
+    import json
     CONFIG_FILE = './bot/config.json'
 
     with open(CONFIG_FILE) as conf:
