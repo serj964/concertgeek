@@ -220,12 +220,10 @@ def talk(message):
 @bot.message_handler(content_types=["location", "text"])
 def location_handler(message, artists = None):
     if artists is None:
-        #print("{0}, {1}".format(message.location.latitude, message.location.longitude))
         bot.send_message(message.chat.id, text = "ага, хайп")
     else:
         try:
             loc = "{0}, {1}".format(message.location.latitude, message.location.longitude)
-            print(message.chat.id, loc)
             lat = message.location.latitude
             long = message.location.longitude
             nearest_city = get_nearest_city_by_location(lat, long)
@@ -278,13 +276,13 @@ def menu_change_service_keyboard_handler(call):
 
 #по координатам возвращает ближайший город
 def get_nearest_city_by_location(user_lat, user_long):
-    coordinates = city_slovar()
+    coordinates = Сity_slovar()
     return coordinates.nearest_city_by_location(user_lat, user_long) 
 
 
 #по названию возвращает город
 def get_city_by_name(city):
-    coordinates = city_slovar()
+    coordinates = Сity_slovar()
     return coordinates.city_by_name(city)
 
 
