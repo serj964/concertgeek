@@ -223,7 +223,6 @@ def location_handler(message, artists = None):
         bot.send_message(message.chat.id, text = "ага, хайп")
     else:
         try:
-            loc = "{0}, {1}".format(message.location.latitude, message.location.longitude)
             lat = message.location.latitude
             long = message.location.longitude
             nearest_city = get_nearest_city_by_location(lat, long)
