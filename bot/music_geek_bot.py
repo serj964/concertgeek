@@ -346,8 +346,8 @@ def show_concerts(message, artists, nearest_city):
                                       date = concert[0]['date'],
                                       url = concert[0]['url'])
                 url = concert[0]['url']
-                txt2 = "<a href=url>concert</a>"
-                bot.send_message(message.chat.id, text=txt + txt2, parse_mode='HTML')
+                txt2 = "[concert](url)"
+                bot.send_message(message.chat.id, text=txt + txt2, parse_mode='Markdown')
                 concert_counter += 1
             except KeyError:
                 txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие: {url}".format(place = concert[0]['place'],
