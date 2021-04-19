@@ -53,8 +53,8 @@ bot = telebot.TeleBot(TOKEN)
 vk_oauth_url = vk_oauth_config['redirect_url_base']+vk_oauth_config['oauth_startpoint']
 spotify_oauth_url = spotify_oauth_config['redirect_url_base']+spotify_oauth_config['oauth_startpoint']
 
-TEXT = "(если ты еще не отправлял мне свой плейлист - напиши /start, если хочешь перейти в основное меню - напиши /menu)"
-
+#TEXT = "(если ты еще не отправлял мне свой плейлист - напиши /start, если хочешь перейти в основное меню - напиши /menu)"
+TEXT = "(если ты еще не отправлял мне свой плейлист - напиши /start)"
 
 def get_vk_id_from_db(tg_id):
     res = vk_collection.find_one({'_id' : tg_id})
@@ -197,7 +197,7 @@ def send_welcome(message):
     bot.send_message(message.chat.id, text = text2, reply_markup=make_keyboard(menu_startup))
     #bot.register_next_step_handler(message, menu_startup_keyboard_handler)
 
-
+'''
 @bot.message_handler(commands=['menu'])
 def handle_menu(message):
     text1 = "Это основное меню!\n\n"
@@ -206,7 +206,7 @@ def handle_menu(message):
     #text4 = "Если хочешь, чтобы твои данные были стерты, нажми СТЕРЕТЬ\n\n"
     text5 = "(если ты еще не отправлял мне свой плейлист, напиши /start)"
     bot.send_message(message.chat.id, text=text1+text2+text3+text5, reply_markup=make_keyboard(menu))
-    #bot.register_next_step_handler(message, menu_keyboard_handler)
+    #bot.register_next_step_handler(message, menu_keyboard_handler)'''
 
 
 @bot.message_handler(content_types = ["text", "sticker", "pinned_message", "photo", "audio"])
