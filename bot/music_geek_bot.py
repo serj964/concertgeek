@@ -339,13 +339,14 @@ def show_concerts(message, artists, nearest_city):
         concert = con.find_concerts(artists[i])
         if concert != []:
             try:
-                urll = 'https://www.google.com/'
-                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей\nВот ссылка на мероприятие: {url}".format(price = concert[0]['price'],
+                #urll = 'https://www.google.com/'
+                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей\nВот ссылка на мероприятие: ".format(price = concert[0]['price'],
                                       place = concert[0]['place'],
                                       title = concert[0]['title'],
                                       date = concert[0]['date'],
                                       url = concert[0]['url'])
-                txt2 = "<a href=urll>Google</a>"
+                url = concert[0]['url']
+                txt2 = "<a href=url>concert</a>"
                 bot.send_message(message.chat.id, text=txt + txt2, parse_mode='HTML')
                 concert_counter += 1
             except KeyError:
