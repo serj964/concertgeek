@@ -220,9 +220,12 @@ def talk(message):
 @bot.message_handler(content_types=["location", "text"])
 def location_handler(message, artists = None):
     if artists is None:
+        #print("{0}, {1}".format(message.location.latitude, message.location.longitude))
         bot.send_message(message.chat.id, text = "ага, хайп")
     else:
         try:
+            loc = "{0}, {1}".format(message.location.latitude, message.location.longitude)
+            print(message.chat.id, loc)
             lat = message.location.latitude
             long = message.location.longitude
             nearest_city = get_nearest_city_by_location(lat, long)
