@@ -340,21 +340,19 @@ def show_concerts(message, artists, nearest_city):
         if concert != []:
             try:
                 #urll = 'https://www.google.com/'
-                txt = "Концерт группы [{title}]({url})\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей\nВот ссылка на мероприятие: ".format(price = concert[0]['price'],
+                txt = "Концерт группы [{title}]({url})\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей".format(price = concert[0]['price'],
                                       place = concert[0]['place'],
                                       title = concert[0]['title'],
                                       date = concert[0]['date'],
                                       url = concert[0]['url'])
-                #url = concert[0]['url']
-                #txt2 = "[concert]({})".format(url)
                 bot.send_message(message.chat.id, text=txt, parse_mode='markdown')
                 concert_counter += 1
             except KeyError:
-                txt = "Концерт группы {title}\nОн пройдет {date} в {place}\nВот ссылка на мероприятие: {url}".format(place = concert[0]['place'],
+                txt = "Концерт группы [{title}]({url})\nОн пройдет {date} в {place}".format(place = concert[0]['place'],
                                       title = concert[0]['title'],
                                       date = concert[0]['date'],
                                       url = concert[0]['url'])
-                bot.send_message(message.chat.id, text=txt, parse_mode='HTML')
+                bot.send_message(message.chat.id, text=txt, parse_mode='markdown')
                 concert_counter += 1
             time.sleep(8)
     print(message.chat.id, "{0} concerts were sent".format(concert_counter))
