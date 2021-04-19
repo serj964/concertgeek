@@ -52,16 +52,16 @@ class Concerts:
     def find_concerts(self, artist):
         suitable_concerts = []
         for concert in self.concerts:
+            att = math.ceil(len(concert['title'].lower())/len(artist.lower()))
             if concert['title'].lower() == artist.lower():
                 suitable_concerts.append(concert)   
-            elif (math.ceil(len(concert['title'].lower())/len(artist.lower())) < 2.5):
+            elif (concert['title'].lower() != artist.lower()) and (att < 2.5):
                 if re.search(artist.lower(), concert['title'].lower()):
                     suitable_concerts.append(concert)
-            elif (math.ceil(len(concert['title'].lower())/len(artist.lower())) < 6):
+            elif (concert['title'].lower() != artist.lower()) and (att >= 2.5) and (att < 6):
                 new_artist = artist.lower().replace(' ','')
                 new_concert = concert['title'].lower().replace(' ', '')
                 result = re.split(r'[;,.:&]', new_concert)
-                print(result)
                 if new_artist in result:
                     suitable_concerts.append(concert)
         return suitable_concerts

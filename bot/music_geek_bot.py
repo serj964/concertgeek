@@ -329,7 +329,7 @@ def get_info_from_spotify(message, token):
     
 def show_concerts(message, artists, nearest_city):
     con = Concerts()
-    con.load_concerts(city = nearest_city, number_of_days=170)
+    con.load_concerts(city = nearest_city, number_of_days=120)
     bot.send_message(message.chat.id, text = "Вот всё, что мне удалось найти:")
     concert_counter = 0
     for i in range(len(artists)):
