@@ -290,7 +290,7 @@ def get_city_by_name(city):
 
 def get_info_from_vk(message, vk_id): 
     try:    
-        vk = vk_music_analyzer()
+        vk = Vk_music_analyzer()
         text1 = "Подожди немного, пока я анализирую твой плейлист...\n\n"
         text2 = "Обычно это занимает 4-6 минут."
         bot.send_message(message.chat.id, text = text1 + text2)
@@ -316,7 +316,7 @@ def get_info_from_vk(message, vk_id):
    
     
 def get_info_from_spotify(message, token):
-    sp = spotify_music_analyzer()
+    sp = Spotify_music_analyzer()
     bot.send_message(message.chat.id, text = "Подожди немного, пока я анализирую твой плейлист...")
     artists = sp.get_favourite_artists(token)
     if artists == []:
