@@ -1,4 +1,5 @@
 import requests
+import math
 import datetime
 import re
 
@@ -6,35 +7,6 @@ import re
 class Concerts:
     def __init__(self):
         self.concerts = []
-        self.cities = {'Москва': 'moscow',
-                       'Санкт-Петербург': 'saint-petersburg',
-                       'Сочи': 'sochi',
-                       'Краснодар': 'krasnodar',
-                       'Казань': 'kazan',
-                       'Новосибирск': 'novosibirsk',
-                       'Екатеринбург': 'yekaterinburg',
-                       'Нижний Новгород': 'nizhny-novgorod',
-                       'Челябинск': 'chelyabinsk',
-                       'Владивосток': 'vladivostok',
-                       'Белгород': 'belgorod',
-                       'Владимир': 'vladimir',
-                       'Ижевск': 'izhevsk',
-                       'Красноярск': 'krasnoyarsk',
-                       'Мурманск': 'murmansk',
-                       'Смоленск': 'smolensk',
-                       'Омск': 'omsk',
-                       'Хабаровск': 'khabarovsk',
-                       'Самара': 'samara',
-                       'Ростов-на-Дону': 'rostov-na-donu',
-                       'Уфа': 'ufa',
-                       'Воронеж': 'voronezh',
-                       'Пермь': 'perm',
-                       'Волгоград': 'volgograd',
-                       'Тула': 'tula',
-                       'Рязань': 'ryazan',
-                       'Калуга': 'kaluga',
-                       'Тверь': 'tver'
-        }
 
     def load_concerts(self, city='Москва', day=datetime.date.today(), number_of_days=30):
         self.concerts = []
@@ -80,6 +52,16 @@ class Concerts:
     def find_concerts(self, artist):
         suitable_concerts = []
         for concert in self.concerts:
-            if re.search(artist.lower(), concert['title'].lower()):
-             suitable_concerts.append(concert)
+            if concert['title'].lower() == artist.lower():
+                suitable_concerts.append(concert)   
+            elif (math.ceil(len(concert['title'].lower())/len(artist.lower())) < 2.5):
+                if re.search(artist.lower(), concert['title'].lower()):
+                    suitable_concerts.append(concert)
+            elif (math.ceil(len(concert['title'].lower())/len(artist.lower())) < 6):
+                new_artist = artist.lower().replace(' ','')
+                new_concert = concert['title'].lower().replace(' ', '')
+                result = re.split(r'[;,.:&]', new_concert)
+                print(result)
+                if new_artist in result:
+                    suitable_concerts.append(concert)
         return suitable_concerts

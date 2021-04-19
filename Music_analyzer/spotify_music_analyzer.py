@@ -1,10 +1,10 @@
 import re
 import math
 import spotipy
-from Music_analyzer.spotify_slovar import slovar
+from Music_analyzer.spotify_slovar import Slovar
 
 
-class spotify_music_analyzer:
+class Spotify_music_analyzer:
     def __init__(self):
         self.MEDIANA = 0.42
         self.WEIGHT = 0.125
@@ -191,6 +191,6 @@ class spotify_music_analyzer:
         for i in range(math.ceil((len(list_d) ** 0.8))):
             lst.append(list_d[i][0])
         
-        final_lst = slovar()
+        final_lst = Slovar()
         
         return final_lst.transliterate(lst)

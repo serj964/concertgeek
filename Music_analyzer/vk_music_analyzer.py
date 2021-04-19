@@ -5,7 +5,7 @@ from vk_api.audio import VkAudio
 from Music_analyzer.password import password
 
 
-class vk_music_analyzer:
+class Vk_music_analyzer:
     def __init__(self):
         self.MEDIANA = 0.45
         self.WEIGHT = 0.125
