@@ -71,7 +71,7 @@ def get_spotify_id_from_db(tg_id):
 
 
 def get_info_from_db(mode, tg_id):
-    while True:
+    for i in range(24):
         if mode == 0:
             res = get_vk_id_from_db(str(tg_id))
             if res != None:
@@ -163,7 +163,6 @@ def menu_startup_spotify_proc(message):
 def menu_startup_abort_proc(message):
     text1 = "Тогда я просто побуду у тебя в телефоне)\n\n"
     bot.send_message(message.chat.id, text = text1+TEXT)
-    #bot.register_next_step_handler(message, talk)
     
 
 menu_change_service = {
@@ -250,7 +249,6 @@ def menu_keyboard_handler(call):
     btn = call.data
     print(call.from_user.id, btn)
     if menu.get(btn) != None:
-        #print('ok')
         menu[btn][1](call.message)
 
 
@@ -260,7 +258,6 @@ def menu_startup_keyboard_handler(call):
     btn = call.data
     print(call.from_user.id, btn)
     if menu_startup.get(btn) != None:
-        #print('ok')
         menu_startup[btn][1](call.message)
 
      
@@ -269,7 +266,6 @@ def menu_change_service_keyboard_handler(call):
     btn = call.data
     print(call.from_user.id, btn)
     if menu_change_service.get(btn) != None:
-        #print('ok')
         menu_change_service[btn][1](call.message)
 
 
@@ -336,7 +332,6 @@ def show_concerts(message, artists, nearest_city):
         concert = con.find_concerts(artists[i])
         if concert != []:
             try:
-                #urll = 'https://www.google.com/'
                 txt = "Концерт группы [{title}]({url})\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей".format(price = concert[0]['price'],
                                       place = concert[0]['place'],
                                       title = concert[0]['title'],
