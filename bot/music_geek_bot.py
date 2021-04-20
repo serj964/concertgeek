@@ -3,10 +3,10 @@ import time
 from telebot import types
 import logging
 from pymongo import MongoClient
-from Music_analyzer.vk_music_analyzer import vk_music_analyzer
-from Music_analyzer.spotify_music_analyzer import spotify_music_analyzer
+from Music_analyzer.vk_music_analyzer import Vk_music_analyzer
+from Music_analyzer.spotify_music_analyzer import Spotify_music_analyzer
 from Concerts.yandex_afisha_concerts import Concerts
-from bot.city_slovar import city_slovar
+from bot.city_slovar import City_slovar
 import json
 
 
@@ -71,7 +71,7 @@ def get_spotify_id_from_db(tg_id):
 
 
 def get_info_from_db(mode, tg_id):
-    while True:
+    for i in range(24):
         if mode == 0:
             res = get_vk_id_from_db(str(tg_id))
             if res != None:
@@ -163,7 +163,6 @@ def menu_startup_spotify_proc(message):
 def menu_startup_abort_proc(message):
     text1 = "Тогда я просто побуду у тебя в телефоне)\n\n"
     bot.send_message(message.chat.id, text = text1+TEXT)
-    #bot.register_next_step_handler(message, talk)
     
 
 menu_change_service = {
@@ -220,12 +219,9 @@ def talk(message):
 @bot.message_handler(content_types=["location", "text"])
 def location_handler(message, artists = None):
     if artists is None:
-        #print("{0}, {1}".format(message.location.latitude, message.location.longitude))
         bot.send_message(message.chat.id, text = "ага, хайп")
     else:
         try:
-            loc = "{0}, {1}".format(message.location.latitude, message.location.longitude)
-            print(message.chat.id, loc)
             lat = message.location.latitude
             long = message.location.longitude
             nearest_city = get_nearest_city_by_location(lat, long)
@@ -253,7 +249,6 @@ def menu_keyboard_handler(call):
     btn = call.data
     print(call.from_user.id, btn)
     if menu.get(btn) != None:
-        #print('ok')
         menu[btn][1](call.message)
 
 
@@ -263,7 +258,6 @@ def menu_startup_keyboard_handler(call):
     btn = call.data
     print(call.from_user.id, btn)
     if menu_startup.get(btn) != None:
-        #print('ok')
         menu_startup[btn][1](call.message)
 
      
@@ -272,25 +266,24 @@ def menu_change_service_keyboard_handler(call):
     btn = call.data
     print(call.from_user.id, btn)
     if menu_change_service.get(btn) != None:
-        #print('ok')
         menu_change_service[btn][1](call.message)
 
 
 #по координатам возвращает ближайший город
 def get_nearest_city_by_location(user_lat, user_long):
-    coordinates = city_slovar()
+    coordinates = Сity_slovar()
     return coordinates.nearest_city_by_location(user_lat, user_long) 
 
 
 #по названию возвращает город
 def get_city_by_name(city):
-    coordinates = city_slovar()
+    coordinates = City_slovar()
     return coordinates.city_by_name(city)
 
 
 def get_info_from_vk(message, vk_id): 
     try:    
-        vk = vk_music_analyzer()
+        vk = Vk_music_analyzer()
         text1 = "Подожди немного, пока я анализирую твой плейлист...\n\n"
         text2 = "Обычно это занимает 4-6 минут."
         bot.send_message(message.chat.id, text = text1 + text2)
@@ -316,7 +309,7 @@ def get_info_from_vk(message, vk_id):
    
     
 def get_info_from_spotify(message, token):
-    sp = spotify_music_analyzer()
+    sp = Spotify_music_analyzer()
     bot.send_message(message.chat.id, text = "Подожди немного, пока я анализирую твой плейлист...")
     artists = sp.get_favourite_artists(token)
     if artists == []:
@@ -332,14 +325,13 @@ def get_info_from_spotify(message, token):
     
 def show_concerts(message, artists, nearest_city):
     con = Concerts()
-    con.load_concerts(city = nearest_city, number_of_days=170)
+    con.load_concerts(city = nearest_city, number_of_days=120)
     bot.send_message(message.chat.id, text = "Вот всё, что мне удалось найти:")
     concert_counter = 0
     for i in range(len(artists)):
         concert = con.find_concerts(artists[i])
         if concert != []:
             try:
-                #urll = 'https://www.google.com/'
                 txt = "Концерт группы [{title}]({url})\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей".format(price = concert[0]['price'],
                                       place = concert[0]['place'],
                                       title = concert[0]['title'],
