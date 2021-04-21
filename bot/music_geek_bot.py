@@ -79,7 +79,7 @@ def get_info_from_db(mode, tg_id):
         elif mode == 1:
             res = get_spotify_id_from_db(str(tg_id))
             if res != None:
-               return res
+                return res
         time.sleep(5)
 
 
@@ -271,14 +271,14 @@ def menu_change_service_keyboard_handler(call):
 
 #по координатам возвращает ближайший город
 def get_nearest_city_by_location(user_lat, user_long):
-    coordinates = Сity_slovar()
+    coordinates = City_slovar()
     return coordinates.nearest_city_by_location(user_lat, user_long) 
 
 
 #по названию возвращает город
 def get_city_by_name(city):
-    coordinates = City_slovar()
-    return coordinates.city_by_name(city)
+    name = City_slovar()
+    return name.city_by_name(city)
 
 
 def get_info_from_vk(message, vk_id): 
