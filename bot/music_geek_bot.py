@@ -347,31 +347,37 @@ def show_concerts(message, artists, nearest_city):
     con = Concerts()
     con.load_concerts(city = nearest_city, number_of_days=120)
     bot.send_message(message.chat.id, text = "Вот всё, что мне удалось найти:")
-    concert_counter = 0
+    concert_list = []
     for i in range(len(artists)):
         concert = con.find_concerts(artists[i])
         if concert != []:
             try:
-                txt = "Концерт группы [{title}]({url})\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей".format(price = concert[0]['price'],
-                                      place = concert[0]['place'],
-                                      title = concert[0]['title'],
-                                      date = concert[0]['date'],
-                                      url = concert[0]['url'])
-                bot.send_message(message.chat.id, text=txt, parse_mode='markdown')
-                concert_counter += 1
+                if concert in concert_list:
+                    txt = "Концерт группы [{title}]({url})\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей".format(price = concert[0]['price'],
+                                          place = concert[0]['place'],
+                                          title = concert[0]['title'],
+                                          date = concert[0]['date'],
+                                          url = concert[0]['url'])
+                    bot.send_message(message.chat.id, text=txt, parse_mode='markdown')
+                    concert_list.append(concert)
+                else:
+                    pass
             except KeyError:
-                txt = "Концерт группы [{title}]({url})\nОн пройдет {date} в {place}".format(place = concert[0]['place'],
-                                      title = concert[0]['title'],
-                                      date = concert[0]['date'],
-                                      url = concert[0]['url'])
-                bot.send_message(message.chat.id, text=txt, parse_mode='markdown')
-                concert_counter += 1
+                if concert in concert_list:
+                    txt = "Концерт группы [{title}]({url})\nОн пройдет {date} в {place}".format(place = concert[0]['place'],
+                                          title = concert[0]['title'],
+                                          date = concert[0]['date'],
+                                          url = concert[0]['url'])
+                    bot.send_message(message.chat.id, text=txt, parse_mode='markdown')
+                    concert_list.append(concert)
+                else:
+                    pass
             time.sleep(8)
     print(message.chat.id, "{0} concerts were sent".format(concert_counter))
-    if concert_counter != 0:
+    if len(concert_list) != 0:
         bot.send_message(message.chat.id, text = "Наслаждайся)")
     else:
-        time.sleep(5)
+        time.sleep(4)
         bot.send_message(message.chat.id, text = "Ох, кажется, что в выбранном тобой городе нет концертов, которые могли бы тебе понравиться(")
 
 #logger = telebot.logger
