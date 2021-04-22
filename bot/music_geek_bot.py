@@ -83,8 +83,7 @@ def get_info_from_db(mode, tg_id):
 
 
 def make_keyboard(d):
-    keyboard = types.InlineKeyboardMarkup(one_time_keyboard=True)
-    #keyboard = types.InlineKeyboardMarkup()
+    keyboard = types.InlineKeyboardMarkup()
     buttons = []
     for i in d.keys():
         buttons.append(types.InlineKeyboardButton(text=d[i][0], callback_data=i))
@@ -193,7 +192,8 @@ def send_welcome(message):
     text2 = "Мне необходимо проанализировать твою медиатеку, поэтому выбери подходящий вариант:"
     #text3 = если хочешь перейти в основное меню - напиши /menu
     print(message.chat.id, message.from_user.username)
-    bot.send_message(message.chat.id, text = text2, reply_markup=make_keyboard(menu_startup))
+    msg = bot.send_message(message.chat.id, text = text2, reply_markup=make_keyboard(menu_startup))
+    new_msg = tb.edit_message_reply_markup(chat_id = message.chat.id, message_id=ret_msg.message_id)
     #bot.register_next_step_handler(message, menu_startup_keyboard_handler)
 
 '''
