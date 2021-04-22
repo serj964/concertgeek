@@ -373,7 +373,7 @@ def show_concerts(message, artists, nearest_city):
                 else:
                     pass
             time.sleep(8)
-    print(message.chat.id, "{0} concerts were sent".format(concert_counter))
+    print(message.chat.id, "{0} concerts were sent".format(len(concert_list)))
     if len(concert_list) != 0:
         bot.send_message(message.chat.id, text = "Наслаждайся)")
     else:
