@@ -352,7 +352,7 @@ def show_concerts(message, artists, nearest_city):
         concert = con.find_concerts(artists[i])
         if concert != []:
             try:
-                if concert in concert_list:
+                if concert not in concert_list:
                     txt = "Концерт группы [{title}]({url})\nОн пройдет {date} в {place}\nСтоимость билетов начинается от {price} рублей".format(price = concert[0]['price'],
                                           place = concert[0]['place'],
                                           title = concert[0]['title'],
@@ -363,7 +363,7 @@ def show_concerts(message, artists, nearest_city):
                 else:
                     pass
             except KeyError:
-                if concert in concert_list:
+                if concert not in concert_list:
                     txt = "Концерт группы [{title}]({url})\nОн пройдет {date} в {place}".format(place = concert[0]['place'],
                                           title = concert[0]['title'],
                                           date = concert[0]['date'],
