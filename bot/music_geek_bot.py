@@ -46,7 +46,6 @@ spotify_oauth_config = oauth_config['spotify_oauth_config']
 
 
 
-
 TOKEN = bot_config['token']
 bot = telebot.TeleBot(TOKEN)
 
@@ -84,13 +83,14 @@ def get_info_from_db(mode, tg_id):
 
 
 def make_keyboard(d):
-    keyboard = types.InlineKeyboardMarkup()
+    keyboard = types.InlineKeyboardMarkup(one_time_keyboard=True)
+    #keyboard = types.InlineKeyboardMarkup()
     buttons = []
     for i in d.keys():
         buttons.append(types.InlineKeyboardButton(text=d[i][0], callback_data=i))
     keyboard.add(*buttons)
     return keyboard
-
+    
 '''
 def menu_analyze_proc(message):
     text = "Выбери действие среди предложенных:"
@@ -280,6 +280,27 @@ def get_city_by_name(city):
     name = City_slovar()
     return name.city_by_name(city)
 
+'''
+def make_keyboard(d):
+    keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+    #keyboard = types.InlineKeyboardMarkup()
+    buttons = []
+    for i in d.keys():
+        buttons.append(types.InlineKeyboardButton(text=d[i][0], callback_data=i))
+    keyboard.add(*buttons)
+    return keyboard'''
+
+
+#reply_menu_location = ['']
+
+
+def location_reply_keyboard():
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+    button = types.KeyboardButton(text='Отправить свою геопозицию!', request_location=True)
+    markup.add(button)
+    return markup
+    #bot.send_message(message.chat.id, 'Please Chose One :', reply_markup=markup)
+
 
 def get_info_from_vk(message, vk_id): 
     try:    
@@ -293,8 +314,8 @@ def get_info_from_vk(message, vk_id):
             print(message.chat.id, 'no songs in vk')
         else:
             text1 = "Поделись, пожалуйста, своей геопозицией, чтобы я показал концерты в интересующем тебя городе!\n\n"
-            text2 = "Ты можешь отправить как точку на карте, так и название города (например \'Москва\' или \'Санкт-Петербург\')"
-            msg = bot.send_message(message.chat.id, text = text1 + text2)
+            text2 = "Ты можешь также отправить и название города (например \'Москва\' или \'Санкт-Петербург\')"
+            msg = bot.send_message(message.chat.id, text = text1 + text2, reply_markup = location_reply_keyboard())
             bot.register_next_step_handler(message, lambda msg: location_handler(msg, artists))
             print(message.chat.id, "send to identify location")
     except Exception as e:
