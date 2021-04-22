@@ -192,9 +192,8 @@ def send_welcome(message):
     text2 = "Мне необходимо проанализировать твою медиатеку, поэтому выбери подходящий вариант:"
     #text3 = если хочешь перейти в основное меню - напиши /menu
     print(message.chat.id, message.from_user.username)
-    msg = bot.send_message(message.chat.id, text = text2, reply_markup=make_keyboard(menu_startup))
-    new_msg = tb.edit_message_reply_markup(chat_id = message.chat.id, message_id=ret_msg.message_id)
-    #bot.register_next_step_handler(message, menu_startup_keyboard_handler)
+    msg = bot.send_message(message.chat.id, text = text2, reply_markup = make_keyboard(menu_startup))
+    #new_msg = bot.edit_message_reply_markup(chat_id = message.chat.id, message_id = msg.message_id)
 
 '''
 @bot.message_handler(commands=['menu'])
@@ -212,38 +211,9 @@ def handle_menu(message):
 def talk(message):
     text1 = "Мы могли бы пообщаться, но, к сожалению, пока что я умею отвечать только привет)\n"
     text2 = "Однако скоро мой создатель научит меня еще чему-нибудь)\n\n"
-    bot.send_message(message.chat.id, text=text1+text2+TEXT)
-    #bot.register_next_step_handler(message, menu_keyboard_handler)
+    bot.send_message(message.chat.id, text = text1 + text2 + TEXT)
 
-
-@bot.message_handler(content_types=["location", "text"])
-def location_handler(message, artists = None):
-    if artists is None:
-        bot.send_message(message.chat.id, text = "ага, хайп")
-    else:
-        try:
-            lat = message.location.latitude
-            long = message.location.longitude
-            nearest_city = get_nearest_city_by_location(lat, long)
-            nearest_city_rus = list(nearest_city.keys())[0]
-            print(message.chat.id, "city " + nearest_city[nearest_city_rus])
-            text1 = "Твой город - "
-            text2 = "\n\nОсталось подождать совсем чуть-чуть, я подбираю для тебя концерты)"
-            bot.send_message(message.chat.id, text = text1 + nearest_city_rus + text2)
-            show_concerts(message, artists, nearest_city[nearest_city_rus])
-        except AttributeError:
-            try:
-                city = get_city_by_name(message.text)
-                print(message.chat.id, "city " + city)
-                bot.send_message(message.chat.id, text = "Осталось подождать совсем чуть-чуть, я подбираю для тебя концерты)")
-                show_concerts(message, artists, city)
-            except ValueError:
-                text1 = "Возможно твоего города еще нет в нашей базе, либо ты написал его неправильно(\n\n"
-                text2 = "Попробуй еще раз с команды /start"
-                print(message.chat.id, 'wrong city name or no city in our base')
-                bot.send_message(message.chat.id, text = text1 + text2)
-                
-             
+                             
 @bot.callback_query_handler(func=lambda call: type(call) == types.CallbackQuery and call.data in menu.keys())
 def menu_keyboard_handler(call):
     btn = call.data
@@ -295,11 +265,10 @@ def make_keyboard(d):
 
 
 def location_reply_keyboard():
-    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-    button = types.KeyboardButton(text='Отправить свою геопозицию!', request_location=True)
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard = True)
+    button = types.KeyboardButton(text = 'Отправить свою геопозицию!', request_location=True)
     markup.add(button)
     return markup
-    #bot.send_message(message.chat.id, 'Please Chose One :', reply_markup=markup)
 
 
 def get_info_from_vk(message, vk_id): 
@@ -338,11 +307,40 @@ def get_info_from_spotify(message, token):
         print(message.chat.id, 'no songs in spotify')
     else:
         text1 = "Поделись, пожалуйста, своей геопозицией, чтобы я показал концерты в интересующем тебя городе!\n\n"
-        text2 = "Ты можешь отправить как точку на карте, так и название города (например \'Москва\' или \'Санкт-Петербург\')"
-        msg = bot.send_message(message.chat.id, text = text1+text2)
+        text2 = "Ты можешь также отправить и название города (например \'Москва\' или \'Санкт-Петербург\')"
+        msg = bot.send_message(message.chat.id, text = text1+text2, reply_markup = location_reply_keyboard())
         bot.register_next_step_handler(message, lambda msg: location_handler(msg, artists))
         print(message.chat.id, "send to identify location")    
       
+
+@bot.message_handler(content_types=["location", "text"])
+def location_handler(message, artists = None):
+    if artists is None:
+        bot.reply_to_message(message.chat.id, text = "ага, хайп")
+    else:
+        try:
+            lat = message.location.latitude
+            long = message.location.longitude
+            nearest_city = get_nearest_city_by_location(lat, long)
+            nearest_city_rus = list(nearest_city.keys())[0]
+            print(message.chat.id, "city " + nearest_city[nearest_city_rus])
+            text1 = "Твой город - "
+            text2 = "\n\nОсталось подождать совсем чуть-чуть, я подбираю для тебя концерты)"
+            bot.reply_to_message(message.chat.id, text = text1 + nearest_city_rus + text2, reply_markup = ReplyKeyboardRemove())
+            show_concerts(message, artists, nearest_city[nearest_city_rus])
+        except AttributeError:
+            try:
+                city = get_city_by_name(message.text)
+                print(message.chat.id, "city " + city)
+                text1 = "Осталось подождать совсем чуть-чуть, я подбираю для тебя концерты)"
+                bot.reply_to_message(message.chat.id, text = text1, reply_markup = ReplyKeyboardRemove())
+                show_concerts(message, artists, city)
+            except ValueError:
+                text1 = "Возможно твоего города еще нет в нашей базе, либо ты написал его неправильно(\n\n"
+                text2 = "Попробуй еще раз с команды /start"
+                print(message.chat.id, 'wrong city name or no city in our base')
+                bot.send_message(message.chat.id, text = text1 + text2)
+
     
 def show_concerts(message, artists, nearest_city):
     con = Concerts()

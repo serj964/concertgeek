@@ -41,7 +41,6 @@ class Slovar:
                        'chicherina': 'чичерина',
                        'krematorij': 'крематорий',
                        'zhuki': 'жуки',
-                       'yanka': 'янка',
                        'mumiy troll': 'мумий тролль'}
 
         
