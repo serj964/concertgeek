@@ -316,7 +316,7 @@ def get_info_from_spotify(message, token):
 @bot.message_handler(content_types=["location", "text"])
 def location_handler(message, artists = None):
     if artists is None:
-        bot.reply_to(message.chat.id, text = "ага, хайп")
+        bot.reply_to(message.chat.id, text = "ага, хайп", reply_markup = telegram.ReplyKeyboardRemove())
     else:
         try:
             lat = message.location.latitude
@@ -326,14 +326,14 @@ def location_handler(message, artists = None):
             print(message.chat.id, "city " + nearest_city[nearest_city_rus])
             text1 = "Твой город - "
             text2 = "\n\nОсталось подождать совсем чуть-чуть, я подбираю для тебя концерты)"
-            bot.reply_to(message.chat.id, text = text1 + nearest_city_rus + text2, reply_markup = ReplyKeyboardRemove())
+            bot.reply_to(message.chat.id, text = text1 + nearest_city_rus + text2, reply_markup = telegram.ReplyKeyboardRemove())
             show_concerts(message, artists, nearest_city[nearest_city_rus])
         except AttributeError:
             try:
                 city = get_city_by_name(message.text)
                 print(message.chat.id, "city " + city)
                 text1 = "Осталось подождать совсем чуть-чуть, я подбираю для тебя концерты)"
-                bot.reply_to(message.chat.id, text = text1, reply_markup = ReplyKeyboardRemove())
+                bot.reply_to(message.chat.id, text = text1, reply_markup = telegram.ReplyKeyboardRemove())
                 show_concerts(message, artists, city)
             except ValueError:
                 text1 = "Возможно твоего города еще нет в нашей базе, либо ты написал его неправильно(\n\n"
