@@ -368,7 +368,9 @@ def show_concerts(message, artists, nearest_city):
         bot.send_message(message.chat.id, text = text1 + text2, parse_mode = 'markdown')
     else:
         time.sleep(4)
-        bot.send_message(message.chat.id, text = "Ох, кажется, что в выбранном тобой городе нет концертов, которые могли бы тебе понравиться(")
+        text1 = "Ох, кажется, что в выбранном тобой городе нет концертов, которые могли бы тебе понравиться(\n\n"
+        text2 = "В любом случае ты нам очень сильно поможешь с разработкой этого бота, если ответишь на несколько вопросов в [этой гугл-форме](https://forms.gle/GrfATEJFfy5BrAqm9)"
+        bot.send_message(message.chat.id, text = text1 + text2, parse_mode = 'markdown')
 
 #logger = telebot.logger
 #telebot.logger.setLevel(logging.DEBUG)
