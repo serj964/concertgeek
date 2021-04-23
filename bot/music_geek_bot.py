@@ -214,7 +214,7 @@ def talk(message):
     bot.send_message(message.chat.id, text = text1 + text2 + TEXT)
 
                              
-@bot.callback_query_handler(func=lambda call: type(call) == types.CallbackQuery and call.data in menu.keys())
+@bot.callback_query_handler(func = lambda call: type(call) == types.CallbackQuery and call.data in menu.keys())
 def menu_keyboard_handler(call):
     btn = call.data
     print(call.from_user.id, btn)
@@ -222,16 +222,15 @@ def menu_keyboard_handler(call):
         menu[btn][1](call.message)
 
 
-@bot.callback_query_handler(func=lambda call: type(call) == types.CallbackQuery and call.data in menu_startup.keys())
+@bot.callback_query_handler(func = lambda call: type(call) == types.CallbackQuery and call.data in menu_startup.keys())
 def menu_startup_keyboard_handler(call):
-    #print((lambda call: type(call) == types.CallbackQuery and call.data in menu_startup.keys())(call))
     btn = call.data
     print(call.from_user.id, btn)
     if menu_startup.get(btn) != None:
         menu_startup[btn][1](call.message)
 
      
-@bot.callback_query_handler(func=lambda call: type(call) == types.CallbackQuery and call.data in menu_change_service.keys())
+@bot.callback_query_handler(func = lambda call: type(call) == types.CallbackQuery and call.data in menu_change_service.keys())
 def menu_change_service_keyboard_handler(call):
     btn = call.data
     print(call.from_user.id, btn)
@@ -250,20 +249,8 @@ def get_city_by_name(city):
     name = City_slovar()
     return name.city_by_name(city)
 
-'''
-def make_keyboard(d):
-    keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-    #keyboard = types.InlineKeyboardMarkup()
-    buttons = []
-    for i in d.keys():
-        buttons.append(types.InlineKeyboardButton(text=d[i][0], callback_data=i))
-    keyboard.add(*buttons)
-    return keyboard'''
 
-
-#reply_menu_location = ['']
-
-
+#создание кнопочки отправить свою геопозицию
 def location_reply_keyboard():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard = False)
     button = types.KeyboardButton(text = 'Отправить свою геопозицию!', request_location=True)
@@ -358,8 +345,9 @@ def show_concerts(message, artists, nearest_city):
                                           title = concert[0]['title'],
                                           date = concert[0]['date'],
                                           url = concert[0]['url'])
-                    bot.send_message(message.chat.id, text=txt, parse_mode='markdown')
+                    bot.send_message(message.chat.id, text = txt, parse_mode = 'markdown')
                     concert_list.append(concert)
+                    time.sleep(5)
                 else:
                     pass
             except KeyError:
@@ -368,14 +356,16 @@ def show_concerts(message, artists, nearest_city):
                                           title = concert[0]['title'],
                                           date = concert[0]['date'],
                                           url = concert[0]['url'])
-                    bot.send_message(message.chat.id, text=txt, parse_mode='markdown')
+                    bot.send_message(message.chat.id, text = txt, parse_mode = 'markdown')
                     concert_list.append(concert)
+                    time.sleep(5)
                 else:
                     pass
-            time.sleep(8)
     print(message.chat.id, "{0} concerts were sent".format(len(concert_list)))
     if len(concert_list) != 0:
-        bot.send_message(message.chat.id, text = "Наслаждайся)")
+        text1 = "Наслаждайся)\n\n"
+        text2 = "Ты нам очень поможешь, если ответишь на несколько вопросов в [этой гугл-форме]({'https://forms.gle/GrfATEJFfy5BrAqm9'})"
+        bot.send_message(message.chat.id, text = text1 + text2, parse_mode = 'markdown')
     else:
         time.sleep(4)
         bot.send_message(message.chat.id, text = "Ох, кажется, что в выбранном тобой городе нет концертов, которые могли бы тебе понравиться(")
