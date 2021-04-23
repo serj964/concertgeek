@@ -364,7 +364,7 @@ def show_concerts(message, artists, nearest_city):
     print(message.chat.id, "{0} concerts were sent".format(len(concert_list)))
     if len(concert_list) != 0:
         text1 = "Наслаждайся)\n\n"
-        text2 = "Ты нам очень сильно поможешь с разработкой этого бота, если ответишь на несколько вопросов в [этой гугл-форме]('https://forms.gle/GrfATEJFfy5BrAqm9')"
+        text2 = "Ты нам очень сильно поможешь с разработкой этого бота, если ответишь на несколько вопросов в [этой гугл-форме](https://forms.gle/GrfATEJFfy5BrAqm9)"
         bot.send_message(message.chat.id, text = text1 + text2, parse_mode = 'markdown')
     else:
         time.sleep(4)
