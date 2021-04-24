@@ -20,8 +20,7 @@ class User(base):
     spotify_id = Column(BigInteger)
     last_date = Column(DateTime)
     
-    def __repr__(self):
-        return "<User('%d', '%d','%s', '%d', '%d')>" % (self.id, self.tg_id, self.tg_username, self.vk_id, self.spotify_id)
+    
 
 class City(base):
     __tablename__ = 'cities'
@@ -53,7 +52,7 @@ class Interaction_type(base):
 
 class Musician(base):
     __tablename__ = 'musicians'
-    id = Column(BigInteger, primary_key = True)
+    id = Column(Integer, primary_key = True)
     name = Column(String)
 
     def __repr__(self):
@@ -80,7 +79,7 @@ class Concert(base):
     source_id = Column(Integer, ForeignKey("sources.id"))
 
     def __repr__(self):
-        return "<Concert('%d', '%s', '%s', '%s', '%s', '%s')>" % (self.id, self.name, str(self.datetime), self.price, self.url, self.comment)
+        return "<Concert('%d', '%s', '%s', '%s', '%s', '%s')>" % (self.id, self.name, str(self.concert_datetime), self.price, self.url, self.comment)
 
 
 class Source(base):

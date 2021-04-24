@@ -2,30 +2,40 @@ from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.types import BigInteger
+import json
+import datetime
 
-engine = create_engine('sqlite:///test.db', echo=True)
+import Db.db as db_classes
 
-Base = declarative_base()
 
-class User(Base):
-    __tablename__ = 'users'
-    tg_id = Column(BigInteger, primary_key=True)
-    tg_nickname = Column(String)
-    vk_id = Column(BigInteger)
-    spotify_id = Column(BigInteger)
-    
-    def __init__(self, tg_id, tg_nickname, vk_id, spotify_id):
-        self.tg_id = tg_id
-        self.tg_nickname = tg_nickname
-        self.vk_id = vk_id
-        self.spotify_id = spotify_id
-    def __repr__(self):
-        return "<User('%d','%s', '%d', '%d')>" % (self.tg_id, self.tg_nickname, self.vk_id, self.spotify_id)
 
+CONFIG_FILE = './bot/config.json'
+
+with open(CONFIG_FILE) as conf:
+    config = json.load(conf)
+
+db_config = config["db_config"]
+
+
+
+engine = create_engine(db_config['sqlite_address'])
 
 Session = sessionmaker(bind=engine)
 session = Session()
-vasiaUser = User(1234, "Vasiliy Pypkin", 1234, 1234)
-print(vasiaUser)
+
+vasiaUser = db_classes.User(tg_id = 123, tg_username = "ahah", vk_id = 123, spotify_id = 123)
 session.add(vasiaUser)
+
+sanyaMusician = db_classes.Musician(name = "Sanya")
+session.add(sanyaMusician)
+
+pref = db_classes.Preference(user_id = 1, musician_id = 1)
+session.add(pref)
+
+con = db_classes.Concert(name = "Party", concert_datetime = datetime.datetime.now())
+session.add(con)
+
+conmus = db_classes.Conmus(concert_id = 1, musician_id = 1)
+session.add(conmus)
+
 session.commit()
