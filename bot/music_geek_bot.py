@@ -3,12 +3,11 @@ import time
 from telebot import types
 import logging
 from pymongo import MongoClient
-from Music_analyzer.vk_music_analyzer import Vk_music_analyzer
-from Music_analyzer.spotify_music_analyzer import Spotify_music_analyzer
-from Concerts.yandex_afisha_concerts import Concerts
-from bot.city_slovar import City_slovar
 import json
-
+import sys
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+import datetime
 
 class Unbuffered(object):
    def __init__(self, stream):
@@ -22,7 +21,17 @@ class Unbuffered(object):
    def __getattr__(self, attr):
        return getattr(self.stream, attr)
 
-import sys
+
+from Music_analyzer.vk_music_analyzer import vk_music_analyzer
+from Music_analyzer.spotify_music_analyzer import spotify_music_analyzer
+from Concerts.yandex_afisha_concerts import Concerts
+from bot.city_slovar import city_slovar
+import Db.db as db_classes
+
+
+
+
+
 sys.stdout = Unbuffered(sys.stdout)
 
 
@@ -35,6 +44,11 @@ bot_config = config['bot_config']
 oauth_config = config["oauth_config"]
 server_config = config["server_config"]
 db_config = config["db_config"]
+
+
+
+engine = create_engine(db_config['sqlite_address'])
+db_session = sessionmaker(bind=engine)()
 
 client = MongoClient(db_config['address'], db_config['port'])
 db = client[db_config['name']]

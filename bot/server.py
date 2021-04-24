@@ -7,6 +7,11 @@ import spotipy
 from pymongo import MongoClient
 import uuid
 import json
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+
+import Db.db as db_classes
 
 
 CONFIG_FILE = './bot/config.json'
@@ -14,9 +19,15 @@ CONFIG_FILE = './bot/config.json'
 with open(CONFIG_FILE) as conf:
     config = json.load(conf)
 
+
+
 oauth_config = config["oauth_config"]
 server_config = config["server_config"]
 db_config = config["db_config"]
+
+
+engine = create_engine(db_config['sqlite_address'])
+db_session = sessionmaker(bind=engine)()
 
 client = MongoClient(db_config['address'], db_config['port'])
 db = client[db_config['name']]
