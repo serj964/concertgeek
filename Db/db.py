@@ -89,21 +89,22 @@ class Source(base):
     name = Column(String)
 
 
-conmus = Table('conmus', base.metadata,
-    Column('concert_id', BigInteger, ForeignKey('concerts.id')),
-    Column('musician_id', BigInteger, ForeignKey('musicians.id'))
-)
+class Conmus(base):
+    __tablename__ = "conmus"
+    concert_id = Column(Integer, ForeignKey('concerts.id'))
+    musician_id = Column(Integer, ForeignKey('musicians.id'))
 
 
-not_to_inform = Table('not_to_inform', base.metadata,
-    Column('tg_id', BigInteger, ForeignKey('users.id')),
-    Column('musician_id', BigInteger, ForeignKey('musicians.id'))
-)
+class Not_to_inform(base):
+    __tablename__ = "not_to_inform"
+    user_id = Column(Integer, ForeignKey('users.id'))
+    musician_id = Column(Integer, ForeignKey('musicians.id'))
 
-preferences = Table('preferences', base.metadata,
-    Column('tg_id', BigInteger, ForeignKey('users.id')),
-    Column('musician_id', BigInteger, ForeignKey('musicians.id'))
-)
+
+class Preference(base):
+    __tablename__ = "preferences"
+    user_id = Column(Integer, ForeignKey('users.id'))
+    musician_id = Column(Integer, ForeignKey('musicians.id'))
 
 
 if __name__ == "__main__":
