@@ -133,9 +133,9 @@ def menu_analyze_vk_proc():
     bot.send_message(message.chat.id, text = msg + url)
     db_object = get_info_from_db(0, message.chat.id)
     try:
-        print(message.chat.id, db_object)
         vk_id = db_object['vk_id']
         get_info_from_vk(message, vk_id)
+        print(message.chat.id, db_object)
     except TypeError:
         bot.send_message(message.chat.id, text = "Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
 
@@ -152,9 +152,12 @@ def menu_startup_vk_proc(message):
     msg2 = "\n\nСсылка действительна всего 3 минуты!"
     bot.send_message(message.chat.id, text = msg + url + msg2)
     db_object = get_info_from_db(0, message.chat.id)
-    print(message.chat.id, db_object)
-    vk_id = db_object['vk_id']
-    get_info_from_vk(message, vk_id)
+    try:
+        vk_id = db_object['vk_id']
+        get_info_from_vk(message, vk_id)
+        print(message.chat.id, db_object)
+    except TypeError:
+        bot.send_message(message.chat.id, text = "Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
 
     
 def menu_startup_spotify_proc(message):
@@ -162,9 +165,12 @@ def menu_startup_spotify_proc(message):
     msg = "\n\nСсылка действительна всего 3 минуты!"
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: " + url + msg)
     db_object = get_info_from_db(1, message.chat.id)
-    print(message.chat.id, "successful authorization")
-    token = db_object['spotify_access_token']
-    get_info_from_spotify(message, token)
+    try:
+        token = db_object['spotify_access_token']
+        get_info_from_spotify(message, token)
+        print(message.chat.id, "successful authorization")
+    except TypeError:
+        bot.send_message(message.chat.id, text = "Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
 
 
 def menu_startup_abort_proc(message):
