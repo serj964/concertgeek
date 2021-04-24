@@ -118,12 +118,12 @@ def menu_analyze_spotify_proc():
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     db_object = get_info_from_db(1, message.chat.id)
-    if db_object == None:
-        bot.send_message(message.chat.id, text = "Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
-    else:
+    try:
+        token = db_object['spotify_access_token']
+        get_info_from_spotify(message, token)
         print(message.chat.id, "successful authorization")
-    token = db_object['spotify_access_token']
-    get_info_from_spotify(message, token)
+    except TypeError:
+        bot.send_message(message.chat.id, text = "Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
 
 
 def menu_analyze_vk_proc():
@@ -132,12 +132,12 @@ def menu_analyze_vk_proc():
     msg += "После этого перейди, пожалуйста, по ссылке для авторизации: "
     bot.send_message(message.chat.id, text = msg + url)
     db_object = get_info_from_db(0, message.chat.id)
-    if db_object == None:
-        bot.send_message(message.chat.id, text = "Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
-    else:
+    try:
         print(message.chat.id, db_object)
-    vk_id = db_object['vk_id']
-    get_info_from_vk(message, vk_id)
+        vk_id = db_object['vk_id']
+        get_info_from_vk(message, vk_id)
+    except TypeError:
+        bot.send_message(message.chat.id, text = "Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
 
 
 def menu_change_service_proc(message):
@@ -149,7 +149,7 @@ def menu_startup_vk_proc(message):
     url = vk_oauth_url+"?&tg_id="+str(message.chat.id)
     msg = "Обязательно проверь, что у тебя открытый аккаунт и открытые аудио!\n\n"
     msg += "После этого перейди, пожалуйста, по ссылке для авторизации: "
-    msg2 = "\nСсылка действительна всего 3 минуты!"
+    msg2 = "\n\nСсылка действительна всего 3 минуты!"
     bot.send_message(message.chat.id, text = msg + url + msg2)
     db_object = get_info_from_db(0, message.chat.id)
     print(message.chat.id, db_object)
@@ -159,7 +159,7 @@ def menu_startup_vk_proc(message):
     
 def menu_startup_spotify_proc(message):
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
-    msg = "\nСсылка действительна всего 3 минуты!"
+    msg = "\n\nСсылка действительна всего 3 минуты!"
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: " + url + msg)
     db_object = get_info_from_db(1, message.chat.id)
     print(message.chat.id, "successful authorization")
@@ -349,7 +349,6 @@ def location_handler(message, artists = None):
 def show_concerts(message, artists, nearest_city):
     con = Concerts()
     con.load_concerts(city = nearest_city, number_of_days=120)
-    bot.send_message(message.chat.id, text = "Вот всё, что мне удалось найти:")
     concert_list = []
     for i in range(len(artists)):
         concert = con.find_concerts(artists[i])
