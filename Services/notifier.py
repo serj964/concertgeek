@@ -51,12 +51,14 @@ def Notify():
     #db will contain information about how often should the service notify user
     #user would be notified in advance if the number of tickets is low
     concerts = GetListOfConcerts()
+    print(concerts)
     for concert in concerts:
+        print(concert)
 
-    s = select([db_classes.User], db_classes.User.id == db_classes.preferences.c.user_id, db_classes.preferences.c.musician_id == db_classes.Musician.id, db_classes.Musician.id == db_classes.conmus.c.musician_id, db_classes.conmus.c.concert_id == db_classes.Concert.id).
+    
 
-    bot.send_message(373959637, "hey")
+    #bot.send_message(373959637, "hey")
 
-while True:
-    Notify()
-    time.sleep(TIMETICK)
+##while True:
+Notify()
+#    time.sleep(TIMETICK)
