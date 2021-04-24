@@ -13,39 +13,31 @@ base = declarative_base()
 
 class User(base):
     __tablename__ = 'users'
-    tg_id = Column(BigInteger, primary_key=True)
-    tg_nickname = Column(String)
+    id = Column(Integer, primary_key=True)
+    tg_id = Column(Integer, unique=True)
+    tg_username = Column(String)
     vk_id = Column(BigInteger)
     spotify_id = Column(BigInteger)
-    inter_datetime = Column(DateTime)
-    inter_type = Column(SmallInteger, ForeignKey('interactions.id'))
+    last_date = Column(DateTime)
     
-    def __init__(self, tg_id, tg_nickname, vk_id, spotify_id, inter_datetime, inter_type):
-        self.tg_id = tg_id
-        self.tg_nickname = tg_nickname
-        self.vk_id = vk_id
-        self.spotify_id = spotify_id
-        self.inter_datetime = inter_datetime
-        self.inter_type = inter_type
     def __repr__(self):
-        return "<User('%d','%s', '%d', '%d')>" % (self.tg_id, self.tg_nickname, self.vk_id, self.spotify_id)
+        return "<User('%d', '%d','%s', '%d', '%d')>" % (self.id, self.tg_id, self.tg_username, self.vk_id, self.spotify_id)
 
 class City(base):
     __tablename__ = 'cities'
-    id = Column(BigInteger, primary_key = True)
-    name = Column(String, nullable=False)
-    latitude = Column(Float)
-    longitude = Column(Float)
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
 
     def __repr__(self):
-        return "<City('%d','%s', '%f', '%f')>" % (self.id, self.name, self.latitude, self.longitude)
+        return "<City('%d','%s')>" % (self.id, self.name)
 
 
 class Interaction(base):
     __tablename__ = 'interactions'
-    type_id = Column(BigInteger, ForeignKey("interaction_type.type_id"))
-    user_id = Column(BigInteger, ForeignKey("users.tg_id"))
-    musician_id = Column(BigInteger, ForeignKey("musicians.id"))
+    id = Column(Integer, primary_key=True)
+    type_id = Column(Integer, ForeignKey("interaction_type.id"))
+    user_id = Column(Integer, ForeignKey("users.id"))
+    concert_id = Column(Integer, ForeignKey("concerts.id"))
     inter_datetime = Column(DateTime)
 
 
@@ -56,62 +48,61 @@ class Interaction(base):
 
 class Interaction_type(base):
     __tablename__ = "interaction_type"
-    type_id = Column(BigInteger, primary_key=True)
-    type_name = Column(String)
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
 
 class Musician(base):
     __tablename__ = 'musicians'
     id = Column(BigInteger, primary_key = True)
-    name = Column(String, nullable=False)
+    name = Column(String)
 
     def __repr__(self):
         return "<Musician('%d','%s')>" % (self.id, self.name)
 
 class Place(base):
     __tablename__ = 'places'
-    id = Column(BigInteger, primary_key = True)
-    name = Column(String, nullable=False)
-    latitude = Column(Float)
-    longitude = Column(Float)
+    id = Column(Integer, primary_key = True)
+    name = Column(String)
 
     def __repr__(self):
-        return "<Place('%d','%s', '%f', '%f')>" % (self.id, self.name, self.latitude, self.longitude)
+        return "<Place('%d','%s')>" % (self.id, self.name)
 
 class Concert(base):
     __tablename__ = 'concerts'
-    id = Column(BigInteger, primary_key=True)
-    name = Column(String, nullable=False)
-    place_id = Column(BigInteger, ForeignKey("places.id"), nullable=False)
-    city_id = Column(SmallInteger, ForeignKey("cities.id"), nullable=False)
-    datetime = Column(DateTime, nullable=False)
-    price = Column(SmallInteger)
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    place_id = Column(Integer, ForeignKey("places.id"))
+    city_id = Column(Integer, ForeignKey("cities.id"))
+    concert_datetime = Column(DateTime)
+    price = Column(String)
+    url = Column(String)
     comment = Column(Text)
-    source_id = Column(BigInteger, ForeignKey("sources.id"))
+    source_id = Column(Integer, ForeignKey("sources.id"))
 
     def __repr__(self):
-        return "<Concert('%d', '%s', '%s', '%d', '%s')>" % (self.id, self.name, str(self.datetime), self.price. self.comment)
+        return "<Concert('%d', '%s', '%s', '%s', '%s', '%s')>" % (self.id, self.name, str(self.datetime), self.price, self.url, self.comment)
 
 
 class Source(base):
     __tablename__ = "sources"
-    id = Column(BigInteger, primary_key=True)
+    id = Column(Integer, primary_key=True)
     name = Column(String)
 
 
-ConcertMusicianTable = Table('concert_musician_link', base.metadata,
+conmus = Table('conmus', base.metadata,
     Column('concert_id', BigInteger, ForeignKey('concerts.id')),
     Column('musician_id', BigInteger, ForeignKey('musicians.id'))
 )
 
 
 not_to_inform = Table('not_to_inform', base.metadata,
-    Column('tg_id', BigInteger, ForeignKey('users.tg_id')),
-    Column('musician_id', BigInteger, ForeignKey('musicians.musician_id'))
+    Column('tg_id', BigInteger, ForeignKey('users.id')),
+    Column('musician_id', BigInteger, ForeignKey('musicians.id'))
 )
 
 preferences = Table('preferences', base.metadata,
-    Column('tg_id', BigInteger, ForeignKey('users.tg_id')),
-    Column('musician_id', BigInteger, ForeignKey('musicians.musician_id'))
+    Column('tg_id', BigInteger, ForeignKey('users.id')),
+    Column('musician_id', BigInteger, ForeignKey('musicians.id'))
 )
 
 
