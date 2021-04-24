@@ -1,4 +1,4 @@
-class slovar:
+class Slovar:
     def __init__(self):
         self.SLOVAR = {'pasosh':'пасош',
                        'buerak':'буерак', 
@@ -36,7 +36,12 @@ class slovar:
                        'bi-2': 'би-2',
                        'pika': 'пика',
                        'malbec': 'мальбэк',
-                       'eldzhey': 'элджей'}
+                       'eldzhey': 'элджей',
+                       'sektor gaza': 'сектор газа',
+                       'chicherina': 'чичерина',
+                       'krematorij': 'крематорий',
+                       'zhuki': 'жуки',
+                       'mumiy troll': 'мумий тролль'}
 
         
     #транслитерация для spotify
