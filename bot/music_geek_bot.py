@@ -70,7 +70,7 @@ def get_spotify_id_from_db(tg_id):
 
 
 def get_info_from_db(mode, tg_id):
-    for i in range(24):
+    for i in range(36):
         if mode == 0:
             res = get_vk_id_from_db(str(tg_id))
             if res != None:
@@ -118,7 +118,10 @@ def menu_analyze_spotify_proc():
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     db_object = get_info_from_db(1, message.chat.id)
-    print(message.chat.id, "successful authorization")
+    if db_object == None:
+        bot.send_message(message.chat.id, text = "Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
+    else:
+        print(message.chat.id, "successful authorization")
     token = db_object['spotify_access_token']
     get_info_from_spotify(message, token)
 
@@ -129,7 +132,10 @@ def menu_analyze_vk_proc():
     msg += "После этого перейди, пожалуйста, по ссылке для авторизации: "
     bot.send_message(message.chat.id, text = msg + url)
     db_object = get_info_from_db(0, message.chat.id)
-    print(message.chat.id, db_object)
+    if db_object == None:
+        bot.send_message(message.chat.id, text = "Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
+    else:
+        print(message.chat.id, db_object)
     vk_id = db_object['vk_id']
     get_info_from_vk(message, vk_id)
 
@@ -143,7 +149,8 @@ def menu_startup_vk_proc(message):
     url = vk_oauth_url+"?&tg_id="+str(message.chat.id)
     msg = "Обязательно проверь, что у тебя открытый аккаунт и открытые аудио!\n\n"
     msg += "После этого перейди, пожалуйста, по ссылке для авторизации: "
-    bot.send_message(message.chat.id, text = msg + url)
+    msg2 = "\nСсылка действительна всего 3 минуты!"
+    bot.send_message(message.chat.id, text = msg + url + msg2)
     db_object = get_info_from_db(0, message.chat.id)
     print(message.chat.id, db_object)
     vk_id = db_object['vk_id']
@@ -152,7 +159,8 @@ def menu_startup_vk_proc(message):
     
 def menu_startup_spotify_proc(message):
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
-    bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
+    msg = "\nСсылка действительна всего 3 минуты!"
+    bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: " + url + msg)
     db_object = get_info_from_db(1, message.chat.id)
     print(message.chat.id, "successful authorization")
     token = db_object['spotify_access_token']

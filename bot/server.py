@@ -1,9 +1,8 @@
 from flask import Flask, session, request, redirect
-import vk_api, datetime
+import vk_api
 import os
 from flask_session import Session
 import spotipy
-#from spotipy.oauth2 import SpotifyOAuth
 from pymongo import MongoClient
 import uuid
 import json
