@@ -34,7 +34,8 @@ class Concerts:
             if p[i].string == "МОСКВА":
                 current_city = "Москва"
                 i += 1
-            elif p[i].string == "САНКТ-ПЕТЕРБУРГ":
+            elif p[i].string == "САНКТ-ПЕТЕРБУРГ" or \
+                p[i].string == "ПИТЕР":
                 current_city = "Санкт-Петербург"
                 i += 1
 
