@@ -83,3 +83,6 @@ class Concerts:
             if re.search(artist.lower(), concert['title'].lower()):
              suitable_concerts.append(concert)
         return suitable_concerts
+
+    def get_concerts(self):
+        return self.concerts 
