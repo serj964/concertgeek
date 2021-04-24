@@ -91,18 +91,21 @@ class Source(base):
 
 class Conmus(base):
     __tablename__ = "conmus"
+    id = Column(Integer, primary_key=True)
     concert_id = Column(Integer, ForeignKey('concerts.id'))
     musician_id = Column(Integer, ForeignKey('musicians.id'))
 
 
 class Not_to_inform(base):
     __tablename__ = "not_to_inform"
+    id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
     musician_id = Column(Integer, ForeignKey('musicians.id'))
 
 
 class Preference(base):
     __tablename__ = "preferences"
+    id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
     musician_id = Column(Integer, ForeignKey('musicians.id'))
 
