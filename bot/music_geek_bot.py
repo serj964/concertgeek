@@ -70,7 +70,7 @@ def get_spotify_id_from_db(tg_id):
 
 
 def get_info_from_db(mode, tg_id):
-    for i in range(36):
+    for i in range(50):
         if mode == 0:
             res = get_vk_id_from_db(str(tg_id))
             if res != None:
@@ -124,6 +124,7 @@ def menu_analyze_spotify_proc():
         print(message.chat.id, "successful authorization")
     except TypeError:
         bot.send_message(message.chat.id, text = "Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
+        print(message.chat.id, "the link has expired ")
 
 
 def menu_analyze_vk_proc():
@@ -138,6 +139,7 @@ def menu_analyze_vk_proc():
         print(message.chat.id, db_object)
     except TypeError:
         bot.send_message(message.chat.id, text = "Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
+        print(message.chat.id, "the link has expired ")
 
 
 def menu_change_service_proc(message):
@@ -149,7 +151,7 @@ def menu_startup_vk_proc(message):
     url = vk_oauth_url+"?&tg_id="+str(message.chat.id)
     msg = "Обязательно проверь, что у тебя открытый аккаунт и открытые аудио!\n\n"
     msg += "После этого перейди, пожалуйста, по ссылке для авторизации: "
-    msg2 = "\n\nСсылка действительна всего 3 минуты!"
+    msg2 = "\n\nСсылка действительна всего 4 минуты!"
     bot.send_message(message.chat.id, text = msg + url + msg2)
     db_object = get_info_from_db(0, message.chat.id)
     try:
@@ -158,11 +160,12 @@ def menu_startup_vk_proc(message):
         print(message.chat.id, db_object)
     except TypeError:
         bot.send_message(message.chat.id, text = "Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
+        print(message.chat.id, "the link has expired ")
 
     
 def menu_startup_spotify_proc(message):
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
-    msg = "\n\nСсылка действительна всего 3 минуты!"
+    msg = "\n\nСсылка действительна всего 4 минуты!"
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: " + url + msg)
     db_object = get_info_from_db(1, message.chat.id)
     try:
@@ -171,6 +174,7 @@ def menu_startup_spotify_proc(message):
         print(message.chat.id, "successful authorization")
     except TypeError:
         bot.send_message(message.chat.id, text = "Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
+        print(message.chat.id, "the link has expired ")
 
 
 def menu_startup_abort_proc(message):
