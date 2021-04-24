@@ -58,7 +58,6 @@ class Concerts:
                 if p[i].string is not None:
                     d["comment"] = p[i].string
                     i += 1
-                print(p[i])
                 d["url"] = p[i].a.get('href')
                 i += 1
                 self.concerts.append(d)
