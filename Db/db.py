@@ -6,10 +6,7 @@ import time
 
 base = declarative_base()
 
-ConcertMusicianTable = Table('concert_musician_link', base.metadata,
-    Column('concert_id', BigInteger, ForeignKey('concerts.id')),
-    Column('musician_id', BigInteger, ForeignKey('musicians.id'))
-)
+
 
 
 
@@ -35,7 +32,7 @@ class User(base):
 
 class City(base):
     __tablename__ = 'cities'
-    id = Column(SmallInteger, primary_key = True)
+    id = Column(BigInteger, primary_key = True)
     name = Column(String, nullable=False)
     latitude = Column(Float)
     longitude = Column(Float)
@@ -46,12 +43,21 @@ class City(base):
 
 class Interaction(base):
     __tablename__ = 'interactions'
-    id = Column(SmallInteger, primary_key = True)
-    name = Column(String, nullable=False)
+    type_id = Column(BigInteger, ForeignKey("interaction_type.type_id"))
+    user_id = Column(BigInteger, ForeignKey("users.tg_id"))
+    musician_id = Column(BigInteger, ForeignKey("musicians.id"))
+    inter_datetime = Column(DateTime)
+
 
     def __repr__(self):
         return "<Interaction('%d','%s')>" % (self.id, self.name)
 
+
+
+class Interaction_type(base):
+    __tablename__ = "interaction_type"
+    type_id = Column(BigInteger, primary_key=True)
+    type_name = Column(String)
 
 class Musician(base):
     __tablename__ = 'musicians'
@@ -75,17 +81,38 @@ class Concert(base):
     __tablename__ = 'concerts'
     id = Column(BigInteger, primary_key=True)
     name = Column(String, nullable=False)
-    place_id = Column(BigInteger, ForeignKey("places.id"), nullable = False)
+    place_id = Column(BigInteger, ForeignKey("places.id"), nullable=False)
     city_id = Column(SmallInteger, ForeignKey("cities.id"), nullable=False)
     datetime = Column(DateTime, nullable=False)
     price = Column(SmallInteger)
     comment = Column(Text)
+    source_id = Column(BigInteger, ForeignKey("sources.id"))
 
     def __repr__(self):
         return "<Concert('%d', '%s', '%s', '%d', '%s')>" % (self.id, self.name, str(self.datetime), self.price. self.comment)
 
 
+class Source(base):
+    __tablename__ = "sources"
+    id = Column(BigInteger, primary_key=True)
+    name = Column(String)
 
+
+ConcertMusicianTable = Table('concert_musician_link', base.metadata,
+    Column('concert_id', BigInteger, ForeignKey('concerts.id')),
+    Column('musician_id', BigInteger, ForeignKey('musicians.id'))
+)
+
+
+not_to_inform = Table('not_to_inform', base.metadata,
+    Column('tg_id', BigInteger, ForeignKey('users.tg_id')),
+    Column('musician_id', BigInteger, ForeignKey('musicians.musician_id'))
+)
+
+preferences = Table('preferences', base.metadata,
+    Column('tg_id', BigInteger, ForeignKey('users.tg_id')),
+    Column('musician_id', BigInteger, ForeignKey('musicians.musician_id'))
+)
 
 
 if __name__ == "__main__":
