@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Integer, String, create_engine, Table, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.types import BigInteger, SmallInteger, Float, DateTime, Text
-import time
+from sqlalchemy.types import Float, DateTime, Text
+#import time
 
 base = declarative_base()
 
@@ -16,19 +16,24 @@ class User(base):
     id = Column(Integer, primary_key=True)
     tg_id = Column(Integer, unique=True)
     tg_username = Column(String)
-    vk_id = Column(BigInteger)
-    spotify_id = Column(BigInteger)
+    vk_id = Column(Integer)
+    spotify_id = Column(Integer)
     last_date = Column(DateTime)
     
+<<<<<<< HEAD
     
+=======
+    '''def __repr__(self):
+        return "<User('%d', '%d','%s', '%d', '%d')>" % (self.id, self.tg_id, self.tg_username, self.vk_id, self.spotify_id)'''
+>>>>>>> 33794ea0659f51f0794f8e9a32a6786363b49d9e
 
 class City(base):
     __tablename__ = 'cities'
     id = Column(Integer, primary_key=True)
     name = Column(String)
 
-    def __repr__(self):
-        return "<City('%d','%s')>" % (self.id, self.name)
+    '''def __repr__(self):
+        return "<City('%d','%s')>" % (self.id, self.name)'''
 
 
 class Interaction(base):
@@ -40,8 +45,8 @@ class Interaction(base):
     inter_datetime = Column(DateTime)
 
 
-    def __repr__(self):
-        return "<Interaction('%d','%s')>" % (self.id, self.name)
+    '''def __repr__(self):
+        return "<Interaction('%d','%s')>" % (self.id, self.name)'''
 
 
 
@@ -55,16 +60,16 @@ class Musician(base):
     id = Column(Integer, primary_key = True)
     name = Column(String)
 
-    def __repr__(self):
-        return "<Musician('%d','%s')>" % (self.id, self.name)
+    '''def __repr__(self):
+        return "<Musician('%d','%s')>" % (self.id, self.name)'''
 
 class Place(base):
     __tablename__ = 'places'
     id = Column(Integer, primary_key = True)
     name = Column(String)
 
-    def __repr__(self):
-        return "<Place('%d','%s')>" % (self.id, self.name)
+    '''def __repr__(self):
+        return "<Place('%d','%s')>" % (self.id, self.name)'''
 
 class Concert(base):
     __tablename__ = 'concerts'
@@ -78,8 +83,13 @@ class Concert(base):
     comment = Column(Text)
     source_id = Column(Integer, ForeignKey("sources.id"))
 
+<<<<<<< HEAD
     def __repr__(self):
         return "<Concert('%d', '%s', '%s', '%s', '%s', '%s')>" % (self.id, self.name, str(self.concert_datetime), self.price, self.url, self.comment)
+=======
+    '''def __repr__(self):
+        return "<Concert('%d', '%s', '%s', '%s', '%s', '%s')>" % (self.id, self.name, str(self.datetime), self.price, self.url, self.comment)'''
+>>>>>>> 33794ea0659f51f0794f8e9a32a6786363b49d9e
 
 
 class Source(base):
