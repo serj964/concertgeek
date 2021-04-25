@@ -158,7 +158,7 @@ def menu_analyze_vk_proc():
 
 def menu_change_service_proc(message):
     txt = "хайп"
-    bot.send_message(message.chat.id, text = txt, reply_markup=make_keyboard(menu_change_service))
+    bot.send_message(message.chat.id, text=txt, reply_markup=make_keyboard(menu_change_service))
 
 
 def menu_startup_vk_proc(message):
@@ -173,27 +173,27 @@ def menu_startup_vk_proc(message):
         get_info_from_vk(message, vk_id)
         print(message.chat.id, db_object)
     except TypeError:
-        bot.send_message(message.chat.id, text = "Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
+        bot.send_message(message.chat.id, text="Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
         print(message.chat.id, "the link has expired ")
 
     
 def menu_startup_spotify_proc(message):
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     msg = "\n\nСсылка действительна всего 4 минуты!"
-    bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: " + url + msg)
+    bot.send_message(message.chat.id, text="Перейди, пожалуйста, по ссылке для авторизации: " + url + msg)
     db_object = get_info_from_db(1, message.chat.id)
     try:
         token = db_object['spotify_access_token']
         get_info_from_spotify(message, token)
         print(message.chat.id, "successful authorization")
     except TypeError:
-        bot.send_message(message.chat.id, text = "Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
+        bot.send_message(message.chat.id, text="Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
         print(message.chat.id, "the link has expired ")
 
 
 def menu_startup_abort_proc(message):
     msg = "Тогда я просто побуду у тебя в телефоне)\n\n"
-    bot.send_message(message.chat.id, text = msg + TEXT)
+    bot.send_message(message.chat.id, text=msg + TEXT)
     
 
 menu_change_service = {
@@ -224,7 +224,7 @@ def send_welcome(message):
     text2 = "Мне необходимо проанализировать твою медиатеку, поэтому выбери подходящий вариант:"
     #text3 = если хочешь перейти в основное меню - напиши /menu
     print(message.chat.id, message.from_user.username)
-    msg = bot.send_message(message.chat.id, text = text2, reply_markup = make_keyboard(menu_startup))
+    msg = bot.send_message(message.chat.id, text=text2, reply_markup=make_keyboard(menu_startup))
     #new_msg = bot.edit_message_reply_markup(chat_id = message.chat.id, message_id = msg.message_id)
 
 '''
@@ -243,7 +243,7 @@ def handle_menu(message):
 def talk(message):
     msg = "Мы могли бы пообщаться, но, к сожалению, пока что я умею отвечать только привет)\n"
     msg += "Однако скоро мой создатель научит меня еще чему-нибудь)\n\n"
-    bot.send_message(message.chat.id, text = msg + TEXT)
+    bot.send_message(message.chat.id, text=msg + TEXT)
 
                              
 @bot.callback_query_handler(func = lambda call: type(call) == types.CallbackQuery and call.data in menu.keys())
@@ -284,8 +284,8 @@ def get_city_by_name(city):
 
 #создание кнопочки отправить свою геопозицию
 def location_reply_keyboard():
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard = False)
-    button = types.KeyboardButton(text = 'Отправить свою геопозицию!', request_location = True)
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=False)
+    button = types.KeyboardButton(text='Отправить свою геопозицию!', request_location=True)
     markup.add(button)
     return markup
 
@@ -303,48 +303,48 @@ def get_info_from_vk(message, vk_id):
         vk = Vk_music_analyzer()
         msg = "Подожди немного, пока я анализирую твой плейлист...\n\n"
         msg += "Обычно это занимает 4-6 минут."
-        bot.send_message(message.chat.id, text = msg)
+        bot.send_message(message.chat.id, text=msg)
         artists = vk.get_favourite_artists(vk_id)
         if artists == []:
-            bot.send_message(message.chat.id, text = "Ох, кажется, у тебя нет песен в VK...")
+            bot.send_message(message.chat.id, text="Ох, кажется, у тебя нет песен в VK...")
             print(message.chat.id, 'no songs in vk')
         else:
             msg = "Поделись, пожалуйста, своей геопозицией, чтобы я показал концерты в интересующем тебя городе!\n\n"
             msg += "Ты можешь также отправить и название города (например \'Москва\' или \'Санкт-Петербург\')"
-            msg = bot.send_message(message.chat.id, text = msg, reply_markup = location_reply_keyboard())
+            msg = bot.send_message(message.chat.id, text=msg, reply_markup=location_reply_keyboard())
             bot.register_next_step_handler(message, lambda msg: location_handler(msg, artists))
             print(message.chat.id, "send to identify location")
     except Exception as e:
         if str(e) == 'You don\'t have permissions to browse {}\'s albums'.format(vk_id):
             msg = "Мне кажется, что у тебя все-таки закрытый аккаунт или закрытые аудио(\n\n"
             msg += "Проверь это еще раз, пожалуйста!"
-            bot.send_message(message.chat.id, text = msg)
+            bot.send_message(message.chat.id, text=msg)
             print(message.chat.id, "closed account")
         else:
-            bot.send_message(message.chat.id, text = "Что-то тут не так! хм-хм")
+            bot.send_message(message.chat.id, text="Что-то тут не так! хм-хм")
             print(message.chat.id, "something happen")
    
     
 def get_info_from_spotify(message, token):
     sp = Spotify_music_analyzer()
-    bot.send_message(message.chat.id, text = "Подожди немного, пока я анализирую твой плейлист...")
+    bot.send_message(message.chat.id, text="Подожди немного, пока я анализирую твой плейлист...")
     artists = sp.get_favourite_artists(token)
     if artists == []:
-        bot.send_message(message.chat.id, text = "Ох, кажется, у тебя нет песен в spotify...")
+        bot.send_message(message.chat.id, text="Ох, кажется, у тебя нет песен в spotify...")
         print(message.chat.id, 'no songs in spotify')
     else:
         msg = "Поделись, пожалуйста, своей геопозицией, чтобы я показал концерты в интересующем тебя городе!\n\n"
         msg += "Ты можешь также отправить и название города (например \'Москва\' или \'Санкт-Петербург\')"
-        msg = bot.send_message(message.chat.id, text = msg, reply_markup = location_reply_keyboard())
+        msg = bot.send_message(message.chat.id, text=msg, reply_markup=location_reply_keyboard())
         bot.register_next_step_handler(message, lambda msg: location_handler(msg, artists))
         print(message.chat.id, "send to identify location")    
       
 
 @bot.message_handler(content_types=["location", "text"])
-def location_handler(message, artists = None):
+def location_handler(message, artists=None):
     keyboard = types.ReplyKeyboardRemove()
     if artists is None:
-        bot.send_message(message.chat.id, text = "ага, хайп", reply_markup = keyboard)
+        bot.send_message(message.chat.id, text="ага, хайп", reply_markup=keyboard)
     else:
         try:
             lat = message.location.latitude
@@ -354,25 +354,25 @@ def location_handler(message, artists = None):
             print(message.chat.id, "city " + nearest_city[nearest_city_rus])
             msg = "Твой город - {city}\n\n".format(city = nearest_city_rus)
             msg += "Осталось подождать совсем чуть-чуть, я подбираю для тебя концерты)"
-            bot.send_message(message.chat.id, text = msg, reply_markup = keyboard)
+            bot.send_message(message.chat.id, text=msg, reply_markup=keyboard)
             show_concerts(message, artists, nearest_city[nearest_city_rus])
         except AttributeError:
             try:
                 city = get_city_by_name(message.text)
                 print(message.chat.id, "city " + city)
                 msg = "Осталось подождать совсем чуть-чуть, я подбираю для тебя концерты)"
-                bot.send_message(message.chat.id, text = msg, reply_markup = keyboard)
+                bot.send_message(message.chat.id, text=msg, reply_markup=keyboard)
                 show_concerts(message, artists, city)
             except ValueError:
                 msg = "Возможно твоего города еще нет в нашей базе, либо ты написал его неправильно(\n\n"
                 msg += "Попробуй еще раз с команды /start"
                 print(message.chat.id, 'wrong city name or no city in our base')
-                bot.send_message(message.chat.id, text = msg)
+                bot.send_message(message.chat.id, text=msg)
 
     
 def show_concerts(message, artists, nearest_city):
     con = Concerts()
-    con.load_concerts(city = nearest_city, number_of_days=120)
+    con.load_concerts(city=nearest_city, number_of_days=120)
     concert_list = []
     for i in range(len(artists)):
         concert = con.find_concerts(artists[i])
@@ -386,7 +386,7 @@ def show_concerts(message, artists, nearest_city):
                     msg += "\nСтоимость билетов начинается от {price} рублей".format(price = concert[0]['price'])
                 except KeyError:
                     pass
-                bot.send_message(message.chat.id, text = msg, parse_mode = 'markdown')
+                bot.send_message(message.chat.id, text=msg, parse_mode='markdown')
                 concert_list.append(concert)
                 time.sleep(5)
             else:
@@ -395,12 +395,12 @@ def show_concerts(message, artists, nearest_city):
     if len(concert_list) != 0:
         msg = "Наслаждайся)\n\nТы нам очень сильно поможешь с разработкой этого бота, "
         msg += "если ответишь на несколько вопросов в [этой гугл-форме](https://forms.gle/GrfATEJFfy5BrAqm9)"
-        bot.send_message(message.chat.id, text = msg, parse_mode = 'markdown')
+        bot.send_message(message.chat.id, text=msg, parse_mode='markdown')
     else:
         time.sleep(4)
         msg = "Ох, кажется, что в выбранном тобой городе нет концертов, которые могли бы тебе понравиться(\n\nВ любом случае ты нам "
         msg += "очень сильно поможешь с разработкой этого бота, если ответишь на несколько вопросов в [этой гугл-форме](https://forms.gle/GrfATEJFfy5BrAqm9)"
-        bot.send_message(message.chat.id, text = msg, parse_mode = 'markdown')
+        bot.send_message(message.chat.id, text=msg, parse_mode='markdown')
 
 #logger = telebot.logger
 #telebot.logger.setLevel(logging.DEBUG)
