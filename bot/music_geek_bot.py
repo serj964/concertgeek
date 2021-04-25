@@ -22,10 +22,10 @@ class Unbuffered(object):
        return getattr(self.stream, attr)
 
 
-from Music_analyzer.vk_music_analyzer import vk_music_analyzer
-from Music_analyzer.spotify_music_analyzer import spotify_music_analyzer
+from Music_analyzer.vk_music_analyzer import Vk_music_analyzer
+from Music_analyzer.spotify_music_analyzer import Spotify_music_analyzer
 from Concerts.yandex_afisha_concerts import Concerts
-from bot.city_slovar import city_slovar
+from bot.city_slovar import City_slovar
 import Db.db as db_classes
 
 
