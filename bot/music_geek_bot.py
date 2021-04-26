@@ -393,8 +393,9 @@ def show_concerts(message, artists, nearest_city):
                 pass
     print(message.chat.id, "{0} concerts were sent".format(len(concert_list)))
     if len(concert_list) != 0:
-        msg = "Наслаждайся)\n\nТы нам очень сильно поможешь с разработкой этого бота, "
+        msg = "Наслаждайся)\n\nТы очень сильно поможешь с разработкой этого бота, "
         msg += "если ответишь на несколько вопросов в [этой гугл-форме](https://forms.gle/GrfATEJFfy5BrAqm9)"
+        msg += "\n\nТакже подписывайся на наш [канал](https://t.me/musicgeekinfo), где мы делимся своим прогрессом и оповещаем о новых функциях"
         bot.send_message(message.chat.id, text=msg, parse_mode='markdown')
     else:
         time.sleep(4)
