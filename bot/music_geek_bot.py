@@ -353,7 +353,7 @@ def location_handler(message, artists=None):
             nearest_city_rus = list(nearest_city.keys())[0]
             print(message.chat.id, "city " + nearest_city[nearest_city_rus])
             msg = "Твой город - {city}\n\n".format(city = nearest_city_rus)
-            msg += "Осталось подождать совсем чуть-чуть, я подбираю для тебя концерты)"
+            msg += "Осталось подождать совсем чуть-чуть, я подбираю для тебя концерты на ближайшие 4 месяца)"
             bot.send_message(message.chat.id, text=msg, reply_markup=keyboard)
             show_concerts(message, artists, nearest_city[nearest_city_rus])
         except AttributeError:
@@ -398,8 +398,9 @@ def show_concerts(message, artists, nearest_city):
         bot.send_message(message.chat.id, text=msg, parse_mode='markdown')
     else:
         time.sleep(4)
-        msg = "Ох, кажется, что в выбранном тобой городе нет концертов, которые могли бы тебе понравиться(\n\nВ любом случае ты нам "
+        msg = "Ох, кажется, что в выбранном тобой городе нет концертов, которые могли бы тебе понравиться(\n\nВ любом случае ты "
         msg += "очень сильно поможешь с разработкой этого бота, если ответишь на несколько вопросов в [этой гугл-форме](https://forms.gle/GrfATEJFfy5BrAqm9)"
+        msg += "\n\nТакже подписывайся на наш [канал](https://t.me/musicgeekinfo), где мы делимся своим прогрессом и оповещаем о новых функциях"
         bot.send_message(message.chat.id, text=msg, parse_mode='markdown')
 
 #logger = telebot.logger
