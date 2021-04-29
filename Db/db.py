@@ -11,6 +11,15 @@ base = declarative_base()
 
 
 
+preference_table = Table('preference', base.metadata,
+    Column('user_id', Integer, ForeignKey('users.id')),
+    Column('musician_id', Integer, ForeignKey('musicians.id')),
+)
+
+not_to_inform_table = Table('not_to_inform', base.metadata,
+    Column('user_id', Integer, ForeignKey('users.id')),
+    Column('musician_id', Integer, ForeignKey('musicians.id')),
+)
 class User(base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
@@ -19,11 +28,11 @@ class User(base):
     vk_id = Column(Integer)
     spotify_id = Column(Integer)
     last_date = Column(DateTime)
-    preferences = relationship('Musician', secondary='preferences')
-    not_to_inform = relationship('Musician', secondary='not_to_inform')
+    preferences = relationship('Musician', secondary=preference_table)
+    not_to_inform = relationship('Musician', secondary=not_to_inform_table)
     
-    '''def __repr__(self):
-        return "<User('%d', '%d','%s', '%d', '%d')>" % (self.id, self.tg_id, self.tg_username, self.vk_id, self.spotify_id)'''
+    def __repr__(self):
+        return f"User {self.tg_id}"
 
 class City(base):
     __tablename__ = 'cities'
@@ -53,13 +62,17 @@ class Interaction_type(base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
 
+conmus_table = Table('conmus', base.metadata, 
+    Column('concert_id', Integer, ForeignKey('concerts.id')),
+    Column('musician_id', Integer, ForeignKey('musicians.id'))
+)
+
 class Musician(base):
     __tablename__ = 'musicians'
     id = Column(Integer, primary_key = True)
     name = Column(String)
-    conmus = relationship('Concert', secondary='conmus')
-    users_in_preference = relationship('User', secondary='preferences')
-    users_not_to_inform = relationship('User', secondary='not_to_inform')
+    users_in_preference = relationship('User', secondary=preference_table)
+    users_not_to_inform = relationship('User', secondary=not_to_inform_table)
     '''def __repr__(self):
         return "<Musician('%d','%s')>" % (self.id, self.name)'''
 
@@ -70,6 +83,7 @@ class Place(base):
 
     '''def __repr__(self):
         return "<Place('%d','%s')>" % (self.id, self.name)'''
+
 
 class Concert(base):
     __tablename__ = 'concerts'
@@ -82,7 +96,6 @@ class Concert(base):
     url = Column(String)
     comment = Column(Text)
     source_id = Column(Integer, ForeignKey("sources.id"))
-    conmus = relationship('Musician', secondary='conmus')
 
     '''def __repr__(self):
         return "<Concert('%d', '%s', '%s', '%s', '%s', '%s')>" % (self.id, self.name, str(self.datetime), self.price, self.url, self.comment)'''
@@ -94,22 +107,6 @@ class Source(base):
     name = Column(String)
 
 
-class Conmus(base):
-    __tablename__ = "conmus"
-    concert_id = Column(Integer, ForeignKey('concerts.id'), primary_key=True)
-    musician_id = Column(Integer, ForeignKey('musicians.id'), primary_key=True)
-
-
-class Not_to_inform(base):
-    __tablename__ = "not_to_inform"
-    user_id = Column(Integer, ForeignKey('users.id'), primary_key=True)
-    musician_id = Column(Integer, ForeignKey('musicians.id'), primary_key=True)
-
-
-class Preference(base):
-    __tablename__ = "preferences"
-    user_id = Column(Integer, ForeignKey('users.id'), primary_key=True)
-    musician_id = Column(Integer, ForeignKey('musicians.id', primary_key=True))
 
 
 if __name__ == "__main__":
