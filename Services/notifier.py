@@ -41,31 +41,22 @@ def DeleteExpiredConcerts(now):
         session.delete(concert)
     session.commit()
 
-def GetListOfConcerts():
-    now = datetime.datetime.now().date()
-    #deleting expired cocnerts
-    DeleteExpiredConcerts(now)
-
-    return session.query(db_classes.Concert).filter(db_classes.Concert.concert_datetime != date)
+def GetListOfConcerts(now):
+    return session.query(db_classes.Concert).filter(db_classes.Concert.concert_datetime <= now+datetime.timedelta(days=28))
 
 def GetListOfUsersForConcert(concert_id):
-    query = session.query(db_classes.User, db_classes.Concert)
-    query = query.join(db_classes.Preference, db_classes.Preference.user_id == db_classes.User.id)
-    query = query.join(db_classes.Musician, db_classes.Musician.id == db_classes.Preference.musician_id)
-    query = query.join(db_classes.Conmus, db_classes.Conmus.musician_id == db_classes.Musician.id)
-    query = query.join(db_classes.Concert, db_classes.Conmus.concert_id == db_classes.Concert.id)
-    query = query.filter(db_classes.Concert.id == concert_id)
+    query = session.query(db_classes.User, db_classes.Musician, db_classes.Concert).filter(db_classes.Concert.concert_datetime != datetime.datetime.now()+datetime.timedelta(days=1))
     return query.all()
 
-def Notify():
+def Notify(now):
     #check db and if there are some events, it will notify user
     #db will contain information about how often should the service notify user
     #user would be notified in advance if the number of tickets is low
-    concerts = GetListOfConcerts()
-    print(type(concerts))
+    concerts = GetListOfConcerts(now)
     for concert in concerts:
         print(concert.concert_datetime.day)
         res = GetListOfUsersForConcert(concert.id)
+        print(res)
         for obj in res:
             tg_id = obj[0].tg_id
             concert_name = obj[1].name
@@ -77,5 +68,8 @@ def Notify():
     #bot.send_message(373959637, "hey")
 
 ##while True:
-Notify()
+
+now = datetime.datetime.now()
+#DeleteExpiredConcerts(now)
+Notify(now)
 #    time.sleep(TIMETICK)
