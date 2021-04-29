@@ -71,6 +71,7 @@ class Musician(base):
     __tablename__ = 'musicians'
     id = Column(Integer, primary_key = True)
     name = Column(String)
+    concerts = relationship('Concert', secondary=conmus_table, back_populates='musicians', passive_deletes=True)
     users_in_preference = relationship('User', secondary=preference_table)
     users_not_to_inform = relationship('User', secondary=not_to_inform_table)
     '''def __repr__(self):
@@ -96,6 +97,8 @@ class Concert(base):
     url = Column(String)
     comment = Column(Text)
     source_id = Column(Integer, ForeignKey("sources.id"))
+
+    musicians = relationship('Musician', secondary=conmus_table, back_populates='concerts', passive_deletes=True)
 
     '''def __repr__(self):
         return "<Concert('%d', '%s', '%s', '%s', '%s', '%s')>" % (self.id, self.name, str(self.datetime), self.price, self.url, self.comment)'''

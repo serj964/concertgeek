@@ -27,12 +27,15 @@ session = Session()
 vasiaUser = db_classes.User(tg_id = 124, tg_username = "ahah", vk_id = 123, spotify_id = 123)
 sanyaMusician = db_classes.Musician(name = "Sanya")
 con = db_classes.Concert(name = "Party", concert_datetime = datetime.datetime.now())
-vasiaUser.preferences.append(sanyaMusician)
-sanyaMusician.users_in_preference.append(vasiaUser)
-# sanyaMusician.conmus.append(con)
-# con.conmus.append(sanyaMusician)
 
-# session.add(vasiaUser)
+
+
+vasiaUser.preferences.append(sanyaMusician)
+#sanyaMusician.users_in_preference.append(vasiaUser)
+sanyaMusician.concerts.append(con)
+#con.musicians.append(sanyaMusician)
+
+session.add(vasiaUser)
 session.add(sanyaMusician)
 session.add(con)
 session.commit()

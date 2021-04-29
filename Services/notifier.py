@@ -35,7 +35,10 @@ def CompareDates(first, second, delta):
     pass
 
 def DeleteExpiredConcerts(now):
-    session.query(db_classes.Concert).filter(db_classes.Concert.concert_datetime < now).delete()
+    concerts = session.query(db_classes.Concert).filter(db_classes.Concert.concert_datetime < now)
+    for concert in concerts:
+        concert.musicians = []
+        session.delete(concert)
     session.commit()
 
 def GetListOfConcerts():
