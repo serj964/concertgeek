@@ -18,7 +18,7 @@ CONFIG_FILE = './bot/config.json'
 with open(CONFIG_FILE) as conf:
     config = json.load(conf)
 
-bot_config = config['bot_config']
+#bot_config = config['bot_config']
 db_config = config["db_config"]
 
 
@@ -27,13 +27,22 @@ engine = create_engine(db_config['sqlite_address'])
 Session = sessionmaker(bind=engine)
 session = Session()
 
-TOKEN = bot_config['token']
-bot = telebot.TeleBot(TOKEN)
+#TOKEN = bot_config['token']
+#bot = telebot.TeleBot(TOKEN)
 TIMETICK = 60
 
+def CompareDates(first, second, delta):
+    pass
+
+def DeleteExpiredConcerts(now):
+    session.query(db_classes.Concert).filter(db_classes.Concert.concert_datetime < now).delete()
+    session.commit()
 
 def GetListOfConcerts():
-    date = datetime.datetime.now().date()
+    now = datetime.datetime.now().date()
+    #deleting expired cocnerts
+    DeleteExpiredConcerts(now)
+
     return session.query(db_classes.Concert).filter(db_classes.Concert.concert_datetime != date)
 
 def GetListOfUsersForConcert(concert_id):
@@ -50,8 +59,9 @@ def Notify():
     #db will contain information about how often should the service notify user
     #user would be notified in advance if the number of tickets is low
     concerts = GetListOfConcerts()
+    print(type(concerts))
     for concert in concerts:
-        print(concert.name)
+        print(concert.concert_datetime.day)
         res = GetListOfUsersForConcert(concert.id)
         for obj in res:
             tg_id = obj[0].tg_id

@@ -24,18 +24,14 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 vasiaUser = db_classes.User(tg_id = 123, tg_username = "ahah", vk_id = 123, spotify_id = 123)
-session.add(vasiaUser)
-
 sanyaMusician = db_classes.Musician(name = "Sanya")
-session.add(sanyaMusician)
-
-pref = db_classes.Preference(user_id = 1, musician_id = 1)
-session.add(pref)
-
 con = db_classes.Concert(name = "Party", concert_datetime = datetime.datetime.now())
-session.add(con)
+vasiaUser.preferences.append(sanyaMusician)
+sanyaMusician.users_in_preference.append(vasiaUser)
+sanyaMusician.conmus.append(con)
+con.conmus.append(sanyaMusician)
 
-conmus = db_classes.Conmus(concert_id = 1, musician_id = 1)
-session.add(conmus)
-
+session.add(vasiaUser)
+#session.add(sanyaMusician)
+#session.add(con)
 session.commit()

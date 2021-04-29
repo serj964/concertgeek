@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, create_engine, Table, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.types import Float, DateTime, Text
 #import time
 
@@ -19,13 +19,11 @@ class User(base):
     vk_id = Column(Integer)
     spotify_id = Column(Integer)
     last_date = Column(DateTime)
+    preferences = relationship('Musician', secondary='preferences')
+    not_to_inform = relationship('Musician', secondary='not_to_inform')
     
-<<<<<<< HEAD
-    
-=======
     '''def __repr__(self):
         return "<User('%d', '%d','%s', '%d', '%d')>" % (self.id, self.tg_id, self.tg_username, self.vk_id, self.spotify_id)'''
->>>>>>> 33794ea0659f51f0794f8e9a32a6786363b49d9e
 
 class City(base):
     __tablename__ = 'cities'
@@ -59,7 +57,9 @@ class Musician(base):
     __tablename__ = 'musicians'
     id = Column(Integer, primary_key = True)
     name = Column(String)
-
+    conmus = relationship('Concert', secondary='conmus')
+    users_in_preference = relationship('User', secondary='preferences')
+    users_not_to_inform = relationship('User', secondary='not_to_inform')
     '''def __repr__(self):
         return "<Musician('%d','%s')>" % (self.id, self.name)'''
 
@@ -82,14 +82,10 @@ class Concert(base):
     url = Column(String)
     comment = Column(Text)
     source_id = Column(Integer, ForeignKey("sources.id"))
+    conmus = relationship('Musician', secondary='conmus')
 
-<<<<<<< HEAD
-    def __repr__(self):
-        return "<Concert('%d', '%s', '%s', '%s', '%s', '%s')>" % (self.id, self.name, str(self.concert_datetime), self.price, self.url, self.comment)
-=======
     '''def __repr__(self):
         return "<Concert('%d', '%s', '%s', '%s', '%s', '%s')>" % (self.id, self.name, str(self.datetime), self.price, self.url, self.comment)'''
->>>>>>> 33794ea0659f51f0794f8e9a32a6786363b49d9e
 
 
 class Source(base):
@@ -100,23 +96,20 @@ class Source(base):
 
 class Conmus(base):
     __tablename__ = "conmus"
-    id = Column(Integer, primary_key=True)
-    concert_id = Column(Integer, ForeignKey('concerts.id'))
-    musician_id = Column(Integer, ForeignKey('musicians.id'))
+    concert_id = Column(Integer, ForeignKey('concerts.id'), primary_key=True)
+    musician_id = Column(Integer, ForeignKey('musicians.id'), primary_key=True)
 
 
 class Not_to_inform(base):
     __tablename__ = "not_to_inform"
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.id'))
-    musician_id = Column(Integer, ForeignKey('musicians.id'))
+    user_id = Column(Integer, ForeignKey('users.id'), primary_key=True)
+    musician_id = Column(Integer, ForeignKey('musicians.id'), primary_key=True)
 
 
 class Preference(base):
     __tablename__ = "preferences"
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.id'))
-    musician_id = Column(Integer, ForeignKey('musicians.id'))
+    user_id = Column(Integer, ForeignKey('users.id'), primary_key=True)
+    musician_id = Column(Integer, ForeignKey('musicians.id', primary_key=True))
 
 
 if __name__ == "__main__":
