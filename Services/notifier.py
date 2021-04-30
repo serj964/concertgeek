@@ -2,6 +2,7 @@ import sqlalchemy
 import telebot
 import time
 import datetime
+from datetime import timedelta
 from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -29,7 +30,7 @@ session = Session()
 
 #TOKEN = bot_config['token']
 #bot = telebot.TeleBot(TOKEN)
-TIMETICK = 60
+TIMETICK = 60*60*24
 
 def CompareDates(first, second, delta):
     pass
@@ -42,20 +43,19 @@ def DeleteExpiredConcerts(now):
     session.commit()
 
 def GetListOfConcerts(now):
-    return session.query(db_classes.Concert).filter(db_classes.Concert.concert_datetime <= now+datetime.timedelta(days=28))
+    #getting concerts which dates are 28 days after now
+    return session.query(db_classes.Concert).filter(db_classes.Concert.concert_datetime <= now+datetime.timedelta(days=28)).all()
 
-def GetListOfUsersForConcert(concert_id):
-    query = session.query(db_classes.User, db_classes.Musician, db_classes.Concert).filter(db_classes.Concert.concert_datetime != datetime.datetime.now()+datetime.timedelta(days=1))
+def GetListOfUsersForConcert(concert_id, days_before_concert):
+    query = session.query(db_classes.User, db_classes.Musician, db_classes.Concert).filter(db_classes.Concert.id == concert_id)
     return query.all()
 
 def Notify(now):
-    #check db and if there are some events, it will notify user
-    #db will contain information about how often should the service notify user
-    #user would be notified in advance if the number of tickets is low
     concerts = GetListOfConcerts(now)
     for concert in concerts:
-        print(concert.concert_datetime.day)
-        res = GetListOfUsersForConcert(concert.id)
+        days_before_concert = (concert.concert_datetime-now).days
+        print(days_before_concert)
+        res = GetListOfUsersForConcert(concert.id, days_before_concert)
         print(res)
         for obj in res:
             tg_id = obj[0].tg_id
@@ -64,12 +64,9 @@ def Notify(now):
             #bot.send_message(tg_id, concert_name)
 
     
-
-    #bot.send_message(373959637, "hey")
-
 ##while True:
 
 now = datetime.datetime.now()
-#DeleteExpiredConcerts(now)
+DeleteExpiredConcerts(now)
 Notify(now)
 #    time.sleep(TIMETICK)
