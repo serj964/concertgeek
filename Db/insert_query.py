@@ -26,7 +26,7 @@ session = Session()
 # vasiaUser = session.query(db_classes.User).filter_by(tg_id=123).first()
 vasiaUser = db_classes.User(tg_id = 124, tg_username = "ahah", vk_id = 123, spotify_id = 123)
 sanyaMusician = db_classes.Musician(name = "Sanya")
-con = db_classes.Concert(name = "Party", concert_datetime = datetime.datetime(2021, 4, 16), is_new=1)
+con = db_classes.Concert(name = "Party", concert_datetime = datetime.datetime(2021, 5, 16), is_new=1)
 
 
 

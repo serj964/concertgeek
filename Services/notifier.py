@@ -90,6 +90,6 @@ def Notify(now):
 
 now = datetime.datetime.now()
 DeleteExpiredConcerts(now)
-#Notify(now)
+Notify(now)
 PostNewConcerts(now)
 #    time.sleep(TIMETICK)
