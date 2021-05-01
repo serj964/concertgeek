@@ -111,6 +111,7 @@ class Concert(base):
     url = Column(String)
     comment = Column(Text)
     source_id = Column(Integer, ForeignKey("sources.id"))
+    is_new = Column(Integer)
 
     users_to_notify = relationship('User', secondary=to_notify_table)
     musicians = relationship('Musician', secondary=conmus_table, back_populates='concerts', passive_deletes=True)

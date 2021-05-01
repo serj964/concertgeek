@@ -44,11 +44,25 @@ def DeleteExpiredConcerts(now):
 
 def GetListOfConcerts(now):
     #getting concerts which dates are 28 days after now
-    return session.query(db_classes.Concert).filter(db_classes.Concert.concert_datetime <= now+datetime.timedelta(days=28)).all()
+    query = session.query(db_classes.Concert).filter(db_classes.Concert.concert_datetime <= now+datetime.timedelta(days=28))
+    return query.all()
 
 def GetListOfUsersForConcert(concert_id, days_before_concert):
     query = session.query(db_classes.User, db_classes.Musician, db_classes.Concert).filter(db_classes.Concert.id == concert_id)
     return query.all()
+
+def GetListOfNewConcerts(now):
+    query
+
+def PostNewConcerts(now):
+    new_concerts = GetListOfNewConcerts(now)
+    for concert in new_concerts:
+        users_for_concert_responce = GetListOfUsersForConcert(concert_id)
+        for user in users_for_concert_responce:
+            tg_id = user[0].tg_id
+            concert_name = user[1].name
+            print("tg_id = {}, concert name = {}".format(tg_id, concert_name))
+            #bot.send_message(tg_id, concert_name)
 
 def Notify(now):
     concerts = GetListOfConcerts(now)
