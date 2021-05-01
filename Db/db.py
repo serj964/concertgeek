@@ -31,6 +31,12 @@ user_city_table = Table('usecit', base.metadata,
     Column('city_id', Integer, ForeignKey('cities.id'))
 )
 
+conmus_table = Table('conmus', base.metadata, 
+    Column('concert_id', Integer, ForeignKey('concerts.id')),
+    Column('musician_id', Integer, ForeignKey('musicians.id'))
+)
+
+
 class User(base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
@@ -76,16 +82,11 @@ class Interaction_type(base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
 
-conmus_table = Table('conmus', base.metadata, 
-    Column('concert_id', Integer, ForeignKey('concerts.id')),
-    Column('musician_id', Integer, ForeignKey('musicians.id'))
-)
-
 class Musician(base):
     __tablename__ = 'musicians'
     id = Column(Integer, primary_key = True)
     name = Column(String)
-    concerts = relationship('Concert', secondary=conmus_table, back_populates='musicians', passive_deletes=True)
+    concerts = relationship('Concert', secondary=conmus_table)
     users_in_preference = relationship('User', secondary=preference_table)
     users_not_to_inform = relationship('User', secondary=not_to_inform_table)
     '''def __repr__(self):
@@ -114,7 +115,7 @@ class Concert(base):
     is_new = Column(Integer)
 
     users_to_notify = relationship('User', secondary=to_notify_table)
-    musicians = relationship('Musician', secondary=conmus_table, back_populates='concerts', passive_deletes=True)
+    musicians = relationship('Musician', secondary=conmus_table)
 
     '''def __repr__(self):
         return "<Concert('%d', '%s', '%s', '%s', '%s', '%s')>" % (self.id, self.name, str(self.datetime), self.price, self.url, self.comment)'''

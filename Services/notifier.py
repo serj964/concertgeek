@@ -38,26 +38,34 @@ def CompareDates(first, second, delta):
 def DeleteExpiredConcerts(now):
     concerts = session.query(db_classes.Concert).filter(db_classes.Concert.concert_datetime < now)
     for concert in concerts:
-        concert.musicians = []
         session.delete(concert)
     session.commit()
 
 def GetListOfConcerts(now):
     #getting concerts which dates are 28 days after now
-    query = session.query(db_classes.Concert).filter(db_classes.Concert.concert_datetime <= now+datetime.timedelta(days=28))
+    query = session.query(db_classes.Concert).filter(db_classes.Concert.concert_datetime == now+datetime.timedelta(days=28))
     return query.all()
 
 def GetListOfUsersForConcert(concert_id, days_before_concert):
+    query = session.query(db_classes.User, db_classes.Concert).filter(db_classes.Concert.id == concert_id)
+    return query.all()
+
+def GetListOfUsersForNewConcert(concert_id):
     query = session.query(db_classes.User, db_classes.Musician, db_classes.Concert).filter(db_classes.Concert.id == concert_id)
     return query.all()
 
 def GetListOfNewConcerts(now):
-    query
+    query = session.query(db_classes.Concert).filter(db_classes.Concert.is_new == 1)
+    return query.all()
 
 def PostNewConcerts(now):
     new_concerts = GetListOfNewConcerts(now)
+    print(new_concerts)
     for concert in new_concerts:
-        users_for_concert_responce = GetListOfUsersForConcert(concert_id)
+        concert.is_new = 0
+        session.commit()
+        print(concert)
+        users_for_concert_responce = GetListOfUsersForNewConcert(concert.id)
         for user in users_for_concert_responce:
             tg_id = user[0].tg_id
             concert_name = user[1].name
@@ -82,5 +90,6 @@ def Notify(now):
 
 now = datetime.datetime.now()
 DeleteExpiredConcerts(now)
-Notify(now)
+#Notify(now)
+PostNewConcerts(now)
 #    time.sleep(TIMETICK)
