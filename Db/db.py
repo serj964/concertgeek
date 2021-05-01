@@ -11,9 +11,10 @@ base = declarative_base()
 
 
 
-preference_table = Table('preference', base.metadata,
+preference_table = Table('preferences', base.metadata,
     Column('user_id', Integer, ForeignKey('users.id')),
     Column('musician_id', Integer, ForeignKey('musicians.id'))
+    Column('pisition', Integer)
 )
 
 not_to_inform_table = Table('not_to_inform', base.metadata,
