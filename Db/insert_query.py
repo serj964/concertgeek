@@ -33,6 +33,7 @@ con = db_classes.Concert(name = "Party", concert_datetime = datetime.datetime(20
 vasiaUser.preferences.append(sanyaMusician)
 #sanyaMusician.users_in_preference.append(vasiaUser)
 sanyaMusician.concerts.append(con)
+vasiaUser.concerts_to_notify.append(con)
 #con.musicians.append(sanyaMusician)
 
 session.add(vasiaUser)

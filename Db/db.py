@@ -13,13 +13,24 @@ base = declarative_base()
 
 preference_table = Table('preference', base.metadata,
     Column('user_id', Integer, ForeignKey('users.id')),
-    Column('musician_id', Integer, ForeignKey('musicians.id')),
+    Column('musician_id', Integer, ForeignKey('musicians.id'))
 )
 
 not_to_inform_table = Table('not_to_inform', base.metadata,
     Column('user_id', Integer, ForeignKey('users.id')),
-    Column('musician_id', Integer, ForeignKey('musicians.id')),
+    Column('musician_id', Integer, ForeignKey('musicians.id'))
 )
+
+to_notify_table = Table('to_notify', base.metadata,
+    Column('user_id', Integer, ForeignKey('users.id')),
+    Column('concert_id', Integer, ForeignKey('concerts.id'))
+)
+
+user_city_table = Table('usecit', base.metadata,
+    Column('user_id', Integer, ForeignKey('users.id')),
+    Column('city_id', Integer, ForeignKey('cities.id'))
+)
+
 class User(base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
@@ -28,6 +39,9 @@ class User(base):
     vk_id = Column(Integer)
     spotify_id = Column(Integer)
     last_date = Column(DateTime)
+
+    cities = relationship('City', secondary=user_city_table)
+    concerts_to_notify = relationship('Concert', secondary=to_notify_table)
     preferences = relationship('Musician', secondary=preference_table)
     not_to_inform = relationship('Musician', secondary=not_to_inform_table)
     
@@ -39,9 +53,9 @@ class City(base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
 
+    users_in_city = relationship('User', secondary=user_city_table)
     '''def __repr__(self):
         return "<City('%d','%s')>" % (self.id, self.name)'''
-
 
 class Interaction(base):
     __tablename__ = 'interactions'
@@ -98,6 +112,7 @@ class Concert(base):
     comment = Column(Text)
     source_id = Column(Integer, ForeignKey("sources.id"))
 
+    users_to_notify = relationship('User', secondary=to_notify_table)
     musicians = relationship('Musician', secondary=conmus_table, back_populates='concerts', passive_deletes=True)
 
     '''def __repr__(self):
