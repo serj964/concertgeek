@@ -24,7 +24,8 @@ not_to_inform_table = Table('not_to_inform', base.metadata,
 
 to_notify_table = Table('to_notify', base.metadata,
     Column('user_id', Integer, ForeignKey('users.id')),
-    Column('concert_id', Integer, ForeignKey('concerts.id'))
+    Column('concert_id', Integer, ForeignKey('concerts.id')),
+    Column('when', String)
 )
 
 user_city_table = Table('usecit', base.metadata,
