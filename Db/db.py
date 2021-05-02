@@ -22,12 +22,6 @@ not_to_inform_table = Table('not_to_inform', base.metadata,
     Column('musician_id', Integer, ForeignKey('musicians.id'))
 )
 
-to_notify_table = Table('to_notify', base.metadata,
-    Column('user_id', Integer, ForeignKey('users.id')),
-    Column('concert_id', Integer, ForeignKey('concerts.id')),
-    Column('when', String)
-)
-
 user_city_table = Table('usecit', base.metadata,
     Column('user_id', Integer, ForeignKey('users.id')),
     Column('city_id', Integer, ForeignKey('cities.id'))
@@ -36,6 +30,13 @@ user_city_table = Table('usecit', base.metadata,
 conmus_table = Table('conmus', base.metadata, 
     Column('concert_id', Integer, ForeignKey('concerts.id')),
     Column('musician_id', Integer, ForeignKey('musicians.id'))
+)
+
+usecon_table = Table('usecon', base.metadata,
+    Column('concert_id', Integer, ForeignKey('concerts.id')),
+    Column('user_id', Integer, ForeignKey('users.id')),
+    Column('status', Integer, ForeignKey('status_type.id')),
+    Column('date', DateTime)
 )
 
 
@@ -49,12 +50,17 @@ class User(base):
     last_date = Column(DateTime)
 
     cities = relationship('City', secondary=user_city_table)
-    concerts_to_notify = relationship('Concert', secondary=to_notify_table)
+    concerts = relationship('Concert', secondary=usecon_table)
     preferences = relationship('Musician', secondary=preference_table)
     not_to_inform = relationship('Musician', secondary=not_to_inform_table)
     
     def __repr__(self):
         return f"User {self.tg_id}"
+
+class Status(base):
+    __tablename__ = 'status_type'
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
 
 class City(base):
     __tablename__ = 'cities'
@@ -70,7 +76,6 @@ class Interaction(base):
     id = Column(Integer, primary_key=True)
     type_id = Column(Integer, ForeignKey("interaction_type.id"))
     user_id = Column(Integer, ForeignKey("users.id"))
-    concert_id = Column(Integer, ForeignKey("concerts.id"))
     inter_datetime = Column(DateTime)
 
 
@@ -116,7 +121,7 @@ class Concert(base):
     source_id = Column(Integer, ForeignKey("sources.id"))
     is_new = Column(Integer)
 
-    users_to_notify = relationship('User', secondary=to_notify_table)
+    users = relationship('User', secondary=usecon_table)
     musicians = relationship('Musician', secondary=conmus_table)
 
     '''def __repr__(self):
