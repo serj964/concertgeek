@@ -199,7 +199,8 @@ def menu_startup_abort_proc(message):
     
     
 def menu_like_proc(message):
-    bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=total_recall(message))
+    #bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=total_recall(message))
+    print(message.entities)
     msg = "Круто, что тебе понравился этот концерт!"
     bot.send_message(message.chat.id, text=msg)
     
