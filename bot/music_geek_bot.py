@@ -8,7 +8,7 @@ import sys
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import datetime
-import emoji
+#import emoji
 
 
 class Unbuffered(object):
@@ -226,7 +226,7 @@ menu_startup = {
 
 
 menu_like = {
-    'btn_menu_like' : (emoji.emojize(':thumbs_up:'), menu_like_proc)
+    'btn_menu_like' : ('👍', menu_like_proc)
 }
 
 
