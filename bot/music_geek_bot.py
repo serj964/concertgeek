@@ -200,7 +200,7 @@ def menu_startup_abort_proc(message):
     
 def menu_like_proc(message):
     msg = "Круто, что тебе понравился этот концерт"
-    bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=message.entities)
+    bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=message.text)
     bot.send_message(message.chat.id, text=msg)
     
 
@@ -399,7 +399,7 @@ def show_concerts(message, artists, nearest_city):
         concert = con.find_concerts(artists[i])
         if concert != []:
             if concert not in concert_list:
-                msg = "Концерт [{title}]({url})\nОн пройдет *{date}* в {place}".format(place = concert[0]['place'],
+                msg = "Концерт [{title}]({url})\nКогда: *{date}*\nГде: *{place}*".format(place = concert[0]['place'],
                                               title = concert[0]['title'],
                                               date = concert[0]['date'],
                                               url = concert[0]['url'])
