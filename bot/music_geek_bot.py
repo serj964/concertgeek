@@ -119,7 +119,7 @@ def change_service():
 
 
 def menu_manage_list_proc(message):
-    bot.send_message(message.chat.id, text = "хайп")
+    bot.send_message(message.chat.id, text="хайп")
 
 '''
 def menu_send_concerts_proc():
@@ -132,29 +132,29 @@ def menu_reset_proc(message):
 
 def menu_analyze_spotify_proc():
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
-    bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
+    bot.send_message(message.chat.id, text="Перейди, пожалуйста, по ссылке для авторизации: "+url)
     db_object = get_info_from_db(1, message.chat.id)
     try:
         token = db_object['spotify_access_token']
         get_info_from_spotify(message, token)
         print(message.chat.id, "successful authorization")
     except TypeError:
-        bot.send_message(message.chat.id, text = "Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
+        bot.send_message(message.chat.id, text="Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
         print(message.chat.id, "the link has expired ")
 
 
 def menu_analyze_vk_proc():
-    url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     msg = "Обязательно проверь, что у тебя открытый аккаунт и открытые аудио!\n\n"
     msg += "После этого перейди, пожалуйста, по ссылке для авторизации: "
-    bot.send_message(message.chat.id, text = msg + url)
+    msg += spotify_oauth_url+"?&tg_id="+str(message.chat.id)
+    bot.send_message(message.chat.id, text=msg)
     db_object = get_info_from_db(0, message.chat.id)
     try:
         vk_id = db_object['vk_id']
         get_info_from_vk(message, vk_id)
         print(message.chat.id, db_object)
     except TypeError:
-        bot.send_message(message.chat.id, text = "Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
+        bot.send_message(message.chat.id, text="Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
         print(message.chat.id, "the link has expired ")
 
 
@@ -164,11 +164,11 @@ def menu_change_service_proc(message):
 
 
 def menu_startup_vk_proc(message):
-    url = vk_oauth_url+"?&tg_id="+str(message.chat.id)
     msg = "Обязательно проверь, что у тебя открытый аккаунт и открытые аудио!\n\n"
     msg += "После этого перейди, пожалуйста, по ссылке для авторизации: "
-    msg2 = "\n\nСсылка действительна всего 4 минуты!"
-    bot.send_message(message.chat.id, text = msg + url + msg2)
+    msg += vk_oauth_url+"?&tg_id="+str(message.chat.id)
+    msg += "\n\nСсылка действительна всего 4 минуты!"
+    bot.send_message(message.chat.id, text=msg)
     db_object = get_info_from_db(0, message.chat.id)
     try:
         vk_id = db_object['vk_id']
@@ -194,13 +194,13 @@ def menu_startup_spotify_proc(message):
 
 
 def menu_startup_abort_proc(message):
-    msg = "Тогда я просто побуду у тебя в телефоне)\n\n"
-    bot.send_message(message.chat.id, text=msg + TEXT)
+    msg = "Тогда я просто побуду у тебя в телефоне)\n\n" + TEXT
+    bot.send_message(message.chat.id, text=msg)
     
     
 def menu_like_proc(message):
     msg = "Круто, что тебе понравился этот концерт"
-    bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=message.text)
+    bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=message.entities)
     bot.send_message(message.chat.id, text=msg)
     
 
@@ -255,8 +255,8 @@ def handle_menu(message):
 @bot.message_handler(content_types = ["text", "sticker", "pinned_message", "photo", "audio"])
 def talk(message):
     msg = "Мы могли бы пообщаться, но, к сожалению, пока что я умею отвечать только привет)\n"
-    msg += "Однако скоро мой создатель научит меня еще чему-нибудь)\n\n"
-    bot.send_message(message.chat.id, text=msg + TEXT)
+    msg += "Однако скоро мой создатель научит меня еще чему-нибудь)\n\n" + TEXT
+    bot.send_message(message.chat.id, text=msg)
 
 
 @bot.callback_query_handler(func = lambda call: type(call) == types.CallbackQuery and call.data in menu_like.keys())
