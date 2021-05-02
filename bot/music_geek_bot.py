@@ -8,6 +8,8 @@ import sys
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import datetime
+import emoji
+
 
 class Unbuffered(object):
    def __init__(self, stream):
@@ -195,6 +197,11 @@ def menu_startup_abort_proc(message):
     msg = "Тогда я просто побуду у тебя в телефоне)\n\n"
     bot.send_message(message.chat.id, text=msg + TEXT)
     
+    
+def menu_like_proc(message):
+    msg = "Круто, что тебе понравился этот концерт"
+    bot.send_message(message.chat.id, text=msg)
+    
 
 menu_change_service = {
     'btn_menu_analize_vk' : ('Vk', menu_analyze_vk_proc),
@@ -215,6 +222,11 @@ menu_startup = {
     'btn_menu_startup_vk' : ('Vk', menu_startup_vk_proc),
     'btn_menu_startup_spotify' : ('Spotify', menu_startup_spotify_proc),
     'btn_menu_startup_abort' : ('Выберу потом', menu_startup_abort_proc)
+}
+
+
+menu_like = {
+    'btn_menu_like' : (emoji.emojize(':thumbs_up:'), menu_like_proc)
 }
 
 
@@ -245,7 +257,15 @@ def talk(message):
     msg += "Однако скоро мой создатель научит меня еще чему-нибудь)\n\n"
     bot.send_message(message.chat.id, text=msg + TEXT)
 
-                             
+
+@bot.callback_query_handler(func = lambda call: type(call) == types.CallbackQuery and call.data in menu_like.keys())
+def menu_like_keyboard_handler(call):
+    btn = call.data
+    print(call.from_user.id, btn)
+    if menu_like.get(btn) != None:
+        menu_like[btn][1](call.message)
+           
+        
 @bot.callback_query_handler(func = lambda call: type(call) == types.CallbackQuery and call.data in menu.keys())
 def menu_keyboard_handler(call):
     btn = call.data
@@ -378,7 +398,7 @@ def show_concerts(message, artists, nearest_city):
         concert = con.find_concerts(artists[i])
         if concert != []:
             if concert not in concert_list:
-                msg = "Концерт группы [{title}]({url})\nОн пройдет *{date}* в {place}".format(place = concert[0]['place'],
+                msg = "Концерт [{title}]({url})\nОн пройдет *{date}* в {place}".format(place = concert[0]['place'],
                                               title = concert[0]['title'],
                                               date = concert[0]['date'],
                                               url = concert[0]['url'])
@@ -386,7 +406,7 @@ def show_concerts(message, artists, nearest_city):
                     msg += "\nБилеты от {price} рублей".format(price = concert[0]['price'])
                 except KeyError:
                     pass
-                bot.send_message(message.chat.id, text=msg, parse_mode='markdown')
+                bot.send_message(message.chat.id, text=msg, parse_mode='markdown', reply_markup=make_keyboard(menu_like))
                 concert_list.append(concert)
                 time.sleep(5)
             else:
