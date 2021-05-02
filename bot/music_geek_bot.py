@@ -378,12 +378,12 @@ def show_concerts(message, artists, nearest_city):
         concert = con.find_concerts(artists[i])
         if concert != []:
             if concert not in concert_list:
-                msg = "Концерт группы [{title}]({url})\nОн пройдет {date} в {place}".format(place = concert[0]['place'],
+                msg = "Концерт группы [{title}]({url})\nОн пройдет *{date}* в {place}".format(place = concert[0]['place'],
                                               title = concert[0]['title'],
                                               date = concert[0]['date'],
                                               url = concert[0]['url'])
                 try:
-                    msg += "\nСтоимость билетов начинается от {price} рублей".format(price = concert[0]['price'])
+                    msg += "\nБилеты от {price} рублей".format(price = concert[0]['price'])
                 except KeyError:
                     pass
                 bot.send_message(message.chat.id, text=msg, parse_mode='markdown')
