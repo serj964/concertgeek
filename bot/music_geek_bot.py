@@ -199,8 +199,7 @@ def menu_startup_abort_proc(message):
     
     
 def menu_like_proc(message):
-    #bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=total_recall(message))
-    print(call.message.json.get('entities')[0].get('url'))
+    bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=total_recall(message))
     msg = "Круто, что тебе понравился этот концерт!"
     bot.send_message(message.chat.id, text=msg)
     
@@ -210,7 +209,7 @@ def total_recall(message):
     title = s.split('\n')[0][s.index(' ', 0, len(s.split('\n')[0]))+1:len(s.split('\n')[0])]
     date = s.split('\n')[1][7:len(s.split('\n')[1])]
     place = s.split('\n')[2][5:len(s.split('\n')[2])]
-    url = message.entities['url']
+    url = message.json.get('entities')[0].get('url')
     new_text = "Концерт [{t}]({u})\nКогда: *{d}*\nГде: *{p}*".format(p = place,
                         t = title,
                         d = date,
