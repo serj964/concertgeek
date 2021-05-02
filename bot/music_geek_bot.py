@@ -199,10 +199,27 @@ def menu_startup_abort_proc(message):
     
     
 def menu_like_proc(message):
-    msg = "Круто, что тебе понравился этот концерт"
-    bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=message.text)
+    bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=total_recall(message))
+    msg = "Круто, что тебе понравился этот концерт!"
     bot.send_message(message.chat.id, text=msg)
     
+
+def total_recall(message):
+    s = message.text
+    title = s.split('\n')[0][s.index(' ', 0, len(s.split('\n')[0]))+1:len(s.split('\n')[0])]
+    date = s.split('\n')[1][7:len(s.split('\n')[1])]
+    place = s.split('\n')[2][5:len(s.split('\n')[2])]
+    url = message.entities['url']
+    new_text = "Концерт [{t}]({u})\nКогда: *{d}*\nГде: *{p}*".format(p = place,
+                        t = title,
+                        d = date,
+                        u = url)
+    try:
+        new_text += "\n{p}".format(p = s.split('\n')[3])
+    except KeyError:
+        pass
+    return new_text 
+
 
 menu_change_service = {
     'btn_menu_analize_vk' : ('Vk', menu_analyze_vk_proc),
