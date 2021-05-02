@@ -8,7 +8,6 @@ import sys
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import datetime
-#import emoji
 
 
 class Unbuffered(object):
@@ -131,8 +130,9 @@ def menu_reset_proc(message):
 
 
 def menu_analyze_spotify_proc():
-    url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
-    bot.send_message(message.chat.id, text="Перейди, пожалуйста, по ссылке для авторизации: "+url)
+    msg = "Перейди, пожалуйста, по ссылке для авторизации: "
+    msg += spotify_oauth_url+"?&tg_id="+str(message.chat.id)
+    bot.send_message(message.chat.id, text=msg)
     db_object = get_info_from_db(1, message.chat.id)
     try:
         token = db_object['spotify_access_token']
@@ -182,7 +182,7 @@ def menu_startup_vk_proc(message):
 def menu_startup_spotify_proc(message):
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     msg = "\n\nСсылка действительна всего 4 минуты!"
-    bot.send_message(message.chat.id, text="Перейди, пожалуйста, по ссылке для авторизации: " + url + msg)
+    bot.send_message(message.chat.id, text="Перейди, пожалуйста, по ссылке для авторизации: "+url+msg)
     db_object = get_info_from_db(1, message.chat.id)
     try:
         token = db_object['spotify_access_token']
@@ -199,7 +199,7 @@ def menu_startup_abort_proc(message):
     
     
 def menu_like_proc(message):
-    bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=total_recall(message))
+    bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=total_recall(message), parse_mode='markdown')
     msg = "Круто, что тебе понравился этот концерт!"
     bot.send_message(message.chat.id, text=msg)
     
@@ -276,7 +276,7 @@ def talk(message):
     bot.send_message(message.chat.id, text=msg)
 
 
-@bot.callback_query_handler(func = lambda call: type(call) == types.CallbackQuery and call.data in menu_like.keys())
+@bot.callback_query_handler(func=lambda call: type(call)==types.CallbackQuery and call.data in menu_like.keys())
 def menu_like_keyboard_handler(call):
     btn = call.data
     print(call.from_user.id, btn)
@@ -284,7 +284,7 @@ def menu_like_keyboard_handler(call):
         menu_like[btn][1](call.message)
            
         
-@bot.callback_query_handler(func = lambda call: type(call) == types.CallbackQuery and call.data in menu.keys())
+@bot.callback_query_handler(func=lambda call: type(call)==types.CallbackQuery and call.data in menu.keys())
 def menu_keyboard_handler(call):
     btn = call.data
     print(call.from_user.id, btn)
@@ -292,7 +292,7 @@ def menu_keyboard_handler(call):
         menu[btn][1](call.message)
 
 
-@bot.callback_query_handler(func = lambda call: type(call) == types.CallbackQuery and call.data in menu_startup.keys())
+@bot.callback_query_handler(func=lambda call: type(call)==types.CallbackQuery and call.data in menu_startup.keys())
 def menu_startup_keyboard_handler(call):
     btn = call.data
     print(call.from_user.id, btn)
@@ -300,7 +300,7 @@ def menu_startup_keyboard_handler(call):
         menu_startup[btn][1](call.message)
 
      
-@bot.callback_query_handler(func = lambda call: type(call) == types.CallbackQuery and call.data in menu_change_service.keys())
+@bot.callback_query_handler(func=lambda call: type(call)==types.CallbackQuery and call.data in menu_change_service.keys())
 def menu_change_service_keyboard_handler(call):
     btn = call.data
     print(call.from_user.id, btn)
