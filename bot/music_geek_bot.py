@@ -132,6 +132,7 @@ def menu_reset_proc(message):
 def menu_analyze_spotify_proc():
     msg = "Перейди, пожалуйста, по ссылке для авторизации: "
     msg += spotify_oauth_url+"?&tg_id="+str(message.chat.id)
+    msg += "\n\nСсылка действительна всего 4 минуты и только один раз!"
     bot.send_message(message.chat.id, text=msg)
     db_object = get_info_from_db(1, message.chat.id)
     try:
@@ -147,6 +148,7 @@ def menu_analyze_vk_proc():
     msg = "Обязательно проверь, что у тебя открытый аккаунт и открытые аудио!\n\n"
     msg += "После этого перейди, пожалуйста, по ссылке для авторизации: "
     msg += spotify_oauth_url+"?&tg_id="+str(message.chat.id)
+    msg += "\n\nСсылка действительна всего 4 минуты и только один раз!"
     bot.send_message(message.chat.id, text=msg)
     db_object = get_info_from_db(0, message.chat.id)
     try:
@@ -167,7 +169,7 @@ def menu_startup_vk_proc(message):
     msg = "Обязательно проверь, что у тебя открытый аккаунт и открытые аудио!\n\n"
     msg += "После этого перейди, пожалуйста, по ссылке для авторизации: "
     msg += vk_oauth_url+"?&tg_id="+str(message.chat.id)
-    msg += "\n\nСсылка действительна всего 4 минуты!"
+    msg += "\n\nСсылка действительна всего 4 минуты и только один раз!"
     bot.send_message(message.chat.id, text=msg)
     db_object = get_info_from_db(0, message.chat.id)
     try:
@@ -180,9 +182,10 @@ def menu_startup_vk_proc(message):
 
     
 def menu_startup_spotify_proc(message):
-    url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
-    msg = "\n\nСсылка действительна всего 4 минуты!"
-    bot.send_message(message.chat.id, text="Перейди, пожалуйста, по ссылке для авторизации: "+url+msg)
+    msg = "Перейди, пожалуйста, по ссылке для авторизации: "
+    msg += spotify_oauth_url+"?&tg_id="+str(message.chat.id)
+    msg += "\n\nСсылка действительна всего 4 минуты и только один раз!"
+    bot.send_message(message.chat.id, text=msg)
     db_object = get_info_from_db(1, message.chat.id)
     try:
         token = db_object['spotify_access_token']
@@ -200,7 +203,7 @@ def menu_startup_abort_proc(message):
     
 def menu_like_proc(message):
     bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=total_recall(message), parse_mode='markdown')
-    msg = "Круто, что тебе понравился этот концерт!"
+    #msg = "Круто, что тебе понравился этот концерт!"
     bot.send_message(message.chat.id, text=msg)
     
 
@@ -216,7 +219,7 @@ def total_recall(message):
                         u = url)
     try:
         new_text += "\n{p}".format(p = s.split('\n')[3])
-    except KeyError:
+    except IndexError:
         pass
     return new_text 
 
@@ -392,13 +395,17 @@ def location_handler(message, artists=None):
             print(message.chat.id, "city " + nearest_city[nearest_city_rus])
             msg = "Твой город - {city}\n\n".format(city = nearest_city_rus)
             msg += "Осталось подождать совсем чуть-чуть, я подбираю для тебя концерты на ближайшие 4 месяца)"
+            msg += "\n\nА пока, подписывайся на наш [канал](https://t.me/musicgeekinfo), где мои разработчики "
+            msg += "рассказывают о своём прогрессе и оповещают о новых функциях)"
             bot.send_message(message.chat.id, text=msg, reply_markup=keyboard)
             show_concerts(message, artists, nearest_city[nearest_city_rus])
         except AttributeError:
             try:
                 city = get_city_by_name(message.text)
                 print(message.chat.id, "city " + city)
-                msg = "Осталось подождать совсем чуть-чуть, я подбираю для тебя концерты)"
+                msg = "Осталось подождать совсем чуть-чуть, я подбираю для тебя концерты на ближайшие 4 месяца)"
+                msg += "\n\nА пока, подписывайся на наш [канал](https://t.me/musicgeekinfo), где мои разработчики "
+                msg += "рассказывают о своём прогрессе и оповещают о новых функциях)"
                 bot.send_message(message.chat.id, text=msg, reply_markup=keyboard)
                 show_concerts(message, artists, city)
             except ValueError:
@@ -426,20 +433,20 @@ def show_concerts(message, artists, nearest_city):
                     pass
                 bot.send_message(message.chat.id, text=msg, parse_mode='markdown', reply_markup=make_keyboard(menu_like))
                 concert_list.append(concert)
-                time.sleep(5)
+                time.sleep(4)
             else:
                 pass
     print(message.chat.id, "{0} concerts were sent".format(len(concert_list)))
     if len(concert_list) != 0:
-        msg = "Наслаждайся)\n\nТы очень сильно поможешь с разработкой этого бота, "
+        msg = "Наслаждайся)\n\nТы очень сильно поможешь с разработкой, "
         msg += "если ответишь на несколько вопросов в [этой гугл-форме](https://forms.gle/GrfATEJFfy5BrAqm9)"
-        msg += "\n\nТакже подписывайся на наш [канал](https://t.me/musicgeekinfo), где мы делимся своим прогрессом и оповещаем о новых функциях"
+        msg += "\n\nКогда захочешь, чтобы я прислал еще концерты, напиши /start"
         bot.send_message(message.chat.id, text=msg, parse_mode='markdown')
     else:
         time.sleep(4)
         msg = "Ох, кажется, что в выбранном тобой городе нет концертов, которые могли бы тебе понравиться(\n\nВ любом случае ты "
-        msg += "очень сильно поможешь с разработкой этого бота, если ответишь на несколько вопросов в [этой гугл-форме](https://forms.gle/GrfATEJFfy5BrAqm9)"
-        msg += "\n\nТакже подписывайся на наш [канал](https://t.me/musicgeekinfo), где мы делимся своим прогрессом и оповещаем о новых функциях"
+        msg += "очень сильно поможешь с разработкой, если ответишь на несколько вопросов в [этой гугл-форме](https://forms.gle/GrfATEJFfy5BrAqm9)"
+        msg += "\n\nКогда захочешь, чтобы я прислал еще концерты, напиши /start"
         bot.send_message(message.chat.id, text=msg, parse_mode='markdown')
 
 #logger = telebot.logger
