@@ -397,7 +397,7 @@ def location_handler(message, artists=None):
             msg += "Осталось подождать совсем чуть-чуть, я подбираю для тебя концерты на ближайшие 4 месяца)"
             msg += "\n\nА пока, подписывайся на наш [канал](https://t.me/musicgeekinfo), где мои разработчики "
             msg += "рассказывают о своём прогрессе и оповещают о новых функциях)"
-            bot.send_message(message.chat.id, text=msg, reply_markup=keyboard)
+            bot.send_message(message.chat.id, text=msg, parse_mode='markdown', reply_markup=keyboard)
             show_concerts(message, artists, nearest_city[nearest_city_rus])
         except AttributeError:
             try:
@@ -406,7 +406,7 @@ def location_handler(message, artists=None):
                 msg = "Осталось подождать совсем чуть-чуть, я подбираю для тебя концерты на ближайшие 4 месяца)"
                 msg += "\n\nА пока, подписывайся на наш [канал](https://t.me/musicgeekinfo), где мои разработчики "
                 msg += "рассказывают о своём прогрессе и оповещают о новых функциях)"
-                bot.send_message(message.chat.id, text=msg, reply_markup=keyboard)
+                bot.send_message(message.chat.id, text=msg, parse_mode='markdown', reply_markup=keyboard)
                 show_concerts(message, artists, city)
             except ValueError:
                 msg = "Возможно твоего города еще нет в нашей базе, либо ты написал его неправильно(\n\n"
