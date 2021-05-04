@@ -4,9 +4,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.types import BigInteger
 import json
 import datetime
-
 import Db.db as db_classes
-
+from Concerts.yandex_afisha_concerts import Concerts
 
 
 CONFIG_FILE = './bot/config.json'
@@ -30,15 +29,27 @@ con = db_classes.Concert(name = "Party", concert_datetime = datetime.datetime(20
 
 
 
-vasiaUser.preferences.append(sanyaMusician)
-#sanyaMusician.users_in_preference.append(vasiaUser)
-sanyaMusician.concerts.append(con)
-vasiaUser.concerts_to_notify.append(con)
-#con.musicians.append(sanyaMusician)
+# vasiaUser.preferences.append(sanyaMusician)
+# #sanyaMusician.users_in_preference.append(vasiaUser)
+# sanyaMusician.concerts.append(con)
+# vasiaUser.concerts_to_notify.append(con)
+# #con.musicians.append(sanyaMusician)
 
-session.add(vasiaUser)
-session.add(sanyaMusician)
-session.add(con)
-session.commit()
+# session.add(vasiaUser)
+# session.add(sanyaMusician)
+# session.add(con)
+# session.commit()
 
-print(session.query(db_classes.User).all())
+def update_concerts():
+    new_concerts = Concerts()
+    new_concerts.load_concerts()
+    new_concerts = new_concerts.get_concerts()
+    for concert in new_concerts:
+        db_concert = session.query(db_classes.Concert).filter_by(url=concert['url']).first()
+        if db_concert is None:
+            new_concert = Concert(name=concert['title'], city_id=concert['city'], price=concert['price'], url=concert['url'], source_id='yandex')
+            session.add(new_concert)
+    session.commit()
+
+if __name__ == "__main__":
+    update_concerts()
