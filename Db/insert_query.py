@@ -47,8 +47,30 @@ def update_concerts():
     for concert in new_concerts:
         db_concert = session.query(db_classes.Concert).filter_by(url=concert['url']).first()
         if db_concert is None:
-            new_concert = db_classes.Concert(name=concert['title'], city_id=concert['city'], price=concert['price'], url=concert['url'], source_id='yandex')
+            new_concert = db_classes.Concert(name=concert['title'], 
+                                            city_id=concert['city'], 
+                                            price=concert['price'], 
+                                            url=concert['url'], 
+                                            source_id='yandex')
             session.add(new_concert)
+    session.commit()
+
+
+def add_user(tg_id=None, tg_username=None):
+    if tg_id is None:
+        raise Exception("No tg_id")
+    new_user = db_classes.User(tg_id=tg_id, tg_username=tg_username)
+    session.add(new_user)
+    session.commit()
+
+def user_update_info(tg_id=None, vk_id=None, spotify_id=None):
+    if tg_id is None:
+        raise Exception("No tg_id")
+    user = session.query(db_classes.User).filter_by(tg_id=tg_id).first()
+    if vk_id is not None:
+        user.vk_id = vk_id
+    if spotify_id is not None:
+        user.spotify_id = spotify_id
     session.commit()
 
 if __name__ == "__main__":
