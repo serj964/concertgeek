@@ -63,15 +63,25 @@ def add_user(tg_id=None, tg_username=None):
     session.add(new_user)
     session.commit()
 
-def user_update_info(tg_id=None, vk_id=None, spotify_id=None):
-    if tg_id is None:
-        raise Exception("No tg_id")
+def update_user_info(tg_id=None, vk_id=None, spotify_id=None, preferences=None):
+    assert tg_id is not None, "No tg_id"
     user = session.query(db_classes.User).filter_by(tg_id=tg_id).first()
+    assert user is not None, "No user with this tg_id"
     if vk_id is not None:
         user.vk_id = vk_id
     if spotify_id is not None:
         user.spotify_id = spotify_id
+    if preferences is not None:
+        for musician in preferences:
+            db_musician = session.query(db_classes.Musician).filter_by(name=musician).first()
+            if db_musician is None:
+                db_musician = db_classes.Musician(name=musician)
+                session.add(db)
+            db_musician.users_in_preference.append(user)
     session.commit()
 
+
+
+
 if __name__ == "__main__":
-    update_concerts()
+    pass
