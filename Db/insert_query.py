@@ -47,7 +47,7 @@ def update_concerts():
     for concert in new_concerts:
         db_concert = session.query(db_classes.Concert).filter_by(url=concert['url']).first()
         if db_concert is None:
-            new_concert = Concert(name=concert['title'], city_id=concert['city'], price=concert['price'], url=concert['url'], source_id='yandex')
+            new_concert = db_classes.Concert(name=concert['title'], city_id=concert['city'], price=concert['price'], url=concert['url'], source_id='yandex')
             session.add(new_concert)
     session.commit()
 
