@@ -165,6 +165,7 @@ def menu_change_service_proc(message):
     bot.send_message(message.chat.id, text=txt, reply_markup=make_keyboard(menu_change_service))
 
 
+#функция которая восстанавливает сообщение с лайком
 def menu_startup_vk_proc(message):
     msg = "Обязательно проверь, что у тебя открытый аккаунт и открытые аудио!\n\n"
     msg += "После этого перейди, пожалуйста, по ссылке для авторизации: "
@@ -203,8 +204,8 @@ def menu_startup_abort_proc(message):
     
 def menu_like_proc(message):
     bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=total_recall(message), parse_mode='markdown')
-    #msg = "Круто, что тебе понравился этот концерт!"
-    bot.send_message(message.chat.id, text=msg)
+    msg = "Круто, что тебе понравился этот концерт!"
+    #bot.send_message(message.chat.id, text=msg)
     
 
 def total_recall(message):
@@ -396,7 +397,7 @@ def location_handler(message, artists=None):
             msg = "Твой город - {city}\n\n".format(city = nearest_city_rus)
             msg += "Осталось подождать совсем чуть-чуть, я подбираю для тебя концерты на ближайшие 4 месяца)"
             msg += "\n\nА пока, подписывайся на наш [канал](https://t.me/musicgeekinfo), где мои разработчики "
-            msg += "рассказывают о своём прогрессе и оповещают о новых функциях)"
+            msg += "рассказывают о своём прогрессе и оповещают о новых функциях"
             bot.send_message(message.chat.id, text=msg, parse_mode='markdown', reply_markup=keyboard)
             show_concerts(message, artists, nearest_city[nearest_city_rus])
         except AttributeError:
@@ -405,7 +406,7 @@ def location_handler(message, artists=None):
                 print(message.chat.id, "city " + city)
                 msg = "Осталось подождать совсем чуть-чуть, я подбираю для тебя концерты на ближайшие 4 месяца)"
                 msg += "\n\nА пока, подписывайся на наш [канал](https://t.me/musicgeekinfo), где мои разработчики "
-                msg += "рассказывают о своём прогрессе и оповещают о новых функциях)"
+                msg += "рассказывают о своём прогрессе и оповещают о новых функциях"
                 bot.send_message(message.chat.id, text=msg, parse_mode='markdown', reply_markup=keyboard)
                 show_concerts(message, artists, city)
             except ValueError:
