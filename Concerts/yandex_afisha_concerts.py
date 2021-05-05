@@ -8,7 +8,7 @@ class Concerts:
     def __init__(self):
         self.concerts = []
 
-    def load_concerts(self, city='Москва', day=datetime.date.today(), number_of_days=30):
+    def load_concerts(self, city='moscow', day=datetime.date.today(), number_of_days=30):
         self.concerts = []
         limit = 20
         offset = 0
@@ -22,23 +22,25 @@ class Concerts:
                 try:
                     d['title'] = concert['event']['title']
                 except Exception:
-                    pass
+                    d['title'] = None
                 try:
                     d['url'] = 'https://afisha.yandex.ru' + concert['event']['url']
                 except Exception:
-                    pass
+                    d['url'] = None
                 try:
                     d['price'] = concert['event']['tickets'][0]['price']['min'] // 100
                 except Exception:
-                    pass
+                    d['price'] = None
                 try:
                     d['date'] = concert['scheduleInfo']['preview']['text']
                 except Exception:
-                    pass
+                    d['date'] = None
                 try:
                     d['place'] = concert['scheduleInfo']['oneOfPlaces']['title'] + ', ' + concert['scheduleInfo']['oneOfPlaces']['address']
                 except Exception:
-                    pass
+                    d['place'] = None
+                d['city'] = city
+                
                 self.concerts.append(d)
             offset += limit
             link = f"https://afisha.yandex.ru/api/events/rubric/concert?limit={limit}&offset={offset}&hasMixed=0&date={day.strftime('%Y-%m-%d')}&period={number_of_days}&city={city}&_=1615390892410"
