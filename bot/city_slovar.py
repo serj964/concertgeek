@@ -77,3 +77,7 @@ class City_slovar:
             return city_name
         else:
             raise ValueError
+    
+    #Возвращает словарь городов
+    def get_dict(self):
+        return self.SLOVAR

@@ -6,6 +6,7 @@ import json
 import datetime
 import Db.db as db_classes
 from Concerts.yandex_afisha_concerts import Concerts
+from bot.city_slovar import City_slovar
 
 
 CONFIG_FILE = './bot/config.json'
@@ -41,18 +42,23 @@ con = db_classes.Concert(name = "Party", concert_datetime = datetime.datetime(20
 # session.commit()
 
 def update_concerts():
-    new_concerts = Concerts()
-    new_concerts.load_concerts()
-    new_concerts = new_concerts.get_concerts()
-    for concert in new_concerts:
-        db_concert = session.query(db_classes.Concert).filter_by(url=concert['url']).first()
-        if db_concert is None:
-            new_concert = db_classes.Concert(name=concert['title'], 
-                                            city_id=concert['city'], 
-                                            price=concert['price'], 
-                                            url=concert['url'], 
-                                            source_id='yandex')
-            session.add(new_concert)
+    cities = []
+    city_dict = City_slovar().get_dict()
+    for city_rus in city_dict:
+        cities.append(city_dict[city_rus][0])
+    for city in cities:
+        new_concerts = Concerts()
+        new_concerts.load_concerts(city=city)
+        new_concerts = new_concerts.get_concerts()
+        for concert in new_concerts:
+            db_concert = session.query(db_classes.Concert).filter_by(url=concert['url']).first()
+            if db_concert is None:
+                new_concert = db_classes.Concert(name=concert['title'], 
+                                                city_id=concert['city'], 
+                                                price=concert['price'], 
+                                                url=concert['url'], 
+                                                source_id='yandex')
+                session.add(new_concert)
     session.commit()
 
 
