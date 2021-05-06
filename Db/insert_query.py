@@ -59,6 +59,10 @@ def update_concerts():
                                                 url=concert['url'], 
                                                 source_id='yandex')
                 session.add(new_concert)
+            else:
+                db_concert.price = concert['price']
+                
+
     session.commit()
 
 
