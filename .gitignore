@@ -8,3 +8,4 @@ vk_config.v2.json
 .spotify_caches
 bot/config.json
 logs
+test.db

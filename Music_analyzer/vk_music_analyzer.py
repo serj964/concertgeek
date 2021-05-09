@@ -5,7 +5,7 @@ from vk_api.audio import VkAudio
 from Music_analyzer.password import password
 
 
-class vk_music_analyzer:
+class Vk_music_analyzer:
     def __init__(self):
         self.MEDIANA = 0.45
         self.WEIGHT = 0.125
@@ -62,7 +62,7 @@ class vk_music_analyzer:
 
     #шаг
     def __step(self, m):
-        return math.log(m) / 25
+        return math.log(m) / 30
 
 
     #распределение очков между добавленными песнями
