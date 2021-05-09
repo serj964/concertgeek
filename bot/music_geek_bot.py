@@ -341,8 +341,9 @@ def get_info_from_vk(message, vk_id):
             bot.send_message(message.chat.id, text=msg)
             print(message.chat.id, "closed account")
         else:
-            bot.send_message(message.chat.id, text="Что-то тут не так! хм-хм")
-            print(message.chat.id, "something happen")
+            raise Exception
+            #bot.send_message(message.chat.id, text="Что-то тут не так! хм-хм")
+            #print(message.chat.id, "something happen")
    
     
 def get_info_from_spotify(message, token):
