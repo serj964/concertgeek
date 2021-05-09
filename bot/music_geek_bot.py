@@ -8,7 +8,22 @@ import sys
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import datetime
-import threading
+import threading import Thread
+
+class ThreadWithReturnValue(Thread):
+    def __init__(self, group=None, target=None, name=None,
+                 args=(), kwargs={}, Verbose=None):
+        Thread.__init__(self, group, target, name, args, kwargs)
+        self._return = None
+    def run(self):
+        print(type(self._target))
+        if self._target is not None:
+            self._return = self._target(*self._args,
+                                                **self._kwargs)
+    def join(self, *args):
+        Thread.join(self, *args)
+        return self._return
+
 
 class Unbuffered(object):
    def __init__(self, stream):
@@ -305,7 +320,11 @@ def get_info_from_vk(message, vk_id):
         msg = "Подожди немного, пока я анализирую твой плейлист...\n\n"
         msg += "Обычно это занимает 4-6 минут."
         bot.send_message(message.chat.id, text=msg)
-        artists = vk.get_favourite_artists(vk_id)
+
+        thread = ThreadWithReturnValue(target=vk.get_favourite_artists, args=(vk_id,))
+        thread.run()
+        artists = thread.join()
+        #artists = vk.get_favourite_artists(vk_id)
         if artists == []:
             bot.send_message(message.chat.id, text="Ох, кажется, у тебя нет песен в VK...")
             print(message.chat.id, 'no songs in vk')
@@ -329,7 +348,10 @@ def get_info_from_vk(message, vk_id):
 def get_info_from_spotify(message, token):
     sp = Spotify_music_analyzer()
     bot.send_message(message.chat.id, text="Подожди немного, пока я анализирую твой плейлист...")
-    artists = sp.get_favourite_artists(token)
+    thread = ThreadWithReturnValue(target=sp.get_favourite_artists, args=(token,))
+    thread.run()
+    artists = thread.join()
+    #artists = sp.get_favourite_artists(token)
     if artists == []:
         bot.send_message(message.chat.id, text="Ох, кажется, у тебя нет песен в spotify...")
         print(message.chat.id, 'no songs in spotify')
