@@ -27,3 +27,4 @@ SQLAlchemy==1.4.3
 urllib3==1.26.4
 vk-api==11.9.1
 Werkzeug==1.0.1
+emoji==1.2.0
