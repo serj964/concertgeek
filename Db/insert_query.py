@@ -24,29 +24,29 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 # vasiaUser = session.query(db_classes.User).filter_by(tg_id=123).first()
-vasiaUser = db_classes.User(tg_id = 124, tg_username = "ahah", vk_id = 123, spotify_id = 123)
-sanyaMusician = db_classes.Musician(name = "Sanya")
+#vasiaUser = db_classes.User(tg_id = 124, tg_username = "ahah", vk_id = 123, spotify_id = 123)
+#sanyaMusician = db_classes.Musician(name = "Sanya")
 
 
-cons = [db_classes.Concert(name = str(i), concert_datetime = datetime.datetime(2021, 6, i), is_new=1) for i in range(1,30)]
+#cons = [db_classes.Concert(name = str(i), concert_datetime = datetime.datetime(2021, 6, i), is_new=1) for i in range(1,30)]
 #con = db_classes.Concert(name = "Party", concert_datetime = datetime.datetime(2021, 6, ), is_new=1)
 
 
 
-vasiaUser.preferences.append(sanyaMusician)
-sanyaMusician.users_in_preference.append(vasiaUser)
-for con in cons:
-    sanyaMusician.concerts.append(con)
-    vasiaUser.concerts.append(con)
+#vasiaUser.preferences.append(sanyaMusician)
+#sanyaMusician.users_in_preference.append(vasiaUser)
+#for con in cons:
+#    sanyaMusician.concerts.append(con)
+#    vasiaUser.concerts.append(con)
 
 
-session.add(vasiaUser)
-session.add(sanyaMusician)
-for i in cons:
-    session.add(i)
-session.commit()
+#session.add(vasiaUser)
+#session.add(sanyaMusician)
+#for i in cons:
+#    session.add(i)
+#session.commit()
 
-def update_concerts():
+def update_concerts(session):
     cities = []
     city_dict = City_slovar().get_dict()
     for city_rus in city_dict:
@@ -71,14 +71,14 @@ def update_concerts():
     session.commit()
 
 
-def add_user(tg_id=None, tg_username=None):
+def add_user(session, tg_id=None, tg_username=None):
     if tg_id is None:
         raise Exception("No tg_id")
     new_user = db_classes.User(tg_id=tg_id, tg_username=tg_username)
     session.add(new_user)
     session.commit()
 
-def update_user_info(tg_id=None, vk_id=None, spotify_id=None, preferences=None, city=None):
+def update_user_info(session, tg_id=None, vk_id=None, spotify_id=None, preferences=None, city=None):
     assert tg_id is not None, "No tg_id"
     user = session.query(db_classes.User).filter_by(tg_id=tg_id).first()
     assert user is not None, f"No user in db with tg_id {tg_id}"

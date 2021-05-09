@@ -11,7 +11,7 @@ from sqlalchemy.orm import sessionmaker
 
 
 import Db.db as db_classes
-
+import Db.insert_query as db_insert
 
 CONFIG_FILE = './bot/config.json'
 
@@ -56,6 +56,7 @@ def session_cache_path():
 @app.route(vk_oauth_config['oauth_startpoint'])
 def vk_oauth_start():
     tg_id = request.args.get('tg_id')
+    db_insert.add_user(session=db_session, tg_id=tg_id)
     redirect_url = vk_oauth_config['url'].format(
                                             basic_url_for_code = vk_oauth_config['basic_url_for_code'],
                                             client_id = vk_oauth_config['client_id'],
@@ -77,6 +78,7 @@ def spotify_oauth():
         session['uuid'] = str(uuid.uuid4())
     if request.args.get('tg_id'):
         tg_id = request.args.get('tg_id')
+        db_insert.add_user(session=db_session, tg_id=tg_id)
         session['tg_id'] = tg_id
 
 
@@ -139,6 +141,7 @@ def vk_oauth_complete():
             'vk_id' : str(vk_id)
         })
     print(tg_id, vk_id)
+    db_insert.update_user_info(session=db_session, tg_id=tg_id, vk_id=vk_id)
     return '<p style = "font-family:courier,arial,helvetica;">good, now wait for your concerts in telegram</p>'
 
 
