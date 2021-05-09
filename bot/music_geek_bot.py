@@ -27,7 +27,7 @@ from Music_analyzer.spotify_music_analyzer import Spotify_music_analyzer
 from Concerts.yandex_afisha_concerts import Concerts
 from bot.city_slovar import City_slovar
 import Db.db as db_classes
-
+import Db.insert_query as db_insert
 
 
 
@@ -351,6 +351,9 @@ def location_handler(message, artists=None):
             long = message.location.longitude
             nearest_city = get_nearest_city_by_location(lat, long)
             nearest_city_rus = list(nearest_city.keys())[0]
+
+            db_insert.update_user_info(tg_id=message.chat.id, city=nearest_city_rus)
+
             print(message.chat.id, "city " + nearest_city[nearest_city_rus])
             msg = "Твой город - {city}\n\n".format(city = nearest_city_rus)
             msg += "Осталось подождать совсем чуть-чуть, я подбираю для тебя концерты на ближайшие 4 месяца)"

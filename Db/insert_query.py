@@ -78,7 +78,7 @@ def add_user(session, tg_id=None, tg_username=None):
     session.add(new_user)
     session.commit()
 
-def update_user_info(session, tg_id=None, vk_id=None, spotify_id=None, preferences=None, city=None):
+def update_user_info(session, tg_id=None, vk_id=None, spotify_id=None, preferences=None, city=None, liked_concert_url=None):
     assert tg_id is not None, "No tg_id"
     user = session.query(db_classes.User).filter_by(tg_id=tg_id).first()
     assert user is not None, f"No user in db with tg_id {tg_id}"
@@ -97,6 +97,9 @@ def update_user_info(session, tg_id=None, vk_id=None, spotify_id=None, preferenc
                 db_musician = db_classes.Musician(name=musician)
                 session.add(db)
             db_musician.users_in_preference.append(user)
+    if liked_concert_url is not None:
+        db_concert = session.query(db_classes.Concert).filter_by(url=liked_concert_url)
+        user.concerts.append(db_concert)
     session.commit()
 
 
