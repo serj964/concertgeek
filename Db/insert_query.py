@@ -26,20 +26,25 @@ session = Session()
 # vasiaUser = session.query(db_classes.User).filter_by(tg_id=123).first()
 vasiaUser = db_classes.User(tg_id = 124, tg_username = "ahah", vk_id = 123, spotify_id = 123)
 sanyaMusician = db_classes.Musician(name = "Sanya")
-con = db_classes.Concert(name = "Party", concert_datetime = datetime.datetime(2021, 5, 29), is_new=1)
+
+
+cons = [db_classes.Concert(name = str(i), concert_datetime = datetime.datetime(2021, 6, i), is_new=1) for i in range(1,30)]
+#con = db_classes.Concert(name = "Party", concert_datetime = datetime.datetime(2021, 6, ), is_new=1)
 
 
 
-# vasiaUser.preferences.append(sanyaMusician)
-# #sanyaMusician.users_in_preference.append(vasiaUser)
-# sanyaMusician.concerts.append(con)
-# vasiaUser.concerts_to_notify.append(con)
-# #con.musicians.append(sanyaMusician)
+vasiaUser.preferences.append(sanyaMusician)
+sanyaMusician.users_in_preference.append(vasiaUser)
+for con in cons:
+    sanyaMusician.concerts.append(con)
+    vasiaUser.concerts.append(con)
 
-# session.add(vasiaUser)
-# session.add(sanyaMusician)
-# session.add(con)
-# session.commit()
+
+session.add(vasiaUser)
+session.add(sanyaMusician)
+for i in cons:
+    session.add(i)
+session.commit()
 
 def update_concerts():
     cities = []
