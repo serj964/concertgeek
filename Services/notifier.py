@@ -11,7 +11,7 @@ import json
 
 
 import Db.db as db_classes
-
+import Db.insert_query as db_insert
 
 #connect with db
 CONFIG_FILE = './bot/config.json'
@@ -68,7 +68,7 @@ def PostNewConcerts(now):
             tg_id = user[0].tg_id
             concert_name = user[2].name
             print("Post: tg_id = {}, concert name = {}".format(tg_id, concert_name))
-            #bot.send_message(tg_id, concert_name)
+            bot.send_message(tg_id, concert_name)
 
 def Notify(now):
     concerts = GetListOfConcerts(now)
@@ -82,11 +82,12 @@ def Notify(now):
             tg_id = obj[0].tg_id
             concert_name = obj[1].name
             print("Notification: tg_id = {}, concert name = {}".format(tg_id, concert_name))
-            #bot.send_message(tg_id, concert_name)
+            bot.send_message(tg_id, concert_name)
 
     
 ##while True:
 
+db_insert.update_concerts(session=session)
 now = datetime.datetime.now()
 DeleteExpiredConcerts(now)
 Notify(now)
