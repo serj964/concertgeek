@@ -16,8 +16,9 @@ class ThreadWithReturnValue(Thread):
         Thread.__init__(self, group, target, name, args, kwargs)
         self._return = None
     def run(self):
-        print(type(self._target))
+        #print(type(self._target))
         if self._target is not None:
+            print("target is not none")
             self._return = self._target(*self._args,
                                                 **self._kwargs)
     def join(self, *args):
