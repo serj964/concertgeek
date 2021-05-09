@@ -149,9 +149,9 @@ def menu_analyze_spotify_proc():
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     db_object = get_info_from_db(1, message.chat.id)
     try:
+        print(message.chat.id, "successful authorization")
         token = db_object['spotify_access_token']
         get_info_from_spotify(message, token)
-        print(message.chat.id, "successful authorization")
     except TypeError:
         bot.send_message(message.chat.id, text = "Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
         print(message.chat.id, "the link has expired ")
@@ -164,9 +164,9 @@ def menu_analyze_vk_proc():
     bot.send_message(message.chat.id, text = msg + url)
     db_object = get_info_from_db(0, message.chat.id)
     try:
+        print(message.chat.id, db_object)
         vk_id = db_object['vk_id']
         get_info_from_vk(message, vk_id)
-        print(message.chat.id, db_object)
     except TypeError:
         bot.send_message(message.chat.id, text = "Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
         print(message.chat.id, "the link has expired ")
