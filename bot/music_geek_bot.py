@@ -8,7 +8,7 @@ import sys
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import datetime
-import threading import Thread
+from threading import Thread
 
 class ThreadWithReturnValue(Thread):
     def __init__(self, group=None, target=None, name=None,
