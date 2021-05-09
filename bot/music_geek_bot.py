@@ -8,6 +8,7 @@ import sys
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import datetime
+import threading
 
 class Unbuffered(object):
    def __init__(self, stream):
@@ -84,11 +85,7 @@ def get_spotify_id_from_db(tg_id):
 
 
 def get_info_from_db(mode, tg_id):
-<<<<<<< HEAD
-    for i in range(24):
-=======
     for i in range(50):
->>>>>>> fbcf98163a26127a48a2ab00c11c2907afb11a43
         if mode == 0:
             res = get_vk_id_from_db(str(tg_id))
             if res != None:
