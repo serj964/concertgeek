@@ -186,8 +186,8 @@ def menu_startup_vk_proc(message):
     db_object = get_info_from_db(0, message.chat.id)
     try:
         vk_id = db_object['vk_id']
-        get_info_from_vk(message, vk_id)
         print(message.chat.id, db_object)
+        get_info_from_vk(message, vk_id)
     except TypeError:
         bot.send_message(message.chat.id, text="Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
         print(message.chat.id, "the link has expired ")
