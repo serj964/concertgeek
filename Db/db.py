@@ -93,6 +93,9 @@ class Musician(base):
     __tablename__ = 'musicians'
     id = Column(Integer, primary_key = True)
     name = Column(String)
+
+
+    
     concerts = relationship('Concert', secondary=conmus_table)
     users_in_preference = relationship('User', secondary=preference_table)
     users_not_to_inform = relationship('User', secondary=not_to_inform_table)
