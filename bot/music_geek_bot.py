@@ -128,7 +128,7 @@ def menu_reset_proc(message):
     bot.send_message(message.chat.id, text = "хайп")'''
 
 
-def menu_analyze_spotify_proc():
+def menu_analyze_spotify_proc(message):
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     db_object = get_info_from_db(1, message.chat.id)
@@ -141,7 +141,7 @@ def menu_analyze_spotify_proc():
         print(message.chat.id, "the link has expired ")
 
 
-def menu_analyze_vk_proc():
+def menu_analyze_vk_proc(message):
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     msg = "Обязательно проверь, что у тебя открытый аккаунт и открытые аудио!\n\n"
     msg += "После этого перейди, пожалуйста, по ссылке для авторизации: "
