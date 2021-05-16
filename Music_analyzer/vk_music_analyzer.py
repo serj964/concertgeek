@@ -121,7 +121,7 @@ class Vk_music_analyzer:
         
         
     #возвращает наиболее "любимых" исполнителей
-    @threaded
+    #@threaded
     def get_favourite_artists(self, user_id):
         LOGIN = '+79060733528'
         user_id = int(user_id)

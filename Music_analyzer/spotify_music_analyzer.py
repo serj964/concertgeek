@@ -170,7 +170,7 @@ class Spotify_music_analyzer:
     
             
     #возвращает наиболее "любимых" исполнителей
-    @threaded
+    #@threaded
     def get_favourite_artists(self, token):
         sp = spotipy.Spotify(token)
         dic1 = self.__points_songs(sp)

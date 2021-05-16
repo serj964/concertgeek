@@ -347,10 +347,10 @@ def get_info_from_vk(message, vk_id):
         msg += "Обычно это занимает 4-6 минут."
         bot.send_message(message.chat.id, text=msg)
 
-        work = vk.get_favourite_artists(vk_id)
+        #work = vk.get_favourite_artists(vk_id)
         #print(type(work))
-        artists = work.result()
-        #artists = vk.get_favourite_artists(vk_id)
+        #artists = work.result()
+        artists = vk.get_favourite_artists(vk_id)
         if artists == []:
             bot.send_message(message.chat.id, text="Ох, кажется, у тебя нет песен в VK...")
             print(message.chat.id, 'no songs in vk')
@@ -376,10 +376,10 @@ def get_info_from_spotify(message, token):
     sp = Spotify_music_analyzer()
     bot.send_message(message.chat.id, text="Подожди немного, пока я анализирую твой плейлист...")
     
-    work = sp.get_favourite_artists(token)
+    #work = sp.get_favourite_artists(token)
     #print(type(work))
-    artists = work.result()
-    #artists = sp.get_favourite_artists(token)
+    #artists = work.result()
+    artists = sp.get_favourite_artists(token)
     if artists == []:
         bot.send_message(message.chat.id, text="Ох, кажется, у тебя нет песен в spotify...")
         print(message.chat.id, 'no songs in spotify')
