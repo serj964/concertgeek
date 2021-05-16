@@ -129,17 +129,11 @@ def menu_reset_proc(message):
     bot.send_message(message.chat.id, text = "хайп")'''
 
 
-<<<<<<< HEAD
 def menu_analyze_spotify_proc(message):
-    url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
-    bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
-=======
-def menu_analyze_spotify_proc():
     msg = "Перейди, пожалуйста, по ссылке для авторизации: "
     msg += spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     msg += "\n\nСсылка действительна всего 4 минуты и только один раз!"
     bot.send_message(message.chat.id, text=msg)
->>>>>>> be12127c255a67c4914014871bca5f5ec34ffdaa
     db_object = get_info_from_db(1, message.chat.id)
     try:
         print(message.chat.id, "successful authorization")
@@ -150,12 +144,7 @@ def menu_analyze_spotify_proc():
         print(message.chat.id, "the link has expired ")
 
 
-<<<<<<< HEAD
 def menu_analyze_vk_proc(message):
-    url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
-=======
-def menu_analyze_vk_proc():
->>>>>>> be12127c255a67c4914014871bca5f5ec34ffdaa
     msg = "Обязательно проверь, что у тебя открытый аккаунт и открытые аудио!\n\n"
     msg += "После этого перейди, пожалуйста, по ссылке для авторизации: "
     msg += spotify_oauth_url+"?&tg_id="+str(message.chat.id)
