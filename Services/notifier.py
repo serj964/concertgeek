@@ -19,7 +19,7 @@ CONFIG_FILE = './bot/config.json'
 with open(CONFIG_FILE) as conf:
     config = json.load(conf)
 
-#bot_config = config['bot_config']
+bot_config = config['bot_config']
 db_config = config["db_config"]
 
 
@@ -28,8 +28,8 @@ engine = create_engine(db_config['sqlite_address'])
 Session = sessionmaker(bind=engine)
 session = Session()
 
-#TOKEN = bot_config['token']
-#bot = telebot.TeleBot(TOKEN)
+TOKEN = bot_config['token']
+bot = telebot.TeleBot(TOKEN)
 TIMETICK = 60*60*24
 
 def CompareDates(first, second, delta):
