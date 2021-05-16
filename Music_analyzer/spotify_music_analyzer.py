@@ -6,7 +6,6 @@ from Music_analyzer.spotify_slovar import Slovar
 from threading import Thread
 from concurrent.futures import Future
 
-
 def call_with_future(fn, future, args, kwargs):
     try:
         result = fn(*args, **kwargs)

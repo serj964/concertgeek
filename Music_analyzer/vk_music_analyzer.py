@@ -7,7 +7,6 @@ from Music_analyzer.password import password
 from threading import Thread
 from concurrent.futures import Future
 
-
 def call_with_future(fn, future, args, kwargs):
     try:
         result = fn(*args, **kwargs)
@@ -21,7 +20,6 @@ def threaded(fn):
         Thread(target=call_with_future, args=(fn, future, args, kwargs)).start()
         return future
     return wrapper
-
 
 class Vk_music_analyzer:
     def __init__(self):

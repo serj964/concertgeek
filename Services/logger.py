@@ -6,7 +6,7 @@ bot = telebot.TeleBot(TOKEN)
 CHAT_ID = -560631730
 
 
-LOGS_PATH = "/home/musicGEEK/logs/"
+LOGS_PATH = "/home/testServer/musicGEEK/logs/"
 DBO_FNAME = "db.o"
 DBE_FNAME = "db.e"
 BOTO_FNAME = "bot.o"
