@@ -118,7 +118,7 @@ def change_service():
 
 
 def menu_manage_list_proc(message):
-    bot.send_message(message.chat.id, text = "хайп")
+    bot.send_message(message.chat.id, text="хайп")
 
 '''
 def menu_send_concerts_proc():
@@ -129,31 +129,45 @@ def menu_reset_proc(message):
     bot.send_message(message.chat.id, text = "хайп")'''
 
 
+<<<<<<< HEAD
 def menu_analyze_spotify_proc(message):
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
+=======
+def menu_analyze_spotify_proc():
+    msg = "Перейди, пожалуйста, по ссылке для авторизации: "
+    msg += spotify_oauth_url+"?&tg_id="+str(message.chat.id)
+    msg += "\n\nСсылка действительна всего 4 минуты и только один раз!"
+    bot.send_message(message.chat.id, text=msg)
+>>>>>>> be12127c255a67c4914014871bca5f5ec34ffdaa
     db_object = get_info_from_db(1, message.chat.id)
     try:
         print(message.chat.id, "successful authorization")
         token = db_object['spotify_access_token']
         get_info_from_spotify(message, token)
     except TypeError:
-        bot.send_message(message.chat.id, text = "Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
+        bot.send_message(message.chat.id, text="Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
         print(message.chat.id, "the link has expired ")
 
 
+<<<<<<< HEAD
 def menu_analyze_vk_proc(message):
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
+=======
+def menu_analyze_vk_proc():
+>>>>>>> be12127c255a67c4914014871bca5f5ec34ffdaa
     msg = "Обязательно проверь, что у тебя открытый аккаунт и открытые аудио!\n\n"
     msg += "После этого перейди, пожалуйста, по ссылке для авторизации: "
-    bot.send_message(message.chat.id, text = msg + url)
+    msg += spotify_oauth_url+"?&tg_id="+str(message.chat.id)
+    msg += "\n\nСсылка действительна всего 4 минуты и только один раз!"
+    bot.send_message(message.chat.id, text=msg)
     db_object = get_info_from_db(0, message.chat.id)
     try:
         print(message.chat.id, db_object)
         vk_id = db_object['vk_id']
         get_info_from_vk(message, vk_id)
     except TypeError:
-        bot.send_message(message.chat.id, text = "Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
+        bot.send_message(message.chat.id, text="Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
         print(message.chat.id, "the link has expired ")
 
 
@@ -162,12 +176,13 @@ def menu_change_service_proc(message):
     bot.send_message(message.chat.id, text=txt, reply_markup=make_keyboard(menu_change_service))
 
 
+#функция которая восстанавливает сообщение с лайком
 def menu_startup_vk_proc(message):
-    url = vk_oauth_url+"?&tg_id="+str(message.chat.id)
     msg = "Обязательно проверь, что у тебя открытый аккаунт и открытые аудио!\n\n"
     msg += "После этого перейди, пожалуйста, по ссылке для авторизации: "
-    msg2 = "\n\nСсылка действительна всего 4 минуты!"
-    bot.send_message(message.chat.id, text = msg + url + msg2)
+    msg += vk_oauth_url+"?&tg_id="+str(message.chat.id)
+    msg += "\n\nСсылка действительна всего 4 минуты и только один раз!"
+    bot.send_message(message.chat.id, text=msg)
     db_object = get_info_from_db(0, message.chat.id)
     try:
         vk_id = db_object['vk_id']
@@ -179,9 +194,10 @@ def menu_startup_vk_proc(message):
 
     
 def menu_startup_spotify_proc(message):
-    url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
-    msg = "\n\nСсылка действительна всего 4 минуты!"
-    bot.send_message(message.chat.id, text="Перейди, пожалуйста, по ссылке для авторизации: " + url + msg)
+    msg = "Перейди, пожалуйста, по ссылке для авторизации: "
+    msg += spotify_oauth_url+"?&tg_id="+str(message.chat.id)
+    msg += "\n\nСсылка действительна всего 4 минуты и только один раз!"
+    bot.send_message(message.chat.id, text=msg)
     db_object = get_info_from_db(1, message.chat.id)
     try:
         token = db_object['spotify_access_token']
@@ -193,9 +209,32 @@ def menu_startup_spotify_proc(message):
 
 
 def menu_startup_abort_proc(message):
-    msg = "Тогда я просто побуду у тебя в телефоне)\n\n"
-    bot.send_message(message.chat.id, text=msg + TEXT)
+    msg = "Тогда я просто побуду у тебя в телефоне)\n\n" + TEXT
+    bot.send_message(message.chat.id, text=msg)
     
+    
+def menu_like_proc(message):
+    bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=total_recall(message), parse_mode='markdown')
+    msg = "Круто, что тебе понравился этот концерт!"
+    #bot.send_message(message.chat.id, text=msg)
+    
+
+def total_recall(message):
+    s = message.text
+    title = s.split('\n')[0][s.index(' ', 0, len(s.split('\n')[0]))+1:len(s.split('\n')[0])]
+    date = s.split('\n')[1][7:len(s.split('\n')[1])]
+    place = s.split('\n')[2][5:len(s.split('\n')[2])]
+    url = message.json.get('entities')[0].get('url')
+    new_text = "Концерт [{t}]({u})\nКогда: *{d}*\nГде: *{p}*".format(p = place,
+                        t = title,
+                        d = date,
+                        u = url)
+    try:
+        new_text += "\n{p}".format(p = s.split('\n')[3])
+    except IndexError:
+        pass
+    return new_text 
+
 
 menu_change_service = {
     'btn_menu_analize_vk' : ('Vk', menu_analyze_vk_proc),
@@ -216,6 +255,11 @@ menu_startup = {
     'btn_menu_startup_vk' : ('Vk', menu_startup_vk_proc),
     'btn_menu_startup_spotify' : ('Spotify', menu_startup_spotify_proc),
     'btn_menu_startup_abort' : ('Выберу потом', menu_startup_abort_proc)
+}
+
+
+menu_like = {
+    'btn_menu_like' : ('👍', menu_like_proc)
 }
 
 
@@ -243,11 +287,19 @@ def handle_menu(message):
 @bot.message_handler(content_types = ["text", "sticker", "pinned_message", "photo", "audio"])
 def talk(message):
     msg = "Мы могли бы пообщаться, но, к сожалению, пока что я умею отвечать только привет)\n"
-    msg += "Однако скоро мой создатель научит меня еще чему-нибудь)\n\n"
-    bot.send_message(message.chat.id, text=msg + TEXT)
+    msg += "Однако скоро мой создатель научит меня еще чему-нибудь)\n\n" + TEXT
+    bot.send_message(message.chat.id, text=msg)
 
-                             
-@bot.callback_query_handler(func = lambda call: type(call) == types.CallbackQuery and call.data in menu.keys())
+
+@bot.callback_query_handler(func=lambda call: type(call)==types.CallbackQuery and call.data in menu_like.keys())
+def menu_like_keyboard_handler(call):
+    btn = call.data
+    print(call.from_user.id, btn)
+    if menu_like.get(btn) != None:
+        menu_like[btn][1](call.message)
+           
+        
+@bot.callback_query_handler(func=lambda call: type(call)==types.CallbackQuery and call.data in menu.keys())
 def menu_keyboard_handler(call):
     btn = call.data
     print(call.from_user.id, btn)
@@ -255,7 +307,7 @@ def menu_keyboard_handler(call):
         menu[btn][1](call.message)
 
 
-@bot.callback_query_handler(func = lambda call: type(call) == types.CallbackQuery and call.data in menu_startup.keys())
+@bot.callback_query_handler(func=lambda call: type(call)==types.CallbackQuery and call.data in menu_startup.keys())
 def menu_startup_keyboard_handler(call):
     btn = call.data
     print(call.from_user.id, btn)
@@ -263,7 +315,7 @@ def menu_startup_keyboard_handler(call):
         menu_startup[btn][1](call.message)
 
      
-@bot.callback_query_handler(func = lambda call: type(call) == types.CallbackQuery and call.data in menu_change_service.keys())
+@bot.callback_query_handler(func=lambda call: type(call)==types.CallbackQuery and call.data in menu_change_service.keys())
 def menu_change_service_keyboard_handler(call):
     btn = call.data
     print(call.from_user.id, btn)
@@ -364,14 +416,18 @@ def location_handler(message, artists=None):
             print(message.chat.id, "city " + nearest_city[nearest_city_rus])
             msg = "Твой город - {city}\n\n".format(city = nearest_city_rus)
             msg += "Осталось подождать совсем чуть-чуть, я подбираю для тебя концерты на ближайшие 4 месяца)"
-            bot.send_message(message.chat.id, text=msg, reply_markup=keyboard)
+            msg += "\n\nА пока, подписывайся на наш [канал](https://t.me/musicgeekinfo), где мои разработчики "
+            msg += "рассказывают о своём прогрессе и оповещают о новых функциях"
+            bot.send_message(message.chat.id, text=msg, parse_mode='markdown', reply_markup=keyboard)
             show_concerts(message, artists, nearest_city[nearest_city_rus])
         except AttributeError:
             try:
                 city = get_city_by_name(message.text)
                 print(message.chat.id, "city " + city)
-                msg = "Осталось подождать совсем чуть-чуть, я подбираю для тебя концерты)"
-                bot.send_message(message.chat.id, text=msg, reply_markup=keyboard)
+                msg = "Осталось подождать совсем чуть-чуть, я подбираю для тебя концерты на ближайшие 4 месяца)"
+                msg += "\n\nА пока, подписывайся на наш [канал](https://t.me/musicgeekinfo), где мои разработчики "
+                msg += "рассказывают о своём прогрессе и оповещают о новых функциях"
+                bot.send_message(message.chat.id, text=msg, parse_mode='markdown', reply_markup=keyboard)
                 show_concerts(message, artists, city)
             except ValueError:
                 msg = "Возможно твоего города еще нет в нашей базе, либо ты написал его неправильно(\n\n"
@@ -388,30 +444,30 @@ def show_concerts(message, artists, nearest_city):
         concert = con.find_concerts(artists[i])
         if concert != []:
             if concert not in concert_list:
-                msg = "Концерт группы [{title}]({url})\nОн пройдет {date} в {place}".format(place = concert[0]['place'],
+                msg = "Концерт [{title}]({url})\nКогда: *{date}*\nГде: *{place}*".format(place = concert[0]['place'],
                                               title = concert[0]['title'],
                                               date = concert[0]['date'],
                                               url = concert[0]['url'])
                 try:
-                    msg += "\nСтоимость билетов начинается от {price} рублей".format(price = concert[0]['price'])
+                    msg += "\nБилеты от {price} рублей".format(price = concert[0]['price'])
                 except KeyError:
                     pass
-                bot.send_message(message.chat.id, text=msg, parse_mode='markdown')
+                bot.send_message(message.chat.id, text=msg, parse_mode='markdown', reply_markup=make_keyboard(menu_like))
                 concert_list.append(concert)
-                time.sleep(5)
+                time.sleep(4)
             else:
                 pass
     print(message.chat.id, "{0} concerts were sent".format(len(concert_list)))
     if len(concert_list) != 0:
-        msg = "Наслаждайся)\n\nТы очень сильно поможешь с разработкой этого бота, "
+        msg = "Наслаждайся)\n\nТы очень сильно поможешь с разработкой, "
         msg += "если ответишь на несколько вопросов в [этой гугл-форме](https://forms.gle/GrfATEJFfy5BrAqm9)"
-        msg += "\n\nТакже подписывайся на наш [канал](https://t.me/musicgeekinfo), где мы делимся своим прогрессом и оповещаем о новых функциях"
+        msg += "\n\nКогда захочешь, чтобы я прислал еще концерты, напиши /start"
         bot.send_message(message.chat.id, text=msg, parse_mode='markdown')
     else:
         time.sleep(4)
         msg = "Ох, кажется, что в выбранном тобой городе нет концертов, которые могли бы тебе понравиться(\n\nВ любом случае ты "
-        msg += "очень сильно поможешь с разработкой этого бота, если ответишь на несколько вопросов в [этой гугл-форме](https://forms.gle/GrfATEJFfy5BrAqm9)"
-        msg += "\n\nТакже подписывайся на наш [канал](https://t.me/musicgeekinfo), где мы делимся своим прогрессом и оповещаем о новых функциях"
+        msg += "очень сильно поможешь с разработкой, если ответишь на несколько вопросов в [этой гугл-форме](https://forms.gle/GrfATEJFfy5BrAqm9)"
+        msg += "\n\nКогда захочешь, чтобы я прислал еще концерты, напиши /start"
         bot.send_message(message.chat.id, text=msg, parse_mode='markdown')
 
 #logger = telebot.logger

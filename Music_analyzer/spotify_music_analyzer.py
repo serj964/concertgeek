@@ -29,6 +29,7 @@ class Spotify_music_analyzer:
     #проверяет исполнителей на наличие feat.
     def __feat_check(self, lst):
         i = 0
+        
         for artist in lst:
             try:
                 s = re.search(r' feat. | ft. ', artist)
@@ -38,7 +39,6 @@ class Spotify_music_analyzer:
                 lst.append(p2)
             except AttributeError:
                 pass
-    
             i += 1
         
         return lst
@@ -48,6 +48,7 @@ class Spotify_music_analyzer:
     def __get_list_songs(self, sp):
         lst = []
         i = 0
+        
         try:
             while (i <= (len(lst) // 50)):
                 results = sp.current_user_saved_tracks(offset = 50*i, limit = 50)
@@ -55,7 +56,6 @@ class Spotify_music_analyzer:
                     track = item['track']
                     lst.append(track['artists'][0]['name'].lower())
                 i += 1
-
             final_lst = self.__feat_check(lst)
         except KeyError:
             final_lst = []
@@ -67,6 +67,7 @@ class Spotify_music_analyzer:
     def __get_list_playlists(self, sp):
         lst = []
         i = 0
+        
         try:
             while (i <= (len(lst) // 50)):
                 play = sp.current_user_playlists(offset = 50*i, limit = 50)
@@ -82,38 +83,35 @@ class Spotify_music_analyzer:
             final_lst = []
 
         final_lst = self.__feat_check(lst)
-    
         return final_lst
 
 
     #шаг
     def __step(self, m): 
-        return math.log(m) / 30
+        return math.log(m) / 35
 
 
     #распределение очков между песнями из "любимых треков"
     def __points_songs(self, sp):
         dic = {}
+        
         try:
             k = ''
             n = self.__get_list_songs(sp)
             m = len(n)
             p = self.__step(m)
             s = self.MEDIANA + p
+            
             for artist in n:
-
                 if (artist in dic):
                     dic[artist].append(s)
                 else:
                     dic[artist] = [s]
-
                 s = s - (2 * p) / m
-
                 if artist == k:
                     dic[artist].append(0.005)
                 else:
                     k = artist
-        
         except ValueError:
             pass
             
@@ -128,57 +126,47 @@ class Spotify_music_analyzer:
             m = len(n)
             p = self.__step(m)
             s = self.WEIGHT
+            
             for artist in n:
-        
                 if (artist in dic):
                     dic[artist].append(s)
                 else:
                     dic[artist] = [s]
-            
                 s = s - p / (5 * m)
-            
             return dic
-    
+        
         except ValueError:
             pass
         
         
     #уточнение очков с учетом того, что пользователь сейчас слушает
     def __check_current_top(self, sp, dic):
-        lst1 = []
+        lst = []
         j = 0
-        while (j <= (len(lst1) // 50)):
+        
+        while (j <= (len(lst) // 50)):
             results = sp.current_user_top_artists(time_range='medium_term', offset = 50*j, limit = 50)
             for i, item in enumerate(results['items']):
-                lst1.append(item['name'].lower())
+                lst.append(item['name'].lower())
             j += 1
         
-        lst2 = []
-        j = 0
-        while (j <= (len(lst2) // 50)):
-            results = sp.current_user_top_artists(time_range='long_term', offset = 50*j, limit = 50)
-            for i, item in enumerate(results['items']):
-                lst2.append(item['name'].lower())
-            j += 1
-            
-        set1 = set(lst1)
-        set2 = set(lst2)
-        lst = list(set1.union(set2))
-            
+        length = len(lst)
+        k = 0.35 / (1 - length)
+        b = (1.2 - 1.55 * length) / (1 - length)
+        
         if dic != {}:
             for artist in dic.keys():
                 for j in range(len(lst)):
                     if lst[j] == artist:
-                        dic[artist] = dic[artist] * 1.2
+                        dic[artist] = dic[artist] * (k * (j + 1) + b)
             for artist in lst:
                 if artist not in dic.keys():
-                    dic[artist] = 4
-                    
+                    dic[artist] = 3.5         
         else:
             for artist in lst:
                 dic[artist] = 2 * self.MEDIANA
                     
-        return dic 
+        return dic
     
             
     #возвращает наиболее "любимых" исполнителей
@@ -209,5 +197,4 @@ class Spotify_music_analyzer:
             lst.append(list_d[i][0])
         
         final_lst = Slovar()
-        
         return final_lst.transliterate(lst)
