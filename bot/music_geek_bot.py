@@ -307,7 +307,7 @@ def get_info_from_vk(message, vk_id):
         bot.send_message(message.chat.id, text=msg)
 
         work = vk.get_favourite_artists(vk_id)
-        print(type(work))
+        #print(type(work))
         artists = work.result()
         #artists = vk.get_favourite_artists(vk_id)
         if artists == []:
@@ -336,7 +336,7 @@ def get_info_from_spotify(message, token):
     bot.send_message(message.chat.id, text="Подожди немного, пока я анализирую твой плейлист...")
     
     work = sp.get_favourite_artists(token)
-    print(type(work))
+    #print(type(work))
     artists = work.result()
     #artists = sp.get_favourite_artists(token)
     if artists == []:
