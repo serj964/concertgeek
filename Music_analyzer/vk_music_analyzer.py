@@ -4,6 +4,22 @@ import vk_api
 from vk_api.audio import VkAudio
 from Music_analyzer.password import password
 
+from threading import Thread
+from concurrent.futures import Future
+
+def call_with_future(fn, future, args, kwargs):
+    try:
+        result = fn(*args, **kwargs)
+        future.set_result(result)
+    except Exception as exc:
+        future.set_exception(exc)
+
+def threaded(fn):
+    def wrapper(*args, **kwargs):
+        future = Future()
+        Thread(target=call_with_future, args=(fn, future, args, kwargs)).start()
+        return future
+    return wrapper
 
 class Vk_music_analyzer:
     def __init__(self):
@@ -114,6 +130,7 @@ class Vk_music_analyzer:
         
         
     #возвращает наиболее "любимых" исполнителей
+    @threaded
     def get_favourite_artists(self, user_id):
         LOGIN = '+79060733528'
         user_id = int(user_id)

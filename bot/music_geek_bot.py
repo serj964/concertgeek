@@ -8,22 +8,6 @@ import sys
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import datetime
-from threading import Thread
-
-class ThreadWithReturnValue(Thread):
-    def __init__(self, group=None, target=None, name=None,
-                 args=(), kwargs={}, Verbose=None):
-        Thread.__init__(self, group, target, name, args, kwargs)
-        self._return = None
-    def run(self):
-        #print(type(self._target))
-        if self._target is not None:
-            print("target is not none")
-            self._return = self._target(*self._args,
-                                                **self._kwargs)
-    def join(self, *args):
-        Thread.join(self, *args)
-        return self._return
 
 
 class Unbuffered(object):
@@ -145,7 +129,7 @@ def menu_reset_proc(message):
     bot.send_message(message.chat.id, text = "хайп")'''
 
 
-def menu_analyze_spotify_proc():
+def menu_analyze_spotify_proc(message):
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     bot.send_message(message.chat.id, text = "Перейди, пожалуйста, по ссылке для авторизации: "+url)
     db_object = get_info_from_db(1, message.chat.id)
@@ -158,7 +142,7 @@ def menu_analyze_spotify_proc():
         print(message.chat.id, "the link has expired ")
 
 
-def menu_analyze_vk_proc():
+def menu_analyze_vk_proc(message):
     url = spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     msg = "Обязательно проверь, что у тебя открытый аккаунт и открытые аудио!\n\n"
     msg += "После этого перейди, пожалуйста, по ссылке для авторизации: "
@@ -322,9 +306,8 @@ def get_info_from_vk(message, vk_id):
         msg += "Обычно это занимает 4-6 минут."
         bot.send_message(message.chat.id, text=msg)
 
-        thread = ThreadWithReturnValue(target=vk.get_favourite_artists, args=(vk_id,))
-        thread.run()
-        artists = thread.join()
+        work = vk.get_favourite_artists(vk_id)
+        artists = work.result()
         #artists = vk.get_favourite_artists(vk_id)
         if artists == []:
             bot.send_message(message.chat.id, text="Ох, кажется, у тебя нет песен в VK...")
@@ -350,9 +333,9 @@ def get_info_from_vk(message, vk_id):
 def get_info_from_spotify(message, token):
     sp = Spotify_music_analyzer()
     bot.send_message(message.chat.id, text="Подожди немного, пока я анализирую твой плейлист...")
-    thread = ThreadWithReturnValue(target=sp.get_favourite_artists, args=(token,))
-    thread.run()
-    artists = thread.join()
+    
+    work = sp.get_favourite_artists(token)
+    artists = work.result()
     #artists = sp.get_favourite_artists(token)
     if artists == []:
         bot.send_message(message.chat.id, text="Ох, кажется, у тебя нет песен в spotify...")
