@@ -4,6 +4,24 @@ import vk_api
 from vk_api.audio import VkAudio
 from Music_analyzer.password import password
 
+from threading import Thread
+from concurrent.futures import Future
+
+
+def call_with_future(fn, future, args, kwargs):
+    try:
+        result = fn(*args, **kwargs)
+        future.set_result(result)
+    except Exception as exc:
+        future.set_exception(exc)
+
+def threaded(fn):
+    def wrapper(*args, **kwargs):
+        future = Future()
+        Thread(target=call_with_future, args=(fn, future, args, kwargs)).start()
+        return future
+    return wrapper
+
 
 class Vk_music_analyzer:
     def __init__(self):
@@ -23,7 +41,6 @@ class Vk_music_analyzer:
                 lst.append(p2)
             except AttributeError:
                 pass
-        
             i += 1
             
         return lst
@@ -37,32 +54,28 @@ class Vk_music_analyzer:
             lst.append(track['artist'].lower())
             
         final_lst = self.__feat_check(lst)    
-        
         return final_lst
 
 
     #возвращает список добавленных в плейлисты песен (по названию артистов) из аудио вк
     def __get_list_playlists(self, session, user_id):
         lst = []
-        
         albums = session.get_albums(owner_id = user_id)
         
         for i in range(len(albums)):
             tracks = session.get_iter(owner_id = albums[i]['owner_id'],
                                       album_id = albums[i]['id'],
                                       access_hash = albums[i]['access_hash'])
-            
             for track in tracks:
                 lst.append(track['artist'].lower())
                 
         final_lst = self.__feat_check(lst)
-            
         return final_lst
 
 
     #шаг
     def __step(self, m):
-        return math.log(m) / 30
+        return math.log(m) / 35
 
 
     #распределение очков между добавленными песнями
@@ -73,15 +86,13 @@ class Vk_music_analyzer:
         m = len(n)
         p = self.__step(m)
         s = self.MEDIANA + p
+        
         for artist in n:
-            
             if (artist in dic):
                 dic[artist].append(s)
             else:
                 dic[artist] = [s]
-                
             s = s - (2 * p) / m
-            
             if artist == k:
                 dic[artist].append(0.005)
             else:
@@ -98,43 +109,41 @@ class Vk_music_analyzer:
             m = len(n)
             p = self.__step(m)
             s = self.WEIGHT
-            for artist in n:
             
+            for artist in n:
                 if (artist in dic):
                     dic[artist].append(s)
                 else:
                     dic[artist] = [s]
-                
                 s = s - p / (5 * m)
                 
             return dic
-        
         except ValueError:
             pass
         
         
     #возвращает наиболее "любимых" исполнителей
+    @threaded
     def get_favourite_artists(self, user_id):
         LOGIN = '+79060733528'
         user_id = int(user_id)
-
         vk_session = vk_api.VkApi(LOGIN, password)
+        
         try:
             vk_session.auth()
         except vk_api.AuthError as error_msg:
             print(error_msg)
             
         session = VkAudio(vk_session)
-        
         dic1 = self.__points_songs(session, user_id)
         dic2 = self.__points_playlists(session, user_id)
         result = {}
         lst = []
+        
         try:
             for key in (dic1.keys() | dic2.keys()):
                 if key in dic1: result.setdefault(key, []).extend(dic1[key])
-                if key in dic2: result.setdefault(key, []).extend(dic2[key])
-                    
+                if key in dic2: result.setdefault(key, []).extend(dic2[key])             
         except AttributeError:
             result = dic1
                 
@@ -142,7 +151,6 @@ class Vk_music_analyzer:
             result[artist] = sum((result[artist]))
         
         list_d = list(result.items())
-
         list_d.sort(key = lambda i: i[1], reverse=True)
 
         for i in range(math.ceil((len(list_d) ** 0.8))):
