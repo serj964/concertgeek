@@ -1,12 +1,18 @@
 import telebot
 import datetime
+import json
+
 TOKEN = "1713650415:AAHpmqcTLVPFaoOtTi_POHk6Z66j3tr3ac4"
 
 bot = telebot.TeleBot(TOKEN)
 CHAT_ID = -560631730
 
+CONFIG_FILE = './bot/config.json'
 
-LOGS_PATH = "/home/musicGEEK/logs/"
+with open(CONFIG_FILE) as conf:
+    config = json.load(conf)
+
+LOGS_PATH = config["logs_config"]
 DBO_FNAME = "db.o"
 DBE_FNAME = "db.e"
 BOTO_FNAME = "bot.o"
