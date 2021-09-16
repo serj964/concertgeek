@@ -19,14 +19,14 @@ with open(CONFIG_FILE) as conf:
     config = json.load(conf)
 
 
-
 oauth_config = config["oauth_config"]
 server_config = config["server_config"]
 db_config = config["db_config"]
 
 
-engine = create_engine(db_config['sqlite_address'])
-db_session = sessionmaker(bind=engine)()
+#engine = create_engine(db_config['sqlite_address'])
+#db_session = sessionmaker(bind=engine)()
+
 
 client = MongoClient(db_config['address'], db_config['port'])
 db = client[db_config['name']]
@@ -81,8 +81,8 @@ def spotify_oauth():
 
 
     cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
-    auth_manager = spotipy.oauth2.SpotifyOAuth(scope='user-library-read, playlist-read-private, user-read-recently-played, user-read-playback-state, user-top-read, playlist-read-collaborative, user-read-currently-playing',
-                                                cache_handler=cache_handler, 
+    auth_manager = spotipy.oauth2.SpotifyOAuth(scope=spotify_oauth_config['scope'],
+                                               cache_handler=cache_handler, 
                                                 show_dialog=True, 
                                                 client_secret=spotify_oauth_config['client_secret'],
                                                 client_id=spotify_oauth_config['client_id'],
