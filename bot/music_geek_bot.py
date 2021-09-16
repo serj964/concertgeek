@@ -32,7 +32,6 @@ import Db.db as db_classes
 
 
 
-
 sys.stdout = Unbuffered(sys.stdout)
 
 
@@ -47,9 +46,9 @@ server_config = config["server_config"]
 db_config = config["db_config"]
 
 
+#engine = create_engine(db_config['sqlite_address'])
+#db_session = sessionmaker(bind=engine)()
 
-engine = create_engine(db_config['sqlite_address'])
-db_session = sessionmaker(bind=engine)()
 
 client = MongoClient(db_config['address'], db_config['port'])
 db = client[db_config['name']]

@@ -3,10 +3,10 @@ import math
 import spotipy
 from Music_analyzer.spotify_slovar import Slovar
 
-from threading import Thread
-from concurrent.futures import Future
+#from threading import Thread
+#from concurrent.futures import Future
 
-def call_with_future(fn, future, args, kwargs):
+'''def call_with_future(fn, future, args, kwargs):
     try:
         result = fn(*args, **kwargs)
         future.set_result(result)
@@ -18,7 +18,7 @@ def threaded(fn):
         future = Future()
         Thread(target=call_with_future, args=(fn, future, args, kwargs)).start()
         return future
-    return wrapper
+    return wrapper'''
 
 class Spotify_music_analyzer:
     def __init__(self):
