@@ -81,7 +81,6 @@ def spotify_oauth():
 
     cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
     auth_manager = spotipy.oauth2.SpotifyOAuth(scope=spotify_oauth_config['scope'],
-                                                cache_handler=cache_handler, 
                                                 show_dialog=True, 
                                                 client_secret=spotify_oauth_config['client_secret'],
                                                 client_id=spotify_oauth_config['client_id'],

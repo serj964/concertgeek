@@ -31,7 +31,6 @@ import Db.db as db_classes
 
 
 
-
 sys.stdout = Unbuffered(sys.stdout)
 
 
