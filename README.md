@@ -1,7 +1,7 @@
 # concertgeek
 service for melomans
 ## run bot (root derictory of the project):
-python3 -m bot.music_geek_bot.py
+python3 -m bot.concertgeek_bot.py
 python3 -m bot.server.py
 ## run db (db directory):
 docker-compose up -d \
