@@ -60,7 +60,7 @@ spotify_oauth_config = oauth_config['spotify_oauth_config']
 
 
 TOKEN = bot_config['token']
-bot = telebot.AsyncTeleBot(TOKEN)
+bot = telebot.TeleBot(TOKEN)
 
 vk_oauth_url = vk_oauth_config['redirect_url_base']+vk_oauth_config['oauth_startpoint']
 spotify_oauth_url = spotify_oauth_config['redirect_url_base']+spotify_oauth_config['oauth_startpoint']
