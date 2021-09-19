@@ -1,4 +1,4 @@
-# musicGEEK
+# concertgeek
 service for melomans
 ## run bot (root derictory of the project):
 python3 -m bot.music_geek_bot.py
