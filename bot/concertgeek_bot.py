@@ -168,7 +168,7 @@ def menu_startup_vk_proc(message):
     txt += "После этого перейди, пожалуйста, по ссылке для авторизации: "
     txt += vk_oauth_url+"?&tg_id="+str(message.chat.id)
     txt += "\n\nСсылка действительна всего 4 минуты и только один раз!"
-    bot.send_message(message.chat.id, text=txt)
+    msg = bot.send_message(message.chat.id, text=txt)
     db_object = get_info_from_db(0, message.chat.id)
     try:
         vk_id = db_object['vk_id']
