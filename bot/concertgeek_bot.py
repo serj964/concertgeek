@@ -172,10 +172,13 @@ def menu_startup_vk_proc(message):
     db_object = get_info_from_db(0, message.chat.id)
     try:
         vk_id = db_object['vk_id']
+        txt = "Подожди немного, пока я анализирую твой плейлист...\n\n"
+        txt += "Обычно это занимает 5-7 минут."
+        bot.edit_message_text(chat_id=message.chat.id, message_id=msg.message_id, text=txt)
         print(message.chat.id, db_object)
         get_info_from_vk(message, vk_id)
     except TypeError:
-        bot.send_message(message.chat.id, text="Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
+        bot.edit_message_text(chat_id=message.chat.id, message_id=msg.message_id, text="Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
         print(message.chat.id, "the link has expired ")
 
     
@@ -183,17 +186,16 @@ def menu_startup_spotify_proc(message):
     txt = "Перейди, пожалуйста, по ссылке для авторизации: "
     txt += spotify_oauth_url+"?&tg_id="+str(message.chat.id)
     txt += "\n\nСсылка действительна всего 4 минуты и только один раз!"
-    message = bot.send_message(message.chat.id, text=txt)
+    msg = bot.send_message(message.chat.id, text=txt)
     db_object = get_info_from_db(1, message.chat.id)
     try:
         token = db_object['spotify_access_token']
+        bot.edit_message_text(chat_id=message.chat.id, message_id=msg.message_id, text="Подожди немного, пока я анализирую твой плейлист...")
         get_info_from_spotify(message, token)
         print(message.chat.id, "successful authorization")
-        bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text="Подожди немного, пока я анализирую твой плейлист...")
     except TypeError:
-        bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text="Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
+        bot.edit_message_text(chat_id=message.chat.id, message_id=msg.message_id, text="Время действия ссылки истекло\n\nНачни, пожалуйста, заново с команды /start")
         print(message.chat.id, "the link has expired ")
-    #bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=total_recall(message), parse_mode='markdown')
     
 
 def menu_startup_abort_proc(message):
@@ -342,9 +344,6 @@ def location_reply_keyboard():
 def get_info_from_vk(message, vk_id): 
     try:    
         vk = Vk_music_analyzer()
-        txt = "Подожди немного, пока я анализирую твой плейлист...\n\n"
-        txt += "Обычно это занимает 5-7 минут."
-        bot.send_message(message.chat.id, text=txt)
 
         #work = vk.get_favourite_artists(vk_id)
         #print(type(work))
@@ -373,7 +372,6 @@ def get_info_from_vk(message, vk_id):
     
 def get_info_from_spotify(message, token):
     sp = Spotify_music_analyzer()
-    #bot.send_message(message.chat.id, text="Подожди немного, пока я анализирую твой плейлист...")
     
     #work = sp.get_favourite_artists(token)
     #print(type(work))
