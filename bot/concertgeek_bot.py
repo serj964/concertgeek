@@ -163,7 +163,6 @@ def menu_change_service_proc(message):
     bot.send_message(message.chat.id, text=txt, reply_markup=make_keyboard(menu_change_service))
 
 
-#функция которая восстанавливает сообщение с лайком
 def menu_startup_vk_proc(message):
     msg = "Обязательно проверь, что у тебя открытый аккаунт и открытые аудио!\n\n"
     msg += "После этого перейди, пожалуйста, по ссылке для авторизации: "
@@ -206,6 +205,7 @@ def menu_like_proc(message):
     #bot.send_message(message.chat.id, text=msg)
     
 
+#функция, которая восстанавливает сообщение с лайком
 def total_recall(message):
     s = message.text
     title = s.split('\n')[0][s.index(' ', 0, len(s.split('\n')[0]))+1:len(s.split('\n')[0])]
@@ -252,11 +252,10 @@ menu_like = {
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    #text1 = "Привет, я MusicGEEKbot. Приятно познакомиться)\nЯ помогу тебе не пропустить концерт или любое другое мероприятие любимых исполнителей.\n\n"
-    text2 = "Мне необходимо проанализировать твою медиатеку, поэтому выбери подходящий вариант:"
+    msg = "Мне необходимо проанализировать твою медиатеку, поэтому выбери подходящий вариант:"
     #text3 = если хочешь перейти в основное меню - напиши /menu
     print(message.chat.id, message.from_user.username)
-    msg = bot.send_message(message.chat.id, text=text2, reply_markup=make_keyboard(menu_startup))
+    msg = bot.send_message(message.chat.id, text=msg, reply_markup=make_keyboard(menu_startup))
     #new_msg = bot.edit_message_reply_markup(chat_id = message.chat.id, message_id = msg.message_id)
 
 '''
@@ -271,6 +270,7 @@ def handle_menu(message):
     #bot.register_next_step_handler(message, menu_keyboard_handler)'''
 
 
+#обработка сообщений
 @bot.message_handler(content_types = ["text", "sticker", "pinned_message", "photo", "audio"])
 def talk(message):
     msg = "Мы могли бы пообщаться, но, к сожалению, пока что я умею отвечать только привет)\n"
@@ -310,13 +310,13 @@ def menu_change_service_keyboard_handler(call):
         menu_change_service[btn][1](call.message)
 
 
-#по координатам возвращает ближайший город
+#функция, которая по координатам возвращает ближайший город
 def get_nearest_city_by_location(user_lat, user_long):
     coordinates = City_slovar()
     return coordinates.nearest_city_by_location(user_lat, user_long) 
 
 
-#по названию возвращает город
+#функция, которая по названию возвращает город
 def get_city_by_name(city):
     name = City_slovar()
     return name.city_by_name(city)
@@ -342,7 +342,7 @@ def get_info_from_vk(message, vk_id):
     try:    
         vk = Vk_music_analyzer()
         msg = "Подожди немного, пока я анализирую твой плейлист...\n\n"
-        msg += "Обычно это занимает 4-6 минут."
+        msg += "Обычно это занимает 5-7 минут."
         bot.send_message(message.chat.id, text=msg)
 
         #work = vk.get_favourite_artists(vk_id)
@@ -389,6 +389,7 @@ def get_info_from_spotify(message, token):
         print(message.chat.id, "send to identify location")    
       
 
+#обработка геолокации
 @bot.message_handler(content_types=["location", "text"])
 def location_handler(message, artists=None):
     keyboard = types.ReplyKeyboardRemove()
@@ -403,8 +404,8 @@ def location_handler(message, artists=None):
             print(message.chat.id, "city " + nearest_city[nearest_city_rus])
             msg = "Твой город - {city}\n\n".format(city = nearest_city_rus)
             msg += "Осталось подождать совсем чуть-чуть, я подбираю для тебя концерты на ближайшие 4 месяца)"
-            msg += "\n\nА пока, подписывайся на наш [канал](https://t.me/musicgeekinfo), где мои разработчики "
-            msg += "рассказывают о своём прогрессе и оповещают о новых функциях"
+            #msg += "\n\nА пока, подписывайся на наш [канал](https://t.me/musicgeekinfo), где мои разработчики "
+            #msg += "рассказывают о своём прогрессе и оповещают о новых функциях"
             bot.send_message(message.chat.id, text=msg, parse_mode='markdown', reply_markup=keyboard)
             show_concerts(message, artists, nearest_city[nearest_city_rus])
         except AttributeError:
@@ -412,8 +413,8 @@ def location_handler(message, artists=None):
                 city = get_city_by_name(message.text)
                 print(message.chat.id, "city " + city)
                 msg = "Осталось подождать совсем чуть-чуть, я подбираю для тебя концерты на ближайшие 4 месяца)"
-                msg += "\n\nА пока, подписывайся на наш [канал](https://t.me/musicgeekinfo), где мои разработчики "
-                msg += "рассказывают о своём прогрессе и оповещают о новых функциях"
+                #msg += "\n\nА пока, подписывайся на наш [канал](https://t.me/musicgeekinfo), где мои разработчики "
+                #msg += "рассказывают о своём прогрессе и оповещают о новых функциях"
                 bot.send_message(message.chat.id, text=msg, parse_mode='markdown', reply_markup=keyboard)
                 show_concerts(message, artists, city)
             except ValueError:
@@ -422,7 +423,8 @@ def location_handler(message, artists=None):
                 print(message.chat.id, 'wrong city name or no city in our base')
                 bot.send_message(message.chat.id, text=msg)
 
-    
+
+#функция, которая парсит концерты и печатает пользователю    
 def show_concerts(message, artists, nearest_city):
     con = Concerts()
     con.load_concerts(city=nearest_city, number_of_days=120)
