@@ -58,7 +58,6 @@ vk_oauth_config = oauth_config['vk_oauth_config']
 spotify_oauth_config = oauth_config['spotify_oauth_config']
 
 
-
 TOKEN = bot_config['token']
 bot = telebot.TeleBot(TOKEN)
 
@@ -95,6 +94,7 @@ def get_info_from_db(mode, tg_id):
         time.sleep(5)
 
 
+#функция, которая генерит клавиатуру
 def make_keyboard(d):
     keyboard = types.InlineKeyboardMarkup()
     buttons = []
@@ -241,6 +241,7 @@ menu = {
 }
 
 
+#начальное меню
 menu_startup = {
     'btn_menu_startup_vk' : ('Vk', menu_startup_vk_proc),
     'btn_menu_startup_spotify' : ('Spotify', menu_startup_spotify_proc),
@@ -426,7 +427,7 @@ def location_handler(message, artists=None):
 #функция, которая парсит концерты и печатает пользователю    
 def show_concerts(message, artists, nearest_city):
     con = Concerts()
-    con.load_concerts(city=nearest_city, number_of_days=120)
+    con.load_concerts(city=nearest_city, number_of_days=122)
     concert_list = []
     for i in range(len(artists)):
         concert = con.find_concerts(artists[i])
@@ -436,9 +437,9 @@ def show_concerts(message, artists, nearest_city):
                                               title = concert[0]['title'],
                                               date = concert[0]['date'],
                                               url = concert[0]['url'])
-                try:
+                if concert[0]['price'] != None:
                     txt += "\nБилеты от {price} рублей".format(price = concert[0]['price'])
-                except KeyError:
+                if concert[0]['price'] == None:
                     pass
                 bot.send_message(message.chat.id, text=txt, parse_mode='markdown', reply_markup=make_keyboard(menu_like))
                 concert_list.append(concert)
