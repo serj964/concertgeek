@@ -183,7 +183,7 @@ menu_like = {
 def send_welcome(message):
     txt = "Мне необходимо проанализировать твою медиатеку, поэтому выбери подходящий вариант:"
     print(message.chat.id, message.from_user.username)
-    msg = bot.send_message(message.chat.id, text=txt, reply_markup=make_keyboard(menu_startup))
+    bot.send_message(message.chat.id, text=txt, reply_markup=make_keyboard(menu_startup))
 
 
 #обработка сообщений
@@ -200,15 +200,7 @@ def menu_like_keyboard_handler(call):
     print(call.from_user.id, btn)
     if menu_like.get(btn) != None:
         menu_like[btn][1](call.message)
-           
         
-@bot.callback_query_handler(func=lambda call: type(call)==types.CallbackQuery and call.data in menu.keys())
-def menu_keyboard_handler(call):
-    btn = call.data
-    print(call.from_user.id, btn)
-    if menu.get(btn) != None:
-        menu[btn][1](call.message)
-
 
 @bot.callback_query_handler(func=lambda call: type(call)==types.CallbackQuery and call.data in menu_startup.keys())
 def menu_startup_keyboard_handler(call):
