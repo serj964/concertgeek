@@ -53,7 +53,6 @@ client = MongoClient(db_config['address'], db_config['port'])
 db = client[db_config['name']]
 vk_collection = db[db_config['collections']['vk_collection']]
 spotify_collection = db[db_config['collections']['spotify_collection']]
-
 vk_oauth_config = oauth_config['vk_oauth_config']
 spotify_oauth_config = oauth_config['spotify_oauth_config']
 
@@ -64,8 +63,9 @@ bot = telebot.TeleBot(TOKEN)
 vk_oauth_url = vk_oauth_config['redirect_url_base']+vk_oauth_config['oauth_startpoint']
 spotify_oauth_url = spotify_oauth_config['redirect_url_base']+spotify_oauth_config['oauth_startpoint']
 
-#TEXT = "(если ты еще не отправлял мне свой плейлист - напиши /start, если хочешь перейти в основное меню - напиши /menu)"
+
 TEXT = "(если ты еще не отправлял мне свой плейлист - напиши /start)"
+
 
 def get_vk_id_from_db(tg_id):
     res = vk_collection.find_one({'_id' : tg_id})
@@ -198,11 +198,6 @@ def menu_startup_spotify_proc(message):
         print(message.chat.id, "the link has expired ")
     
 
-def menu_startup_abort_proc(message):
-    txt = "Тогда я просто побуду у тебя в телефоне)\n\n" + TEXT
-    bot.send_message(message.chat.id, text=txt)
-    
-
 #функция, которая редактирует сообщение с лайком    
 def menu_like_proc(message):
     bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=total_recall(message), parse_mode='markdown')
@@ -244,8 +239,7 @@ menu = {
 #начальное меню
 menu_startup = {
     'btn_menu_startup_vk' : ('Vk', menu_startup_vk_proc),
-    'btn_menu_startup_spotify' : ('Spotify', menu_startup_spotify_proc),
-    'btn_menu_startup_abort' : ('Выберу потом', menu_startup_abort_proc)
+    'btn_menu_startup_spotify' : ('Spotify', menu_startup_spotify_proc)
 }
 
 
