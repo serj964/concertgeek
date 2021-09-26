@@ -404,7 +404,9 @@ def location_handler(message, artists=None):
             show_concerts(message, artists, nearest_city[nearest_city_rus])
         except AttributeError:
             if message.text == '/start':
+                msg = bot.send_message(message.chat.id, text='Перенаправляю в начало...', reply_markup=keyboard)
                 send_welcome(message)
+                bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
             else:
                 try:
                     city = get_city_by_name(message.text)
