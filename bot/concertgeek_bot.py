@@ -410,7 +410,7 @@ def location_handler(message, artists=None):
             show_concerts(message, artists, nearest_city[nearest_city_rus])
         except AttributeError:
             if message.text == '/start':
-                bot.register_next_step_handler(message, lambda msg: send_welcome(msg))
+                send_welcome(message)
             else:
                 try:
                     city = get_city_by_name(message.text)
