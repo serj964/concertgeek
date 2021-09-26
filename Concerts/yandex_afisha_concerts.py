@@ -8,6 +8,7 @@ class Concerts:
     def __init__(self):
         self.concerts = []
 
+    #парсинг концертов с яндекс.афиши
     def load_concerts(self, city='moscow', day=datetime.date.today(), number_of_days=30):
         self.concerts = []
         limit = 20
@@ -47,6 +48,7 @@ class Concerts:
             responce = requests.get(link)
             data = responce.json()['data']
 
+    #поиск словаря с концертом в json
     def find_concerts(self, artist):
         suitable_concerts = []
         for concert in self.concerts:

@@ -419,9 +419,10 @@ def location_handler(message, artists=None):
                 show_concerts(message, artists, city)
             except ValueError:
                 txt = "Возможно твоего города еще нет в нашей базе, либо ты написал его неправильно(\n\n"
-                txt += "Попробуй еще раз с команды /start"
+                txt += "Введи, пожалуйста, название города еще раз"
                 print(message.chat.id, 'wrong city name or no city in our base')
                 bot.send_message(message.chat.id, text=txt)
+                bot.register_next_step_handler(message, lambda msg: location_handler(msg, artists))
 
 
 #функция, которая парсит концерты и печатает пользователю    
